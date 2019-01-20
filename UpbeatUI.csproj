@@ -42,16 +42,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="ContextCreatedEventArgs.cs" />
+    <Compile Include="ActionDeferrer.cs" />
+    <Compile Include="ContextObject.cs" />
     <Compile Include="IContext.cs" />
+    <Compile Include="IContextService.cs" />
     <Compile Include="IHasPosition.cs" />
     <Compile Include="IHasSize.cs" />
     <Compile Include="InputPosition.cs" />
+    <Compile Include="Locator.cs" />
+    <Compile Include="ObjectNameContext.cs" />
     <Compile Include="ObservableCommand.cs" />
     <Compile Include="ObservableObject.cs" />
     <Compile Include="PositionContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SizeContext.cs" />
+    <Compile Include="SynchronizableCollection.cs" />
   </ItemGroup>
 
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,11 +3,10 @@ using System.ComponentModel;
 
 namespace UpbeatUI
 {
-    public interface IContext : INotifyPropertyChanged
-    {
-        event EventHandler CloseRequested;
-        event EventHandler<ContextCreatedEventArgs> ContextCreated;
+    public delegate IContext ContextCreator(IContextService contextService);
 
-        void Close();
+    public interface IContext : IDisposable, INotifyPropertyChanged
+    {
+        void SignalToClose(Action closeCallback);
     }
 }
