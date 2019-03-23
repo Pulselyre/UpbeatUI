@@ -24,5 +24,8 @@ namespace UpbeatUI
             _keyValuePair = newModelObject;
             RaisePropertyChanged(nameof(Name), nameof(Target));
         }
+
+        public void Synchronize(T target, string name)
+            => Synchronize(new KeyValuePair<T, string>(target, name));
     }
 }
