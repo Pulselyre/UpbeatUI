@@ -1,4 +1,3 @@
-using UpbeatUI;
 using System.Windows;
 
 namespace UpbeatUI
@@ -19,13 +18,13 @@ namespace UpbeatUI
         public double Height
         {
             get { return Size.Height; }
-            set { Size = new Size(Size.Width, value); RaisePropertyChanged(nameof(Height)); }
+            set { if (Size.Height == value) return; Size = new Size(Size.Width, value); RaisePropertyChanged(nameof(Height)); }
         }
 
         public double Width
         {
             get { return Size.Width; }
-            set { Size = new Size(value, Size.Height); RaisePropertyChanged(nameof(Width)); }
+            set { if (Size.Width == value) return; Size = new Size(value, Size.Height); RaisePropertyChanged(nameof(Width)); }
         }
     }
 }
