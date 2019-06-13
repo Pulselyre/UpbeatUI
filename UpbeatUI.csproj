@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="ActionDeferrer.cs" />
     <Compile Include="ContextObject.cs" />
+    <Compile Include="ContextStack.cs" />
     <Compile Include="IContext.cs" />
     <Compile Include="IContextService.cs" />
     <Compile Include="IHasPosition.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="ObservableObject.cs" />
     <Compile Include="PositionContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelectableContext.cs" />
     <Compile Include="SizeContext.cs" />
     <Compile Include="SynchronizableCollection.cs" />
   </ItemGroup>

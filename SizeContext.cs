@@ -4,9 +4,9 @@ namespace UpbeatUI
 {
     public class SizeContext : ObservableObject
     {
-        public SizeContext(double height, double width)
+        public SizeContext(double width, double height)
         {
-            Size = new Size(height, width);
+            Size = new Size(width, height);
         }
 
         public SizeContext()
