@@ -4,14 +4,18 @@ namespace UpbeatUI
 {
     public class PositionContext : ObservableObject
     {
-        public PositionContext(double xPosition, double yPosition)
-        {
-            Point = new Point(xPosition, yPosition);
-        }
-
         public PositionContext()
-            : this(.5, .5)
+            : this(new Point(0.5, 0.5))
         { }
+
+        public PositionContext(double xPosition, double yPosition)
+            : this(new Point(xPosition, yPosition))
+        { }
+
+        public PositionContext(Point point)
+        {
+            Point = point;
+        }
 
         public Point Point { get; private set; }
 
