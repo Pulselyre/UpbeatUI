@@ -50,6 +50,7 @@
     <Compile Include="IHasPosition.cs" />
     <Compile Include="IHasSize.cs" />
     <Compile Include="InputPosition.cs" />
+    <Compile Include="IProvidesContextMappings.cs" />
     <Compile Include="IUpdatableContext.cs" />
     <Compile Include="Locator.cs" />
     <Compile Include="ObjectNameContext.cs" />
