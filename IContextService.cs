@@ -1,3 +1,5 @@
+using System;
+
 namespace UpbeatUI
 {
     public interface IContextService
@@ -5,6 +7,7 @@ namespace UpbeatUI
         void Close();
         string GetClipboard();
         void OpenContext(ContextCreator contextCreator);
+        void OpenContext(ContextCreator contextCreator, Action closedCallback);
         void SetClipboard(string text);
     }
 }

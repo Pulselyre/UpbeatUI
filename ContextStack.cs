@@ -26,8 +26,11 @@ namespace UpbeatUI
         public int Count { get { return _contexts.Count; } }
 
         public void AddContext(ContextCreator creator)
+            => AddContext(creator, null);
+
+        public void AddContext(ContextCreator creator, Action closeCallback)
         {
-            var contextService = new ContextService(AddContext, CloseContext);
+            var contextService = new ContextService(AddContext, CloseContext, closeCallback);
             using (var d = new ContextServiceDeferrer(contextService))
             {
                 var context = contextService.CreateContext(creator);
@@ -78,6 +81,7 @@ namespace UpbeatUI
         {
             context.Dispose();
             _contexts.Remove(context);
+            _contextServices[context].CloseCallback();
             _contextServices.Remove(context);
         }
 
@@ -90,14 +94,16 @@ namespace UpbeatUI
         private class ContextService : IContextService
         {
             private Action<IContext> _closer;
+            private Action _closedCallback;
             private IContext _context;
-            private Action<ContextCreator> _opener;
+            private Action<ContextCreator, Action> _opener;
             private Action<Action> _deferrer;
 
-            internal ContextService(Action<ContextCreator> opener, Action<IContext> closer)
+            internal ContextService(Action<ContextCreator, Action> opener, Action<IContext> closer, Action closedCallback)
             {
                 _opener = opener;
                 _closer = closer;
+                _closedCallback = closedCallback;
             }
 
             public void Close()
@@ -112,15 +118,21 @@ namespace UpbeatUI
                 => Clipboard.GetText();
 
             public void OpenContext(ContextCreator contextCreator)
+                => OpenContext(contextCreator, null);
+
+            public void OpenContext(ContextCreator contextCreator, Action closedCallback)
             {
                 if (_deferrer == null)
-                    _opener(contextCreator);
+                    _opener(contextCreator, closedCallback);
                 else
-                    _deferrer(() => _opener(contextCreator));
+                    _deferrer(() => _opener(contextCreator, closedCallback));
             }
 
             public void SetClipboard(string text)
                 => Clipboard.SetText(text);
+
+            internal void CloseCallback()
+                => _closedCallback?.Invoke();
 
             internal IContext CreateContext(ContextCreator creator)
             {
