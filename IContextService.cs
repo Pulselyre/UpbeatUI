@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace UpbeatUI
 {
@@ -8,6 +9,7 @@ namespace UpbeatUI
         string GetClipboard();
         void OpenContext(ContextCreator contextCreator);
         void OpenContext(ContextCreator contextCreator, Action closedCallback);
+        Task OpenContextAsync(ContextCreator contextCreator);
         void SetClipboard(string text);
     }
 }

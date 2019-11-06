@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -126,6 +127,15 @@ namespace UpbeatUI
                     _opener(contextCreator, closedCallback);
                 else
                     _deferrer(() => _opener(contextCreator, closedCallback));
+            }
+
+            public async Task OpenContextAsync(ContextCreator contextCreator)
+            {
+                var taskCompletionSource = new TaskCompletionSource<bool>();
+                OpenContext(
+                    contextCreator,
+                    () => taskCompletionSource.SetResult(true));
+                await taskCompletionSource.Task;
             }
 
             public void SetClipboard(string text)
