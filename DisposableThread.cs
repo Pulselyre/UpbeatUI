@@ -23,6 +23,7 @@ namespace UpbeatUI
         {
             _cancellationTokenSource.Cancel();
             _resetEvent.WaitOne();
+            _cancellationTokenSource.Dispose();
         }
     }
 }
