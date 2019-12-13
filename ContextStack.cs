@@ -59,10 +59,8 @@ namespace UpbeatUI
 
         public void UpdateContextProperties()
         {
-            foreach (var context in _contexts
-                .Where(c => typeof(IUpdatableContext).IsAssignableFrom(c.GetType()))
-                .Select(c => (IUpdatableContext)c))
-                context.UpdateContextProperties();
+            foreach (var context in _contexts)
+                (context as IUpdatableContext)?.UpdateContextProperties();
         }
 
         public void RemoveAllContexts()
