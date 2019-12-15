@@ -5,24 +5,24 @@ namespace UpbeatUI
 {
     public class DisposableThread : IDisposable
     {
-        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        private ManualResetEvent _resetEvent = new ManualResetEvent(false);
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly Thread _thread;
 
         public DisposableThread(Action<CancellationToken> threadStart)
+            : this(threadStart, ThreadPriority.Normal) { }
+        public DisposableThread(Action<CancellationToken> threadStart, ThreadPriority threadPriority)
         {
-            var thread = new Thread(
-                () =>
-                {
-                    threadStart(_cancellationTokenSource.Token);
-                    _resetEvent.Set();
-                });
-            thread.Start();
+            _thread = new Thread(() => threadStart(_cancellationTokenSource.Token))
+            {
+                Priority = threadPriority
+            };
+            _thread.Start();
         }
 
         public void Dispose()
         {
             _cancellationTokenSource.Cancel();
-            _resetEvent.WaitOne();
+            _thread.Join();
             _cancellationTokenSource.Dispose();
         }
     }
