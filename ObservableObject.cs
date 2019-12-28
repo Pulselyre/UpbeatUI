@@ -9,7 +9,6 @@ namespace UpbeatUI
         private static readonly Dictionary<string, PropertyChangedEventArgs> _eventArgCache = new Dictionary<string, PropertyChangedEventArgs>();
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler PositionsRequryRequested;
 
         public static PropertyChangedEventArgs GetPropertyChangedEventArgs(string propertyName)
         {
@@ -43,8 +42,5 @@ namespace UpbeatUI
                 handler(this, e);
             }
         }
-
-        protected void RequestPositionsRequery()
-            => PositionsRequryRequested?.Invoke(this, EventArgs.Empty);
     }
 }

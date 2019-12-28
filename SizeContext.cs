@@ -1,8 +1,9 @@
+using System;
 using System.Windows;
 
 namespace UpbeatUI
 {
-    public class SizeContext : ObservableObject
+    public class SizeContext : ObservableObject, IUpdatableContext
     {
         public SizeContext()
             : this(0, 0)
@@ -31,6 +32,11 @@ namespace UpbeatUI
             set { if (Size.Width == value) return; Size = new Size(value, Size.Height); RaisePropertyChanged(nameof(Width)); }
         }
 
+        public Func<Size> Finder { get; internal set; }
+
+        public void Change(Size size) =>
+            Change(size.Width, size.Height);
+
         public void Change(double width, double height)
         {
             if (Size.Width == width && Size.Height == height)
@@ -38,5 +44,8 @@ namespace UpbeatUI
             Size = new Size(width, height);
             RaisePropertyChanged(nameof(width), nameof(height), nameof(Point));
         }
+
+        public void UpdateContextProperties() =>
+            Change(Finder?.Invoke() ?? new Size());
     }
 }

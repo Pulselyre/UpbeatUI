@@ -1,8 +1,9 @@
+using System;
 using System.Windows;
 
 namespace UpbeatUI
 {
-    public class PositionContext : ObservableObject
+    public class PositionContext : ObservableObject, IUpdatableContext
     {
         public PositionContext()
             : this(new Point(0.5, 0.5))
@@ -31,6 +32,11 @@ namespace UpbeatUI
             set { if (Point.Y == value) return; Point = new Point(Point.X, value); RaisePropertyChanged(nameof(YPosition), nameof(Point)); }
         }
 
+        public Func<Point> Finder { get; internal set; }
+
+        public void Change(Point point) =>
+            Change(point.X, point.Y);
+
         public void Change(double xPosition, double yPosition)
         {
             if (Point.X == xPosition && Point.Y == yPosition)
@@ -38,5 +44,8 @@ namespace UpbeatUI
             Point = new Point(xPosition, yPosition);
             RaisePropertyChanged(nameof(xPosition), nameof(YPosition), nameof(Point));
         }
+
+        public void UpdateContextProperties() =>
+            Change(Finder?.Invoke() ?? new Point());
     }
 }

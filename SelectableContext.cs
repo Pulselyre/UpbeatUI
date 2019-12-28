@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace UpbeatUI
 {
-    public class SelectableContext : ObservableObject, IHasPosition, IHasSize
+    public class SelectableContext : ObservableObject
     {
         public SelectableContext(PositionContext positionContext, Action select)
             :this(positionContext, new SizeContext(), select)
