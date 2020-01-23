@@ -5,6 +5,8 @@ namespace UpbeatUI
 {
     public interface IContextService
     {
+        bool IsActiveContext { get; }
+
         void Close();
         string GetClipboard();
         void OpenContext(ContextCreator contextCreator);

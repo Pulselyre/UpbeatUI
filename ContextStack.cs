@@ -39,7 +39,9 @@ namespace UpbeatUI
 
         public void OpenContext(ContextCreator creator, Action closeCallback)
         {
-            var contextService = new ContextService(OpenContext, CloseContext, closeCallback);
+            var contextService = new ContextService(
+                OpenContext, CloseContext, closeCallback,
+                c => _contexts.Last() == c);
             using (var d = new ContextServiceDeferrer(contextService))
             {
                 var context = contextService.CreateContext(creator);

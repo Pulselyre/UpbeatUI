@@ -10,16 +10,20 @@ namespace UpbeatUI
         {
             private Action<IContext> _closer;
             private Action _closedCallback;
+            private Predicate<IContext> _isActiveContext;
             private IContext _context;
             private Action<ContextCreator, Action> _opener;
             private Action<Action> _deferrer;
 
-            internal ContextService(Action<ContextCreator, Action> opener, Action<IContext> closer, Action closedCallback)
+            internal ContextService(Action<ContextCreator, Action> opener, Action<IContext> closer, Action closedCallback, Predicate<IContext> isActiveContext)
             {
                 _opener = opener;
                 _closer = closer;
                 _closedCallback = closedCallback;
+                _isActiveContext = isActiveContext;
             }
+
+            public bool IsActiveContext => _isActiveContext(_context);
 
             public void Close()
             {

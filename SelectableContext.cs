@@ -3,7 +3,7 @@ using System.Windows.Input;
 
 namespace UpbeatUI
 {
-    public class SelectableContext : ObservableObject
+    public class SelectableContext : ObservableObject, IUpdatableContext
     {
         public SelectableContext(PositionContext positionContext, Action select)
             :this(positionContext, new SizeContext(), select)
@@ -19,5 +19,11 @@ namespace UpbeatUI
         public PositionContext PositionContext { get; }
         public ICommand SelectCommand { get; }
         public SizeContext SizeContext { get; }
+
+        public void UpdateContextProperties()
+        {
+            PositionContext.UpdateContextProperties();
+            SizeContext.UpdateContextProperties();
+        }
     }
 }
