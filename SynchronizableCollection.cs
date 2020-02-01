@@ -7,6 +7,23 @@ namespace UpbeatUI
 {
     public class SynchronizableCollection<TSyncable> : ObservableCollection<TSyncable>
     {
+        public void Synchronize(params IEnumerable<TSyncable>[] sources)
+        {
+            var list = sources.SelectMany(a => a).ToList();
+            int count = Count;
+            for (int i = 0; i < Math.Max(list.Count, count); i++)
+            {
+                if (i >= count)
+                {
+                    Add(list[i]);
+                }
+                else if (i >= list.Count)
+                    RemoveAt(Count - 1);
+                else
+                    this[i] = list[i];
+            }
+        }
+
         public void Synchronize<TSource>(Action<TSource, TSyncable> synchronizer, params IEnumerable<TSource>[] sources)
         {
             if (typeof(TSyncable).GetConstructor(Type.EmptyTypes) == null)
