@@ -1,0 +1,27 @@
+<!-- This file is part of the UpbeatUI project, which is released under MIT License.
+     See LICENSE.md or visit:
+     https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
+     -->
+<UserControl x:Class="UpbeatUI.View.UpbeatStackControl"
+             x:Name="Control"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vw="clr-namespace:UpbeatUI.View"
+             xmlns:cv="clr-namespace:UpbeatUI.View.Converters">
+    <ItemsControl ItemsSource="{Binding Contexts}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <vw:BlurredZPanel ClosePopupCommand="{Binding RemoveTopContextCommand}"
+                                  BlurColor="{Binding ElementName=Control, Path=BlurColor}"
+                                  BlurRadius="{Binding ElementName=Control, Path=BlurRadius}" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <ItemContainerTemplate>
+                <ContentControl ContentTemplateSelector="{Binding ElementName=Control, Path=DataContext.ContextControlMappings, Converter={cv:MappingsToSelectorConverter}}"
+                                Content="{Binding .}">
+                </ContentControl>
+            </ItemContainerTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>
