@@ -5,7 +5,7 @@
 using System;
 using System.Timers;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public class DisposableTimer : IDisposable
     {

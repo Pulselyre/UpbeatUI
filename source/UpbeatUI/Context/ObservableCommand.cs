@@ -5,7 +5,7 @@
 using System;
 using System.Windows.Input;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public sealed class ObservableCommand : ICommand
     {

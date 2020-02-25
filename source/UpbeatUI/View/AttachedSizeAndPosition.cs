@@ -4,8 +4,9 @@
  */
 using System;
 using System.Windows;
+using UpbeatUI.Context;
 
-namespace UpbeatUI
+namespace UpbeatUI.View
 {
     public class AttachedSizeAndPosition
     {

@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public class ActionDeferrer : IDisposable
     {

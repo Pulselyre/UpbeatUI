@@ -5,10 +5,12 @@
 using System;
 using System.Windows;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public class PositionContext : ObservableObject, IUpdatableContext
     {
+        private Point _point;
+
         public PositionContext()
             : this(new Point(0.5, 0.5))
         { }
@@ -17,22 +19,24 @@ namespace UpbeatUI
             : this(new Point(xPosition, yPosition))
         { }
 
-        public PositionContext(Point point)
-        {
+        public PositionContext(Point point) =>
             Point = point;
-        }
 
-        public Point Point { get; private set; }
+        public Point Point
+        {
+            get => _point;
+            set { _point = value; RaisePropertyChanged(nameof(XPosition), nameof(YPosition), nameof(Point)); }
+        }
 
         public double XPosition
         {
-            get { return Point.X; }
+            get => Point.X;
             set { if (Point.X == value) return; Point = new Point(value, Point.Y); RaisePropertyChanged(nameof(XPosition), nameof(Point)); }
         }
 
         public double YPosition
         {
-            get { return Point.Y; }
+            get => Point.Y;
             set { if (Point.Y == value) return; Point = new Point(Point.X, value); RaisePropertyChanged(nameof(YPosition), nameof(Point)); }
         }
 

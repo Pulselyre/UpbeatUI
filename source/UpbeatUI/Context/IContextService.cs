@@ -5,7 +5,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public interface IContextService
     {

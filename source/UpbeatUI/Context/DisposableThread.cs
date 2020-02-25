@@ -5,7 +5,7 @@
 using System;
 using System.Threading;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public class DisposableThread : IDisposable
     {

@@ -6,7 +6,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public partial class ContextStack : ObservableObject, IDisposable, IUpdatableContext
     {

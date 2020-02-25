@@ -2,7 +2,7 @@
  * See LICENSE.md or visit:
  * https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
  */
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public interface IUpdatableContext
     {

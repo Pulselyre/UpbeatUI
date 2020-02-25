@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public abstract class ObservableObject : INotifyPropertyChanged
     {

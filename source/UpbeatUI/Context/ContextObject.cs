@@ -4,7 +4,7 @@
  */
 using System;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public abstract class ContextObject : ObservableObject, IContext
     {

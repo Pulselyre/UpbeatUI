@@ -4,7 +4,7 @@
  */
 using System;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public partial class ContextStack : ObservableObject, IDisposable, IUpdatableContext
     {

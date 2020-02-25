@@ -4,7 +4,7 @@
  */
 using System.Collections.Generic;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public class ObjectNameContext<T> : ObservableObject
     {

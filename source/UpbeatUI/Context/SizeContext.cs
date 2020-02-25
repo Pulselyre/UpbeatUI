@@ -5,7 +5,7 @@
 using System;
 using System.Windows;
 
-namespace UpbeatUI
+namespace UpbeatUI.Context
 {
     public class SizeContext : ObservableObject, IUpdatableContext
     {
