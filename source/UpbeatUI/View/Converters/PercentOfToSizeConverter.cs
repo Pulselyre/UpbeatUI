@@ -4,12 +4,25 @@
  */
 using System;
 using System.Globalization;
+using System.Windows.Data;
 
 namespace UpbeatUI.View.Converters
 {
-    public class PercentOfToSizeConverter : ValueConverterMarkupExtension<PercentOfToSizeConverter>
+    public class PercentOfToSizeConverter : MultiValueConverterMarkupExtension<PercentOfToSizeConverter>
     {
-        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            => (double)value * double.Parse(parameter as string) * 0.01;
+        public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            var sizes = (values[0] as string)?.Split(' ') ?? throw new ArgumentException("Binding [0] must be a string of percent size values");
+            var containerSize = (values[1] as double?).GetValueOrDefault();
+            if (sizes.Length == 1)
+                return double.Parse(sizes[0]) * containerSize;
+            if (sizes.Length == 3)
+                return Math.Max(
+                    double.Parse(sizes[0]) * containerSize,
+                    Math.Min(
+                        double.Parse(sizes[1]) * containerSize,
+                        double.Parse(sizes[2]) * containerSize));
+            throw new ArgumentException("Binding [0] must be a string of 1 (absolute) or 3 percent size values (min, preferred, max)");
+        }
     }
 }
