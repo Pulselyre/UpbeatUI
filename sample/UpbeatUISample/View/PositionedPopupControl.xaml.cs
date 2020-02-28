@@ -2,11 +2,11 @@
  * See LICENSE.md or visit:
  * https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
  */
-using System.Windows.Controls;
+using UpbeatUI.View;
 
 namespace UpbeatUISample.View
 {
-    public partial class PositionedPopupControl : UserControl
+    public partial class PositionedPopupControl : UpbeatControl
     {
         public PositionedPopupControl() =>
             InitializeComponent();
