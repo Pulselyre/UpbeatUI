@@ -6,19 +6,19 @@
              x:Name="Control"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vw="clr-namespace:UpbeatUI.View"
-             xmlns:cv="clr-namespace:UpbeatUI.View.Converters">
+             xmlns:uv="clr-namespace:UpbeatUI.View"
+             xmlns:uvc="clr-namespace:UpbeatUI.View.Converters">
     <ItemsControl ItemsSource="{Binding Contexts}">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-                <vw:BlurredZPanel ClosePopupCommand="{Binding RemoveTopContextCommand}"
+                <uv:BlurredZPanel ClosePopupCommand="{Binding RemoveTopContextCommand}"
                                   BlurColor="{Binding ElementName=Control, Path=BlurColor}"
                                   BlurRadius="{Binding ElementName=Control, Path=BlurRadius}" />
             </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
             <ItemContainerTemplate>
-                <ContentControl ContentTemplateSelector="{Binding ElementName=Control, Path=DataContext.ContextControlMappings, Converter={cv:MappingsToSelectorConverter}}"
+                <ContentControl ContentTemplateSelector="{Binding ElementName=Control, Path=DataContext.ContextControlMappings, Converter={uvc:MappingsToSelectorConverter}}"
                                 Content="{Binding .}">
                 </ContentControl>
             </ItemContainerTemplate>
