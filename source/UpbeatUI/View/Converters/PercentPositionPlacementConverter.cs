@@ -19,8 +19,8 @@ namespace UpbeatUI.View.Converters
             };
             var containerSize = (values[1] as double?).GetValueOrDefault();
             var controlSize = (values[2] as double?).GetValueOrDefault();
-            var invert = (values[3] as bool?).GetValueOrDefault();
-            var keepInBounds = (values[4] as bool?).GetValueOrDefault();
+            var invert = values[3] switch { bool v => v, string v => bool.Parse(v), _ => false };
+            var keepInBounds = values[4] switch { bool v => v, string v => bool.Parse(v), _ => false };
             if (keepInBounds)
                 return Math.Max(
                     0,
