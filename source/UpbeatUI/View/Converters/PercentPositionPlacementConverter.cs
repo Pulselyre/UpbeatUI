@@ -11,7 +11,12 @@ namespace UpbeatUI.View.Converters
     {
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var percentPosition = values[0] is string ? double.Parse(values[0] as string) : (values[0] as double?).GetValueOrDefault();
+            var percentPosition = values[0] switch
+            {
+                string s => s.ParsePercent(),
+                double d => d,
+                _ => 0.5,
+            };
             var containerSize = (values[1] as double?).GetValueOrDefault();
             var controlSize = (values[2] as double?).GetValueOrDefault();
             var invert = (values[3] as bool?).GetValueOrDefault();

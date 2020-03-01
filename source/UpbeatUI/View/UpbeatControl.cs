@@ -28,13 +28,13 @@ namespace UpbeatUI.View
         public static DependencyProperty XPositionPercentProperty =
             DependencyProperty.Register(
                 "XPositionPercent",
-                typeof(double),
+                typeof(object),
                 typeof(UpbeatControl),
                 new PropertyMetadata(0.5));
         public static DependencyProperty YPositionPercentProperty =
             DependencyProperty.Register(
                 "YPositionPercent",
-                typeof(double),
+                typeof(object),
                 typeof(UpbeatControl),
                 new PropertyMetadata(0.5));
 
@@ -61,15 +61,15 @@ namespace UpbeatUI.View
             set => SetValue(WidthPercentProperty, value);
         }
 
-        public double XPositionPercent
+        public object XPositionPercent
         {
-            get => (double)GetValue(XPositionPercentProperty);
+            get => (object)GetValue(XPositionPercentProperty);
             set => SetValue(XPositionPercentProperty, value);
         }
 
-        public double YPositionPercent
+        public object YPositionPercent
         {
-            get => (double)GetValue(YPositionPercentProperty);
+            get => (object)GetValue(YPositionPercentProperty);
             set => SetValue(YPositionPercentProperty, value);
         }
     }

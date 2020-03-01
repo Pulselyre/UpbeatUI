@@ -14,42 +14,72 @@
                         <ContentPresenter Content="{TemplateBinding Content}">
                             <ContentPresenter.Style>
                                 <Style TargetType="ContentPresenter">
-                                    <Style.Triggers>
-                                        <DataTrigger Value="True">
-                                            <DataTrigger.Binding>
+                                    <Setter Property="MinHeight">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                                          ConverterParameter="Min">
                                                 <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                                         Path="HeightPercent"
-                                                         Converter="{uvc:NotNullConverter}" />
-                                            </DataTrigger.Binding>
-                                            <Setter Property="Height">
-                                                <Setter.Value>
-                                                    <MultiBinding Converter="{uvc:PercentOfToSizeConverter}">
-                                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                                                 Path="HeightPercent" />
-                                                        <Binding ElementName="PositionCanvas"
-                                                                 Path="ActualHeight" />
-                                                    </MultiBinding>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </DataTrigger>
-                                        <DataTrigger Value="True">
-                                            <DataTrigger.Binding>
+                                                         Path="HeightPercent" />
+                                                <Binding ElementName="PositionCanvas"
+                                                         Path="ActualHeight" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Height">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                                          ConverterParameter="Size">
                                                 <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                                         Path="WidthPercent"
-                                                         Converter="{uvc:NotNullConverter}" />
-                                            </DataTrigger.Binding>
-                                            <Setter Property="Width">
-                                                <Setter.Value>
-                                                    <MultiBinding Converter="{uvc:PercentOfToSizeConverter}">
-                                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                                                                 Path="WidthPercent" />
-                                                        <Binding ElementName="PositionCanvas"
-                                                                 Path="ActualWidth" />
-                                                    </MultiBinding>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </DataTrigger>
-                                    </Style.Triggers>
+                                                         Path="HeightPercent" />
+                                                <Binding ElementName="PositionCanvas"
+                                                         Path="ActualHeight" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="MaxHeight">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                                          ConverterParameter="Max">
+                                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                                         Path="HeightPercent" />
+                                                <Binding ElementName="PositionCanvas"
+                                                         Path="ActualHeight" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="MinWidth">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                                          ConverterParameter="Min">
+                                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                                         Path="WidthPercent" />
+                                                <Binding ElementName="PositionCanvas"
+                                                         Path="ActualWidth" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Width">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                                          ConverterParameter="Size">
+                                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                                         Path="WidthPercent" />
+                                                <Binding ElementName="PositionCanvas"
+                                                         Path="ActualWidth" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="MaxWidth">
+                                        <Setter.Value>
+                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                                          ConverterParameter="Max">
+                                                <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                                         Path="WidthPercent" />
+                                                <Binding ElementName="PositionCanvas"
+                                                         Path="ActualWidth" />
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
                                 </Style>
                             </ContentPresenter.Style>
                             <Canvas.Top>

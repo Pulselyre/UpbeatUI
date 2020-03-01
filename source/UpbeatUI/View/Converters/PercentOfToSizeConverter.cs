@@ -4,7 +4,6 @@
  */
 using System;
 using System.Globalization;
-using System.Windows.Data;
 
 namespace UpbeatUI.View.Converters
 {
@@ -12,17 +11,35 @@ namespace UpbeatUI.View.Converters
     {
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var sizes = (values[0] as string)?.Split(' ') ?? throw new ArgumentException("Binding [0] must be a string of percent size values");
+            var sizes = (values[0] as string)?.Split(' ');
+            if (sizes == null)
+                return (parameter as string)?.ToLower() switch
+                {
+                    "min" => 0,
+                    "size" => double.NaN,
+                    "max" => double.PositiveInfinity,
+                    _ => throw new ArgumentException("Invalid size string"),
+                };
             var containerSize = (values[1] as double?).GetValueOrDefault();
-            if (sizes.Length == 1)
-                return double.Parse(sizes[0]) * containerSize;
-            if (sizes.Length == 3)
-                return Math.Max(
-                    double.Parse(sizes[0]) * containerSize,
-                    Math.Min(
-                        double.Parse(sizes[1]) * containerSize,
-                        double.Parse(sizes[2]) * containerSize));
-            throw new ArgumentException("Binding [0] must be a string of 1 (absolute) or 3 percent size values (min, preferred, max)");
+            return (parameter as string)?.ToLower() switch
+            {
+                "min" => sizes.Length switch
+                {
+                    2 => sizes[0].ParsePercent() * containerSize,
+                    _ => 0,
+                },
+                "size" => sizes.Length switch
+                {
+                    1 => sizes[0].ParsePercent() * containerSize,
+                    _ => double.NaN,
+                },
+                "max" => sizes.Length switch
+                {
+                    2 => sizes[1].ParsePercent() * containerSize,
+                    _ => double.PositiveInfinity,
+                },
+                _ => throw new ArgumentException("Invalid size string"),
+            };
         }
     }
 }
