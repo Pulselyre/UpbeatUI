@@ -8,15 +8,17 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:uv="clr-namespace:UpbeatUI.View;assembly=UpbeatUI"
-                  HeightPercent="0.5"
-                  WidthPercent="0.6"
+                  HeightPercent="10% 90%"
+                  WidthPercent="0% 90%"
                   mc:Ignorable="d"
                   d:DesignHeight="450" d:DesignWidth="450">
     <Border BorderBrush="Black"
             BorderThickness="5"
             Background="White">
         <Viewbox Stretch="Uniform"
-                 StretchDirection="DownOnly">
+                 StretchDirection="DownOnly"
+                 MinWidth="400"
+                 MinHeight="10">
             <TextBlock Text="{Binding Message}"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"

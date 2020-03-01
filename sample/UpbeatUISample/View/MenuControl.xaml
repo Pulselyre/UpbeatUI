@@ -8,9 +8,9 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:uv="clr-namespace:UpbeatUI.View;assembly=UpbeatUI"
-                  HeightPercent="1"
+                  HeightPercent="100%"
                   KeepInBounds="True"
-                  XPositionPercent="0"
+                  XPositionPercent="0%"
                   mc:Ignorable="d"
                   d:DesignHeight="450" d:DesignWidth="450">
     <Border Background="White"
