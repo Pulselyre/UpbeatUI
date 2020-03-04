@@ -12,10 +12,10 @@ namespace UpbeatUI.View.Converters
     public abstract class MultiValueConverterMarkupExtension<T> : MarkupExtension, IMultiValueConverter
         where T : class, new()
     {
-        private static T _converter = null;
+        private static T _converter = new T();
 
         public override object ProvideValue(IServiceProvider serviceProvider)
-            => _converter ?? new T();
+            => _converter;
 
         public virtual object Convert(object[] values, Type targetType, object parameter, CultureInfo culture) =>
             throw new NotImplementedException();
