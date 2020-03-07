@@ -14,8 +14,14 @@ using System.Windows.Media.Effects;
 
 namespace UpbeatUI.View
 {
+    /// <summary>
+    /// Defines an area where child elements are stacked vertically on top of each other.
+    /// </summary>
     public class BlurredZPanel : Panel
     {
+        /// <summary>
+        /// Identifies the UpbeatUI.View.BlurredZPanel.BlurColor dependency property.
+        /// </summary>
         public static readonly DependencyProperty BlurColorProperty
             = DependencyProperty.Register(
                 "BlurColor",
@@ -27,6 +33,9 @@ namespace UpbeatUI.View
                         Opacity = 0.5,
                     },
                     FrameworkPropertyMetadataOptions.AffectsArrange));
+        /// <summary>
+        /// Identifies the UpbeatUI.View.BlurredZPanel.BlurRadius dependency property.
+        /// </summary>
         public static readonly DependencyProperty BlurRadiusProperty
             = DependencyProperty.Register(
                 "BlurRadius",
@@ -35,11 +44,17 @@ namespace UpbeatUI.View
                 new FrameworkPropertyMetadata(
                     10.0,
                     FrameworkPropertyMetadataOptions.AffectsArrange));
+        /// <summary>
+        /// Identifies the UpbeatUI.View.BlurredZPanel.ClosePopupCommand dependency property.
+        /// </summary>
         public static readonly DependencyProperty ClosePopupCommandProperty
             = DependencyProperty.Register(
                 "ClosePopupCommand",
                 typeof(ICommand),
                 typeof(BlurredZPanel));
+        /// <summary>
+        /// Identifies the UpbeatUI.View.BlurredZPanel.RequestPopupCloseEvent RoutedEvent.
+        /// </summary>
         public static readonly RoutedEvent RequestPopupCloseEvent
             = EventManager.RegisterRoutedEvent(
                 "RequestPopupClose",
@@ -51,22 +66,36 @@ namespace UpbeatUI.View
         private Button _button;
         private bool _blockingVisualChange;
 
+        /// <summary>
+        /// Occurs after the user requested that the top Control be removed from ItemsSource.
+        /// </summary>
         public event RoutedEventHandler PopupCloseRequested
         {
             add => AddHandler(RequestPopupCloseEvent, value);
             remove => RemoveHandler(RequestPopupCloseEvent, value);
         }
 
+        /// <summary>
+        /// Gets or sets a brush that the UpbeatStackControl will show underneath the top (active) Control.
+        /// </summary>
         public Brush BlurColor
         {
             get => (Brush)GetValue(BlurColorProperty);
             set => SetValue(BlurColorProperty, value);
         }
+
+        /// <summary>
+        /// Gets or sets the amount of blurring effect to show underneath the top (active) control.
+        /// </summary>
         public double BlurRadius
         {
             get => (double)GetValue(BlurRadiusProperty);
             set => SetValue(BlurRadiusProperty, value);
         }
+
+        /// <summary>
+        /// Gets or sets the ICommand to execute when the user requests that the top Control be removed from the ItemsSource.
+        /// </summary>
         public ICommand ClosePopupCommand
         {
             get => (ICommand)GetValue(ClosePopupCommandProperty);

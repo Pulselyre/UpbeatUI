@@ -7,16 +7,26 @@ using System.Windows.Input;
 
 namespace UpbeatUI.Context
 {
+    /// <summary>
+    /// Provides a convenient means of creating an ICommand using delegates provided by the parent class.
+    /// </summary>
     public sealed class ObservableCommand : ICommand
     {
         private readonly Action _execute;
-        private readonly Action<object> _executeWithParameter;
         private readonly Func<bool> _canExecute;
-        private readonly Predicate<object> _canExecuteWithParameter;
 
+        /// <summary>
+        /// Initializes a new instance of the ObservableCommand class that can always invoke the execute method.
+        /// </summary>
+        /// <param name="execute">The method to be invoked when the command is executed.</param>
         public ObservableCommand(Action execute)
             : this(execute, null) { }
 
+        /// <summary>
+        /// Initializes a new instance of the ObservableCommand class that can invoke the execute method when the canExecute method returns true;
+        /// </summary>
+        /// <param name="execute">The method to be invoked when the command is executed.</param>
+        /// <param name="canExecute">The method to test if the command can be executed.</param>
         public ObservableCommand(Action execute, Func<bool> canExecute)
         {
             if (execute == null)
@@ -25,38 +35,17 @@ namespace UpbeatUI.Context
             _canExecute = canExecute;
         }
 
-        public ObservableCommand(Action<object> execute)
-            : this(execute, null) { }
-
-        public ObservableCommand(Action<object> execute, Predicate<object> canExecute)
-        {
-            if (execute == null)
-                throw new ArgumentNullException("execute");
-            _executeWithParameter = execute;
-            _canExecuteWithParameter = canExecute;
-        }
-
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public bool CanExecute(object parameter)
-        {
-            if (_execute == null)
-                return _canExecuteWithParameter == null ? true : _canExecuteWithParameter(parameter);
-            else
-                return _canExecute == null ? true : _canExecute();
-        }
+        public bool CanExecute(object parameter) =>
+            _canExecute?.Invoke() ?? true;
 
-        public void Execute(object parameter)
-        {
-            if (_execute == null)
-                _executeWithParameter(parameter);
-            else
-                _execute();
-        }
+        public void Execute(object parameter) =>
+            _execute?.Invoke();
     }
 
     public sealed class ObservableCommand<T> : ICommand
@@ -64,9 +53,18 @@ namespace UpbeatUI.Context
         private readonly Action<T> _execute;
         private readonly Predicate<T> _canExecute;
 
+        /// <summary>
+        /// Initializes a new instance of the ObservableCommand class that can always invoke the execute method.
+        /// </summary>
+        /// <param name="execute">The method to be invoked when the command is executed.</param>
         public ObservableCommand(Action<T> execute)
             : this(execute, null) { }
 
+        /// <summary>
+        /// Initializes a new instance of the ObservableCommand class that can invoke the execute method when the canExecute method returns true;
+        /// </summary>
+        /// <param name="execute">The method to be invoked when the command is executed.</param>
+        /// <param name="canExecute">The method to test if the command can be executed.</param>
         public ObservableCommand(Action<T> execute, Predicate<T> canExecute)
         {
             if (execute == null)
@@ -88,6 +86,7 @@ namespace UpbeatUI.Context
             return _canExecute == null ? true : _canExecute((T)parameter);
         }
 
-        public void Execute(object parameter) => _execute((T)parameter);
+        public void Execute(object parameter) =>
+            _execute((T)parameter);
     }
 }

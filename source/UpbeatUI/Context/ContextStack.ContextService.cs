@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace UpbeatUI.Context
 {
-    public partial class ContextStack : ObservableObject, IDisposable, IUpdatableContext
+    public partial class ContextStack : ObservableObject, IDisposable
     {
         private class ContextService : IContextService
         {

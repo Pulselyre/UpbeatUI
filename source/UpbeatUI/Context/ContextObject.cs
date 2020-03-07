@@ -6,6 +6,9 @@ using System;
 
 namespace UpbeatUI.Context
 {
+    /// <summary>
+    /// Provides a base class for View Models that will placed on a ContextStack.
+    /// </summary>
     public abstract class ContextObject : ObservableObject, IContext
     {
         public virtual void Dispose() { }
