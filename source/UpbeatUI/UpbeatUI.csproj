@@ -8,6 +8,15 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/michaelpduda/UpbeatUI</PackageProjectUrl>
+    <Description>UpbeatUI is an open-source lightweight MVVM framework for quickly developing multi-level touch based Windows applications on top of the WPF framework.</Description>
+    <Authors>Michael P. Duda</Authors>
+    <RepositoryUrl>https://github.com/michaelpduda/UpbeatUI.git</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <Copyright>© Michael P. Duda 2020</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Version>1.0.1.0</Version>
   </PropertyGroup>
 
 </Project>
