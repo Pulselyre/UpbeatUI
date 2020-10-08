@@ -5,7 +5,7 @@
 using static System.Math;
 using System.Windows;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     public class InputPosition
     {

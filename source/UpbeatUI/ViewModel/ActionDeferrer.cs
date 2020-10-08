@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     /// <summary>
     /// Provides functionality to queue up actions and execute them upon disposal.

@@ -5,7 +5,7 @@
 using System;
 using System.Windows.Input;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     public class SelectableContext : ObservableObject, IUpdatableContext
     {

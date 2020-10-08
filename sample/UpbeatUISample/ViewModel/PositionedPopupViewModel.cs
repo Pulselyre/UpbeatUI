@@ -3,7 +3,7 @@
  * https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
  */
 using System.Windows;
-using UpbeatUI.Context;
+using UpbeatUI.ViewModel;
 
 namespace UpbeatUISample.ViewModel
 {

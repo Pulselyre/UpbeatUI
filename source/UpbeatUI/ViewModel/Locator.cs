@@ -4,7 +4,7 @@
  */
 using System;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     public class Locator<TSource, TProduct>
     {

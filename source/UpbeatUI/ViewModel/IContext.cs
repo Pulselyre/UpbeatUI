@@ -5,7 +5,7 @@
 using System;
 using System.ComponentModel;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     public delegate IContext ContextCreator(IContextService contextService);
 

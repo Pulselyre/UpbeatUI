@@ -4,7 +4,7 @@
  */
 using System;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     /// <summary>
     /// Provides a base class for View Models that will placed on a ContextStack.

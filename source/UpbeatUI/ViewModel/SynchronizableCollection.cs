@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     public class SynchronizableCollection<TSyncable> : ObservableCollection<TSyncable>
     {

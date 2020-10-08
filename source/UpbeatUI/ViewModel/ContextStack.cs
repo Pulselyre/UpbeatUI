@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     /// <summary>
     /// Represents a stack of IContexts (View Models) and provides methods and commands for controlling them.

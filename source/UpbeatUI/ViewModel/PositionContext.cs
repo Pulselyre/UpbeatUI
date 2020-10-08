@@ -5,7 +5,7 @@
 using System;
 using System.Windows;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     public class PositionContext : ObservableObject, IUpdatableContext
     {

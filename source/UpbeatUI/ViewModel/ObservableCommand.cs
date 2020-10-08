@@ -5,7 +5,7 @@
 using System;
 using System.Windows.Input;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     /// <summary>
     /// Provides a convenient means of creating an ICommand using delegates provided by the parent class.

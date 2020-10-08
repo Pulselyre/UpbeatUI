@@ -5,7 +5,7 @@
 using System;
 using System.Windows.Threading;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     public class DisposableDispatcherTimer : IDisposable
     {

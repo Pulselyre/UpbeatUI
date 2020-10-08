@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     /// <summary>
     /// Provides a base class with convenience methods for View Models.

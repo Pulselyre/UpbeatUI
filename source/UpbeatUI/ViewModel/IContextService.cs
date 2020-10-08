@@ -5,7 +5,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace UpbeatUI.Context
+namespace UpbeatUI.ViewModel
 {
     /// <summary>
     /// Provides methods for a View Model to interact with the ContextStack that it is a part of. IContextServices are created by the ContextStack unique to each child IContext, so do not share them.

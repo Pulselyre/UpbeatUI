@@ -4,7 +4,7 @@
  */
 using System;
 using System.Windows;
-using UpbeatUI.Context;
+using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.View
 {

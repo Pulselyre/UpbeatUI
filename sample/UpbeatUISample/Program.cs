@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
-using UpbeatUI.Context;
+using UpbeatUI.ViewModel;
 using UpbeatUI.View;
 using UpbeatUISample.View;
 using UpbeatUISample.ViewModel;
