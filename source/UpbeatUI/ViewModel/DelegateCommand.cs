@@ -10,24 +10,24 @@ namespace UpbeatUI.ViewModel
     /// <summary>
     /// Provides a convenient means of creating an ICommand using delegates provided by the parent class.
     /// </summary>
-    public sealed class ObservableCommand : ICommand
+    public sealed class DelegateCommand : ICommand
     {
         private readonly Action _execute;
         private readonly Func<bool> _canExecute;
 
         /// <summary>
-        /// Initializes a new instance of the ObservableCommand class that can always invoke the execute method.
+        /// Initializes a new instance of the DelegateCommand class that can always invoke the execute method.
         /// </summary>
         /// <param name="execute">The method to be invoked when the command is executed.</param>
-        public ObservableCommand(Action execute)
+        public DelegateCommand(Action execute)
             : this(execute, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the ObservableCommand class that can invoke the execute method when the canExecute method returns true;
+        /// Initializes a new instance of the DelegateCommand class that can invoke the execute method when the canExecute method returns true;
         /// </summary>
         /// <param name="execute">The method to be invoked when the command is executed.</param>
         /// <param name="canExecute">The method to test if the command can be executed.</param>
-        public ObservableCommand(Action execute, Func<bool> canExecute)
+        public DelegateCommand(Action execute, Func<bool> canExecute)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
@@ -54,14 +54,14 @@ namespace UpbeatUI.ViewModel
         private readonly Predicate<T> _canExecute;
 
         /// <summary>
-        /// Initializes a new instance of the ObservableCommand class that can always invoke the execute method.
+        /// Initializes a new instance of the DelegateCommand class that can always invoke the execute method.
         /// </summary>
         /// <param name="execute">The method to be invoked when the command is executed.</param>
         public ObservableCommand(Action<T> execute)
             : this(execute, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the ObservableCommand class that can invoke the execute method when the canExecute method returns true;
+        /// Initializes a new instance of the DelegateCommand class that can invoke the execute method when the canExecute method returns true;
         /// </summary>
         /// <param name="execute">The method to be invoked when the command is executed.</param>
         /// <param name="canExecute">The method to test if the command can be executed.</param>

@@ -6,16 +6,16 @@ using System.Collections.Generic;
 
 namespace UpbeatUI.ViewModel
 {
-    public class ObjectNameContext<T> : ObservableObject
+    public class ObjectNameViewModel<T> : BaseViewModel
     {
         private KeyValuePair<T, string> _keyValuePair;
 
-        public ObjectNameContext(T target, string name)
+        public ObjectNameViewModel(T target, string name)
         {
             Synchronize(new KeyValuePair<T, string>(target, name));
         }
 
-        public ObjectNameContext(KeyValuePair<T, string> kvp)
+        public ObjectNameViewModel(KeyValuePair<T, string> kvp)
         {
             Synchronize(kvp);
         }

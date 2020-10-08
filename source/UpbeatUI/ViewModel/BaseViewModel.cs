@@ -9,9 +9,9 @@ using System.ComponentModel;
 namespace UpbeatUI.ViewModel
 {
     /// <summary>
-    /// Provides a base class with convenience methods for View Models.
+    /// Provides a base class with convenience methods for ViewModels.
     /// </summary>
-    public abstract class ObservableObject : INotifyPropertyChanged
+    public abstract class BaseViewModel : INotifyPropertyChanged
     {
         private static readonly Dictionary<string, PropertyChangedEventArgs> _eventArgCache = new Dictionary<string, PropertyChangedEventArgs>();
 
@@ -25,7 +25,7 @@ namespace UpbeatUI.ViewModel
         public static PropertyChangedEventArgs GetPropertyChangedEventArgs(string propertyName)
         {
             if (string.IsNullOrEmpty(propertyName))
-                throw new ArgumentException("propertyName cannot be null or empty.");
+                throw new ArgumentException($"{nameof(propertyName)} cannot be null or empty.");
             PropertyChangedEventArgs e;
             lock (_eventArgCache)
             {

@@ -8,7 +8,7 @@ using System.Windows.Media;
 namespace UpbeatUI.View
 {
     /// <summary>
-    /// Defines a window with a pre-embedded UpbeatStackControl. The DataContext should be set to a ContextStack object.
+    /// Defines a window with a pre-embedded UpbeatStackControl. The DataContext should be set to an UpbeatStack object.
     /// </summary>
     public partial class UpbeatMainWindow : Window
     {

@@ -2,10 +2,12 @@
  * See LICENSE.md or visit:
  * https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
  */
+using System.ComponentModel;
+
 namespace UpbeatUI.ViewModel
 {
-    public interface IUpdatableContext
+    public interface IUpdatableViewModel : INotifyPropertyChanged
     {
-        void UpdateContextProperties();
+        void UpdateViewModelProperties();
     }
 }

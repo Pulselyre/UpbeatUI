@@ -22,11 +22,11 @@ namespace UpbeatUISample
             var app = new Application();
             app.Startup += async (sender, e) =>
             {
-                // The ContextStack is the central data structure for an UpbeatUI app. One must be created for the life of the application and should be disposed at the end.
-                using (var contextStack = new ContextStack())
+                // The UpbeatStack is the central data structure for an UpbeatUI app. One must be created for the life of the application and should be disposed at the end.
+                using (var upbeatStack = new UpbeatStack())
                 {
-                    // The ContextStack depends on mappings of contexts to controls to determine which View to show for which View Model.
-                    contextStack.SetContextControlMappings(
+                    // The UpbeatStack depends on mappings of IUpbeatViewModels to controls to determine which View to show for which UpbeatViewModels.
+                    upbeatStack.SetUpbeatViewModelControlMappings(
                         new Dictionary<Type, Type>()
                         {
                             [typeof(BottomViewModel)] = typeof(BottomControl),
@@ -36,30 +36,30 @@ namespace UpbeatUISample
                             [typeof(ScaledPopupViewModel)] = typeof(ScaledPopupControl),
                         });
 
-                    // The ContextStack can execute Update methods on View Models that implement IUpdatableContext. Subscribing the ContextStack's RenderingHandler to the CompositionTarget.Rendering event ensures updates are executed once per frame draw.
+                    // The UpbeatStack can execute the UpdateViewModelProperties method on IUpbeatViewModels that implement IUpdatableViewModel. Subscribing the UpbeatStack's RenderingHandler to the CompositionTarget.Rendering event ensures updates are executed once per frame draw.
                     // (Note, the update feature is not demonstrated in this sample application.)
-                    CompositionTarget.Rendering += contextStack.RenderingHandler;
+                    CompositionTarget.Rendering += upbeatStack.RenderingHandler;
 
-                    // The included UpdateMainWindow class already provides the necessary controls to display Views for View Models in a ContextStack set as the DataContext.
+                    // The included UpdateMainWindow class already provides the necessary controls to display Views for IUpbeatViewModels in a UpbeatStack set as the DataContext.
                     var mainWindow = new UpbeatMainWindow()
                     {
-                        DataContext = contextStack,
+                        DataContext = upbeatStack,
                         Title = "UpbeatUI Sample Application",
                         WindowStartupLocation = WindowStartupLocation.CenterScreen,
                         BlurColor = new SolidColorBrush(Brushes.OrangeRed.Color) { Opacity = 0.5 }, // The brush to overlay Views underneath the top View.
                     };
 
-                    // Override the default Window Closing event to ensure that the ContextStack and all of its children ViewModels are properly disposed.
-                    CancelEventHandler closingHandler = (sender, e) => { e.Cancel = true; contextStack.RemoveAllContexts(); };
+                    // Override the default Window Closing event to ensure that the UpbeatStack and all of its children IUpbeatViewModels are properly disposed.
+                    CancelEventHandler closingHandler = (sender, e) => { e.Cancel = true; upbeatStack.RemoveAllUpbeatViewModels(); };
                     mainWindow.Closing += closingHandler;
 
                     mainWindow.Show();
 
-                    // Add a base ViewModel to the ContextStack and wait for it to be closed.
-                    await contextStack.OpenContextAsync(service => new BottomViewModel(service, contextStack.RemoveAllContexts));
+                    // Add a base BottomViewModel to the UpbeatStack and wait for it to be closed.
+                    await upbeatStack.OpenUpbeatViewModelAsync(service => new BottomViewModel(service, upbeatStack.RemoveAllUpbeatViewModels));
 
                     mainWindow.Closing -= closingHandler;
-                    CompositionTarget.Rendering -= contextStack.RenderingHandler;
+                    CompositionTarget.Rendering -= upbeatStack.RenderingHandler;
                     mainWindow.Close();
                 }
             };

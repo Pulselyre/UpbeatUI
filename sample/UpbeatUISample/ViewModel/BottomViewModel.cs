@@ -9,23 +9,23 @@ using UpbeatUI.ViewModel;
 
 namespace UpbeatUISample.ViewModel
 {
-    public class BottomViewModel : ContextObject
+    public class BottomViewModel : UpbeatViewModel
     {
-        private IContextService _contextService;
+        private IUpbeatService _upbeatService;
 
-        public BottomViewModel(IContextService contextService, Action exitCallback)
+        public BottomViewModel(IUpbeatService upbeatService, Action exitCallback)
         {
-            _contextService = contextService;
-            OpenCenterPopupCommand = new ObservableCommand(
-                () => _contextService.OpenContext(
+            _upbeatService = upbeatService;
+            OpenCenterPopupCommand = new DelegateCommand(
+                () => _upbeatService.OpenUpbeatViewModel(
                     service => new PopupViewModel(service, "This popup appears in the center of the screen.")));
-            OpenMenuCommand = new ObservableCommand(
-                () => _contextService.OpenContext(service => new MenuViewModel(service, exitCallback)));
+            OpenMenuCommand = new DelegateCommand(
+                () => _upbeatService.OpenUpbeatViewModel(service => new MenuViewModel(service, exitCallback)));
             OpenPositionedPopupCommand = new ObservableCommand<Func<Point>>(
-                pointGetter => _contextService.OpenContext(
+                pointGetter => _upbeatService.OpenUpbeatViewModel(
                     service => new PositionedPopupViewModel(service, "This popup appears on top of\nthe button that opened it.", pointGetter())));
-            OpenSizedPopupCommand = new ObservableCommand(
-                () => _contextService.OpenContext(
+            OpenSizedPopupCommand = new DelegateCommand(
+                () => _upbeatService.OpenUpbeatViewModel(
                     service => new ScaledPopupViewModel(service, "This popup automatically scales to the window size.\nTry resizing the window to see.")));
         }
 

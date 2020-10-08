@@ -9,7 +9,7 @@ using System.Windows.Media;
 
 namespace UpbeatUI.View.Converters
 {
-    public class PercentPositionWithinContextStackConverter : ValueConverterMarkupExtension<PercentPositionWithinContextStackConverter>
+    public class PercentPositionWithinUpbeatStackConverter : ValueConverterMarkupExtension<PercentPositionWithinUpbeatStackConverter>
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

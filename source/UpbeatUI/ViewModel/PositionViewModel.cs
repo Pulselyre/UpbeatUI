@@ -7,19 +7,19 @@ using System.Windows;
 
 namespace UpbeatUI.ViewModel
 {
-    public class PositionContext : ObservableObject, IUpdatableContext
+    public class PositionViewModel : BaseViewModel, IUpdatableViewModel
     {
         private Point _point;
 
-        public PositionContext()
+        public PositionViewModel()
             : this(new Point(0.5, 0.5))
         { }
 
-        public PositionContext(double xPosition, double yPosition)
+        public PositionViewModel(double xPosition, double yPosition)
             : this(new Point(xPosition, yPosition))
         { }
 
-        public PositionContext(Point point) =>
+        public PositionViewModel(Point point) =>
             Point = point;
 
         public Point Point
@@ -53,7 +53,7 @@ namespace UpbeatUI.ViewModel
             RaisePropertyChanged(nameof(xPosition), nameof(YPosition), nameof(Point));
         }
 
-        public void UpdateContextProperties() =>
+        public void UpdateViewModelProperties() =>
             Change(Finder?.Invoke() ?? new Point());
     }
 }

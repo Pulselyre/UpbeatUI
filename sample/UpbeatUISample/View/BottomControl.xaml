@@ -22,7 +22,7 @@
         <Button Command="{Binding OpenPositionedPopupCommand}"
                 Margin="5"
                 Content="Open a popup on top of this"
-                CommandParameter="{Binding RelativeSource={RelativeSource Self}, Converter={uvc:PercentPositionWithinContextStackConverter}}" />
+                CommandParameter="{Binding RelativeSource={RelativeSource Self}, Converter={uvc:PercentPositionWithinUpbeatStackConverter}}" />
         <Button Command="{Binding OpenCenterPopupCommand}"
                 Margin="5"
                 Content="Open a popup in the center" />

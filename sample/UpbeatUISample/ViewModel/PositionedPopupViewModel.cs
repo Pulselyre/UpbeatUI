@@ -9,10 +9,10 @@ namespace UpbeatUISample.ViewModel
 {
     internal class PositionedPopupViewModel : PopupViewModel
     {
-        public PositionedPopupViewModel(IContextService contextService, string message, Point point)
-            : base(contextService, message) =>
-            PositionContext = new PositionContext(point);
+        public PositionedPopupViewModel(IUpbeatService upbeatService, string message, Point point)
+            : base(upbeatService, message) =>
+            PositionViewModel = new PositionViewModel(point);
 
-        public PositionContext PositionContext { get; }
+        public PositionViewModel PositionViewModel { get; }
     }
 }

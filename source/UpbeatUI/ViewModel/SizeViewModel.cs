@@ -7,17 +7,17 @@ using System.Windows;
 
 namespace UpbeatUI.ViewModel
 {
-    public class SizeContext : ObservableObject, IUpdatableContext
+    public class SizeViewModel : BaseViewModel, IUpdatableViewModel
     {
-        public SizeContext()
+        public SizeViewModel()
             : this(0, 0)
         { }
 
-        public SizeContext(double width, double height)
+        public SizeViewModel(double width, double height)
             : this(new Size(width, height))
         { }
 
-        public SizeContext(Size size)
+        public SizeViewModel(Size size)
         {
             Size = size;
         }
@@ -49,7 +49,7 @@ namespace UpbeatUI.ViewModel
             RaisePropertyChanged(nameof(width), nameof(height), nameof(Point));
         }
 
-        public void UpdateContextProperties() =>
+        public void UpdateViewModelProperties() =>
             Change(Finder?.Invoke() ?? new Size());
     }
 }

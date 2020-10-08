@@ -9,7 +9,7 @@ using System.Windows.Media;
 namespace UpbeatUI.View
 {
     /// <summary>
-    /// Defines a control that automatically show an appropriate Control (View) for IContexts (View Models) in a ContextStack. The DataContext should be set to a ContextStack object.
+    /// Defines a control that automatically show an appropriate Control (View) for IUpbeatViewModels in an UpbeatStack. The DataContext should be set to a UpbeatStack object.
     /// </summary>
     public partial class UpbeatStackControl : UserControl
     {

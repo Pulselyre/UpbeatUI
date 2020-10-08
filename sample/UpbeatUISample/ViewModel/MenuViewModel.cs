@@ -8,14 +8,14 @@ using UpbeatUI.ViewModel;
 
 namespace UpbeatUISample.ViewModel
 {
-    public class MenuViewModel : ContextObject
+    public class MenuViewModel : UpbeatViewModel
     {
-        private IContextService _contextService;
+        private IUpbeatService _upbeatService;
 
-        public MenuViewModel(IContextService contextService, Action exitCallback)
+        public MenuViewModel(IUpbeatService upbeatService, Action exitCallback)
         {
-            _contextService = contextService;
-            ExitCommand = new ObservableCommand(() => exitCallback());
+            _upbeatService = upbeatService;
+            ExitCommand = new DelegateCommand(() => exitCallback());
         }
 
         public ICommand ExitCommand { get; }

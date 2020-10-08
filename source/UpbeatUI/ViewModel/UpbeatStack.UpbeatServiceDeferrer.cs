@@ -6,11 +6,11 @@ using System;
 
 namespace UpbeatUI.ViewModel
 {
-    public partial class ContextStack : ObservableObject, IDisposable, IUpdatableContext
+    public partial class UpbeatStack : BaseViewModel, IDisposable, IUpdatableViewModel
     {
-        private class ContextServiceDeferrer : ActionDeferrer
+        private class UpbeatServiceDeferrer : ActionDeferrer
         {
-            public ContextServiceDeferrer(ContextService configurationService)
+            public UpbeatServiceDeferrer(UpbeatService configurationService)
                 : base(configurationService.Lock, configurationService.Unlock)
             { }
         }

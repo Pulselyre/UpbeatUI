@@ -6,13 +6,13 @@ using UpbeatUI.ViewModel;
 
 namespace UpbeatUISample.ViewModel
 {
-    internal class PopupViewModel : ContextObject
+    internal class PopupViewModel : UpbeatViewModel
     {
-        protected readonly IContextService _contextService;
+        protected readonly IUpbeatService _upbeatService;
 
-        public PopupViewModel(IContextService contextService, string message)
+        public PopupViewModel(IUpbeatService upbeatService, string message)
         {
-            _contextService = contextService;
+            _upbeatService = upbeatService;
             Message = message;
         }
 

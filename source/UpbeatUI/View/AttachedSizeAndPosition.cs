@@ -17,23 +17,23 @@ namespace UpbeatUI.View
                 typeof(AttachedSizeAndPosition),
                 new PropertyMetadata(null));
 
-        public static readonly DependencyProperty PositionContextProperty =
+        public static readonly DependencyProperty PositionViewModelroperty =
             DependencyProperty.RegisterAttached(
-                "PositionContext",
-                typeof(PositionContext),
+                "PositionViewModel",
+                typeof(PositionViewModel),
                 typeof(AttachedSizeAndPosition),
                 new PropertyMetadata(
                     null,
-                    PositionContextChangedHandler));
+                    PositionViewModelChangedHandler));
 
-        public static readonly DependencyProperty SizeContextProperty =
+        public static readonly DependencyProperty SizeViewModelProperty =
             DependencyProperty.RegisterAttached(
-                "SizeContext",
-                typeof(SizeContext),
+                "SizeViewModel",
+                typeof(SizeViewModel),
                 typeof(AttachedSizeAndPosition),
                 new PropertyMetadata(
                     null,
-                    SizeContextChangedHandler));
+                    SizeViewModelChangedHandler));
 
         public static FrameworkElement GetContainer(FrameworkElement frameworkElement) =>
             (FrameworkElement)frameworkElement.GetValue(ContainerProperty);
@@ -41,26 +41,26 @@ namespace UpbeatUI.View
         public static void SetContainer(FrameworkElement frameworkElement, FrameworkElement container) =>
             frameworkElement.SetValue(ContainerProperty, container);
 
-        public static PositionContext GetPositionContext(FrameworkElement frameworkElement) =>
-            (PositionContext)frameworkElement.GetValue(PositionContextProperty);
+        public static PositionViewModel GetPositionViewModel(FrameworkElement frameworkElement) =>
+            (PositionViewModel)frameworkElement.GetValue(PositionViewModelroperty);
 
-        public static void SetPositionContext(FrameworkElement frameworkElement, PositionContext positionContext) =>
-            frameworkElement.SetValue(PositionContextProperty, positionContext);
+        public static void SetPositionViewModel(FrameworkElement frameworkElement, PositionViewModel positionViewModel) =>
+            frameworkElement.SetValue(PositionViewModelroperty, positionViewModel);
 
-        public static SizeContext GetSizeContext(FrameworkElement frameworkElement) =>
-            (SizeContext)frameworkElement.GetValue(PositionContextProperty);
+        public static SizeViewModel GetSizeViewModel(FrameworkElement frameworkElement) =>
+            (SizeViewModel)frameworkElement.GetValue(PositionViewModelroperty);
 
-        public static void SetSizeContext(FrameworkElement frameworkElement, SizeContext positionContext) =>
-            frameworkElement.SetValue(PositionContextProperty, positionContext);
+        public static void SetSizeViewModel(FrameworkElement frameworkElement, SizeViewModel sizeViewModel) =>
+            frameworkElement.SetValue(PositionViewModelroperty, sizeViewModel);
 
-        private static void PositionContextChangedHandler(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void PositionViewModelChangedHandler(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var target = d as FrameworkElement;
             if (target == null)
                 return;
-            var positionContext = e.NewValue as PositionContext;
-            if (positionContext != null)
-                positionContext.Finder = new Func<Point>(
+            var positionViewModel = e.NewValue as PositionViewModel;
+            if (positionViewModel != null)
+                positionViewModel.Finder = new Func<Point>(
                     () =>
                     {
                         var point = target.TranslatePoint(new Point(), GetContainer(target));
@@ -70,14 +70,14 @@ namespace UpbeatUI.View
                     });
         }
 
-        private static void SizeContextChangedHandler(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void SizeViewModelChangedHandler(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var target = d as FrameworkElement;
             if (target == null)
                 return;
-            var sizeContext = e.NewValue as SizeContext;
-            if (sizeContext != null)
-                sizeContext.Finder = new Func<Size>(() => new Size(target.ActualWidth, target.ActualHeight));
+            var sizeViewModel = e.NewValue as SizeViewModel;
+            if (sizeViewModel != null)
+                sizeViewModel.Finder = new Func<Size>(() => new Size(target.ActualWidth, target.ActualHeight));
         }
     }
 }

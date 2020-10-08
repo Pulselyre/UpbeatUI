@@ -8,8 +8,8 @@ namespace UpbeatUISample.ViewModel
 {
     internal class ScaledPopupViewModel : PopupViewModel
     {
-        public ScaledPopupViewModel(IContextService service, string message)
-            : base(service, message)
+        public ScaledPopupViewModel(IUpbeatService upbeatService, string message)
+            : base(upbeatService, message)
         { }
     }
 }

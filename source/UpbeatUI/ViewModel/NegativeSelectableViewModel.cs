@@ -6,10 +6,10 @@ using System;
 
 namespace UpbeatUI.ViewModel
 {
-    public class NegativeSelectableContext : SelectableContext
+    public class NegativeSelectableViewModel : SelectableViewModel
     {
-        public NegativeSelectableContext(PositionContext positionContext, SizeContext sizeContext, Action select)
-            : base(positionContext, sizeContext, select)
+        public NegativeSelectableViewModel(PositionViewModel positionViewModel, SizeViewModel sizeViewModel, Action select)
+            : base(positionViewModel, sizeViewModel, select)
         { }
     }
 }
