@@ -16,10 +16,10 @@ namespace UpbeatUI.ViewModel
             private Action _closedCallback;
             private Predicate<IUpbeatViewModel> _isActiveUpbeatViewModel;
             private IUpbeatViewModel _upbeatViewModel;
-            private Action<UpbeatViewModelCreator, Action> _opener;
+            private Action<object, Action> _opener;
             private Action<Action> _deferrer;
 
-            internal UpbeatService(Action<UpbeatViewModelCreator, Action> opener, Action<IUpbeatViewModel> closer, Action closedCallback, Predicate<IUpbeatViewModel> isActiveUpbeatViewModel)
+            internal UpbeatService(Action<object, Action> opener, Action<IUpbeatViewModel> closer, Action closedCallback, Predicate<IUpbeatViewModel> isActiveUpbeatViewModel)
             {
                 _opener = opener;
                 _closer = closer;
@@ -40,22 +40,22 @@ namespace UpbeatUI.ViewModel
             public string GetClipboard()
                 => Clipboard.GetText();
 
-            public void OpenUpbeatViewModel(UpbeatViewModelCreator upbeatViewModelCreator)
-                => OpenUpbeatViewModel(upbeatViewModelCreator, null);
+            public void OpenUpbeatViewModel<TParameters>(TParameters parameters)
+                => OpenUpbeatViewModel(parameters, null);
 
-            public void OpenUpbeatViewModel(UpbeatViewModelCreator upbeatViewModelCreator, Action closedCallback)
+            public void OpenUpbeatViewModel<TParameters>(TParameters parameters, Action closedCallback)
             {
                 if (_deferrer == null)
-                    _opener(upbeatViewModelCreator, closedCallback);
+                    _opener(parameters, closedCallback);
                 else
-                    _deferrer(() => _opener(upbeatViewModelCreator, closedCallback));
+                    _deferrer(() => _opener(parameters, closedCallback));
             }
 
-            public async Task OpenUpbeatViewModelAsync(UpbeatViewModelCreator upbeatViewModelCreator)
+            public async Task OpenUpbeatViewModelAsync<TParameters>(TParameters parameters)
             {
                 var taskCompletionSource = new TaskCompletionSource<bool>();
                 OpenUpbeatViewModel(
-                    upbeatViewModelCreator,
+                    parameters,
                     () => taskCompletionSource.SetResult(true));
                 await taskCompletionSource.Task;
             }
@@ -66,7 +66,7 @@ namespace UpbeatUI.ViewModel
             internal void CloseCallback()
                 => _closedCallback?.Invoke();
 
-            internal IUpbeatViewModel CreateUpbeatViewModel(UpbeatViewModelCreator upbeatViewModelCreator)
+            internal IUpbeatViewModel CreateUpbeatViewModel(Func<IUpbeatService, IUpbeatViewModel> upbeatViewModelCreator)
             {
                 _upbeatViewModel = upbeatViewModelCreator(this);
                 return _upbeatViewModel;

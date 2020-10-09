@@ -17,5 +17,13 @@ namespace UpbeatUISample.ViewModel
         }
 
         public string Message { get; }
+
+        public class Parameters
+        {
+            public Parameters(string message) =>
+                Message = message;
+
+            public string Message { get; }
+        }
     }
 }

@@ -19,5 +19,12 @@ namespace UpbeatUISample.ViewModel
         }
 
         public ICommand ExitCommand { get; }
+
+        public class Parameters : BottomViewModel.Parameters
+        {
+            public Parameters(Action exitCallback)
+                : base(exitCallback)
+            { }
+        }
     }
 }

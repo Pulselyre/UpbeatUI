@@ -14,5 +14,14 @@ namespace UpbeatUISample.ViewModel
             PositionViewModel = new PositionViewModel(point);
 
         public PositionViewModel PositionViewModel { get; }
+
+        public new class Parameters : PopupViewModel.Parameters
+        {
+            public Parameters(string message, Point point)
+                : base(message) =>
+                Point = point;
+
+            public Point Point { get; }
+        }
     }
 }

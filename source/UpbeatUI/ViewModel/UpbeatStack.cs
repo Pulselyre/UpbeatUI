@@ -16,8 +16,11 @@ namespace UpbeatUI.ViewModel
     /// <summary>
     /// Represents a stack of IUpbeatViewModels and provides methods and commands for controlling them.
     /// </summary>
-    public partial class UpbeatStack : BaseViewModel, IDisposable
+    public partial class UpbeatStack : BaseViewModel, IOpensUpbeatViewModels, IDisposable
     {
+        private delegate IUpbeatViewModel UpbeatViewModelCreator(IUpbeatService upbeatService, object parameters);
+
+        private IDictionary<Type, UpbeatViewModelCreator> _upbeatViewModelCreators = new Dictionary<Type, UpbeatViewModelCreator>();
         private IDictionary<Type, Type> _upbeatViewModelControlMappings = new Dictionary<Type, Type>();
         private ObservableCollection<IUpbeatViewModel> _upbeatViewModels = new ObservableCollection<IUpbeatViewModel>();
         private IDictionary<IUpbeatViewModel, UpbeatService> _upbeatViewModelServices = new Dictionary<IUpbeatViewModel, UpbeatService>();
@@ -59,42 +62,27 @@ namespace UpbeatUI.ViewModel
                 upbeatViewModel.Dispose();
         }
 
-        /// <summary>
-        /// Adds a new IUpbeatViewModel to the UpbeatStack.
-        /// </summary>
-        /// <param name="upbeatViewModelCreator">A delegate that accepts an IUpbeatViewModelService as a parameter and returns a new IUpbeatViewModel.</param>
-        public void OpenUpbeatViewModel(UpbeatViewModelCreator upbeatViewModelCreator) =>
-            OpenUpbeatViewModel(upbeatViewModelCreator, null);
+        public void OpenUpbeatViewModel<TParameters>(TParameters parameters) =>
+            OpenUpbeatViewModel(parameters, null);
 
-        /// <summary>
-        /// Adds a new IUpbeatViewModel to the UpbeatStack and executes a callback after that IUpbeatViewModel closes.
-        /// </summary>
-        /// <param name="upbeatViewModelCreator">A delegate that accepts an IUpbeatViewModelService as a parameter and returns a new IUpbeatViewModel.</param>
-        /// <param name="closeCallback">A delegate for the UpbeatStack to execute after the IUpbeatViewModel closes.</param>
-        public void OpenUpbeatViewModel(UpbeatViewModelCreator upbeatViewModelCreator, Action closeCallback)
+        public void OpenUpbeatViewModel<TParameters>(TParameters parameters, Action closedCallback)
         {
             var upbeatViewModelService = new UpbeatService(
-                OpenUpbeatViewModel, CloseUpbeatViewModel, closeCallback,
+                OpenUpbeatViewModel, CloseUpbeatViewModel, closedCallback,
                 c => _upbeatViewModels.Last() == c);
             using (var d = new UpbeatServiceDeferrer(upbeatViewModelService))
             {
-                var upbeatViewModel = upbeatViewModelService.CreateUpbeatViewModel(upbeatViewModelCreator);
+                var upbeatViewModel = upbeatViewModelService.CreateUpbeatViewModel(
+                    service => _upbeatViewModelCreators[parameters.GetType()](service, parameters));
                 _upbeatViewModelServices[upbeatViewModel] = upbeatViewModelService;
                 _upbeatViewModels.Add(upbeatViewModel);
             }
         }
 
-        /// <summary>
-        /// Adds a new IUpbeatViewModel to the UpbeatStack and returns a Task that ends after the IUpbeatViewModel closes.
-        /// </summary>
-        /// <param name="upbeatViewModelCreator">A delegate that accepts an IUpbeatViewModelService as a parameter and returns a new IUpbeatViewModel.</param>
-        /// <returns>A Task that ends after the IUpbeatViewModel closes.</returns>
-        public async Task OpenUpbeatViewModelAsync(UpbeatViewModelCreator upbeatViewModelCreator)
+        public async Task OpenUpbeatViewModelAsync<TParameters>(TParameters parameters)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
-            OpenUpbeatViewModel(
-                upbeatViewModelCreator,
-                () => taskCompletionSource.SetResult(true));
+            OpenUpbeatViewModel(parameters, () => taskCompletionSource.SetResult(true));
             await taskCompletionSource.Task;
         }
 
@@ -134,29 +122,21 @@ namespace UpbeatUI.ViewModel
             UpdateViewModelProperties();
 
         /// <summary>
-        /// Defines a mapping between an IUpbeatViewModel Type and a Control (View) Type.
+        /// Defines a mapping between parameters, an IUpbeatViewModel Type and a Control (View) Type.
         /// </summary>
-        /// <param name="upbeatViewModelType">The Type of the IUpbeatViewModel.</param>
-        /// <param name="viewType">The Type of the Control (View).</param>
-        public void SetUpbeatViewModelControlMapping(Type upbeatViewModelType, Type viewType)
+        /// <typeparam name="TParameters">The type of the parameters used to create IUpbeatViewModels.</typeparam>
+        /// <typeparam name="TUpbeatViewModel">The type of the IUpbeatViewModel created from TParameters.</typeparam>
+        /// <typeparam name="TView">The Type of the Control (View).</typeparam>
+        /// <param name="upbeatViewModelCreator"></param>
+        public void MapUpbeatViewModel<TParameters, TUpbeatViewModel, TView>(
+            Func<IUpbeatService, TParameters, IUpbeatViewModel> upbeatViewModelCreator)
+            where TUpbeatViewModel : IUpbeatViewModel
+            where TView : UIElement
         {
-            if (upbeatViewModelType == null || viewType == null)
-                throw new ArgumentNullException();
-            if (!typeof(IUpbeatViewModel).IsAssignableFrom(upbeatViewModelType))
-                throw new ArgumentException($"{nameof(upbeatViewModelType)} must implement the {typeof(IUpbeatViewModel).Name} interface.");
-            if (!typeof(UIElement).IsAssignableFrom(viewType))
-                throw new ArgumentException($"{nameof(viewType)} must extend the {typeof(UIElement).Name} class.");
-            _upbeatViewModelControlMappings[upbeatViewModelType] = viewType;
-        }
-
-        /// <summary>
-        /// Defines multiple mapppings between IUpbeatViewModel Types and Control (View) Types.
-        /// </summary>
-        /// <param name="mappings">An IDictionary linking IUpbeatViewModel Types and Control (View) Types.</param>
-        public void SetUpbeatViewModelControlMappings(IDictionary<Type, Type> mappings)
-        {
-            foreach (var kvp in mappings)
-                SetUpbeatViewModelControlMapping(kvp.Key, kvp.Value);
+            if (upbeatViewModelCreator == null)
+                throw new ArgumentNullException(nameof(upbeatViewModelCreator));
+            _upbeatViewModelCreators[typeof(TParameters)] = (service, parameters) => upbeatViewModelCreator(service, (TParameters)parameters);
+            _upbeatViewModelControlMappings[typeof(TUpbeatViewModel)] = typeof(TView);
         }
 
         private bool CanRemoveTopUpbeatViewModel()

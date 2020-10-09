@@ -11,5 +11,12 @@ namespace UpbeatUISample.ViewModel
         public ScaledPopupViewModel(IUpbeatService upbeatService, string message)
             : base(upbeatService, message)
         { }
+
+        public new class Parameters : PopupViewModel.Parameters
+        {
+            public Parameters(string message)
+                : base(message)
+            { }
+        }
     }
 }

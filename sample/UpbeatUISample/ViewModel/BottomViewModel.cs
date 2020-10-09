@@ -18,20 +18,31 @@ namespace UpbeatUISample.ViewModel
             _upbeatService = upbeatService;
             OpenCenterPopupCommand = new DelegateCommand(
                 () => _upbeatService.OpenUpbeatViewModel(
-                    service => new PopupViewModel(service, "This popup appears in the center of the screen.")));
+                    new PopupViewModel.Parameters("This popup appears in the center of the screen.")));
             OpenMenuCommand = new DelegateCommand(
-                () => _upbeatService.OpenUpbeatViewModel(service => new MenuViewModel(service, exitCallback)));
+                () => _upbeatService.OpenUpbeatViewModel(
+                    new MenuViewModel.Parameters(exitCallback)));
             OpenPositionedPopupCommand = new ObservableCommand<Func<Point>>(
                 pointGetter => _upbeatService.OpenUpbeatViewModel(
-                    service => new PositionedPopupViewModel(service, "This popup appears on top of\nthe button that opened it.", pointGetter())));
+                    new PositionedPopupViewModel.Parameters(
+                        "This popup appears on top of\nthe button that opened it.",
+                        pointGetter())));
             OpenSizedPopupCommand = new DelegateCommand(
                 () => _upbeatService.OpenUpbeatViewModel(
-                    service => new ScaledPopupViewModel(service, "This popup automatically scales to the window size.\nTry resizing the window to see.")));
+                    new ScaledPopupViewModel.Parameters("This popup automatically scales to the window size.\nTry resizing the window to see.")));
         }
 
         public ICommand OpenCenterPopupCommand { get; }
         public ICommand OpenMenuCommand { get; }
         public ICommand OpenPositionedPopupCommand { get; }
         public ICommand OpenSizedPopupCommand { get; }
+
+        public class Parameters
+        {
+            public Parameters(Action exitCallback) =>
+                ExitCallback = exitCallback ?? throw new ArgumentNullException(nameof(exitCallback));
+
+            public Action ExitCallback { get; }
+        }
     }
 }

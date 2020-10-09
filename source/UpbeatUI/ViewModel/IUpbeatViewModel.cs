@@ -7,8 +7,6 @@ using System.ComponentModel;
 
 namespace UpbeatUI.ViewModel
 {
-    public delegate IUpbeatViewModel UpbeatViewModelCreator(IUpbeatService upbeatService);
-
     /// <summary>
     /// Defines functionality for a class that can be placed on an UpbeatStack.
     /// </summary>
