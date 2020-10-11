@@ -48,7 +48,7 @@ namespace UpbeatUI.ViewModel
             _execute?.Invoke();
     }
 
-    public sealed class ObservableCommand<T> : ICommand
+    public sealed class DelegateCommand<T> : ICommand
     {
         private readonly Action<T> _execute;
         private readonly Predicate<T> _canExecute;
@@ -57,7 +57,7 @@ namespace UpbeatUI.ViewModel
         /// Initializes a new instance of the DelegateCommand class that can always invoke the execute method.
         /// </summary>
         /// <param name="execute">The method to be invoked when the command is executed.</param>
-        public ObservableCommand(Action<T> execute)
+        public DelegateCommand(Action<T> execute)
             : this(execute, null) { }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace UpbeatUI.ViewModel
         /// </summary>
         /// <param name="execute">The method to be invoked when the command is executed.</param>
         /// <param name="canExecute">The method to test if the command can be executed.</param>
-        public ObservableCommand(Action<T> execute, Predicate<T> canExecute)
+        public DelegateCommand(Action<T> execute, Predicate<T> canExecute)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");

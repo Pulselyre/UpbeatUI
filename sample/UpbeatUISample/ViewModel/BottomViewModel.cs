@@ -22,7 +22,7 @@ namespace UpbeatUISample.ViewModel
             OpenMenuCommand = new DelegateCommand(
                 () => _upbeatService.OpenUpbeatViewModel(
                     new MenuViewModel.Parameters(exitCallback)));
-            OpenPositionedPopupCommand = new ObservableCommand<Func<Point>>(
+            OpenPositionedPopupCommand = new DelegateCommand<Func<Point>>(
                 pointGetter => _upbeatService.OpenUpbeatViewModel(
                     new PositionedPopupViewModel.Parameters(
                         "This popup appears on top of\nthe button that opened it.",
