@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace UpbeatUI.ViewModel
 {
@@ -54,5 +55,22 @@ namespace UpbeatUI.ViewModel
         /// <param name="propertyName">The name of the property</param>
         protected void RaisePropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, GetPropertyChangedEventArgs(propertyName));
+
+        /// <summary>
+        /// Sets a property's backing value and raises a PropertyChanged event, if necessary.
+        /// </summary>
+        /// <typeparam name="T">Type of the property and backing value.</typeparam>
+        /// <param name="backingValue">Reference to the backing value.</param>
+        /// <param name="newValue">The desired new value.</param>
+        /// <param name="propertyName">The name of the property (used in the PropertyChanged event). Optional, will be retrieved automatically using CallerMemberName.</param>
+        /// <returns>True if the newValue differed from the backingValue and a PropertyChanged needed to be raised; false otherwise.</returns>
+        protected bool SetProperty<T>(ref T backingValue, T newValue, [CallerMemberName] string propertyName = "")
+        {
+            if (EqualityComparer<T>.Default.Equals(backingValue, newValue))
+                return false;
+            backingValue = newValue;
+            RaisePropertyChanged(propertyName);
+            return true;
+        }
     }
 }
