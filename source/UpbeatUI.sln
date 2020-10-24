@@ -4,6 +4,8 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpbeatUI", "UpbeatUI\UpbeatUI.csproj", "{C54690F0-E616-49EC-A351-EECB2980B29E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpbeatUI.Extensions.Hosting", "UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj", "{8427772B-7563-400A-8011-8B5E49A4FFD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +16,10 @@ Global
 		{C54690F0-E616-49EC-A351-EECB2980B29E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C54690F0-E616-49EC-A351-EECB2980B29E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C54690F0-E616-49EC-A351-EECB2980B29E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8427772B-7563-400A-8011-8B5E49A4FFD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8427772B-7563-400A-8011-8B5E49A4FFD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8427772B-7563-400A-8011-8B5E49A4FFD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8427772B-7563-400A-8011-8B5E49A4FFD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
