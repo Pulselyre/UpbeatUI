@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace UpbeatUI.ViewModel
 {
     /// <summary>
-    /// Provides functionality to queue up actions and execute them upon disposal.
+    /// Provides functionality to queue up <see cref="Action"/>s and execute them upon disposal.
     /// </summary>
     public class ActionDeferrer : IDisposable
     {
@@ -16,10 +16,10 @@ namespace UpbeatUI.ViewModel
         private Action _unlocker;
 
         /// <summary>
-        /// Initializes a new instance of the ActionDeferrer class, passes a Defer method to the caller using the locker callback, and saves the unlocker callback to be executed on disposal.
+        /// Initializes a new instance of the <see cref="ActionDeferrer"/> class, passes a <see cref="Defer(Action)"/> method to the caller using the <<paramref name="locker"/> callback, and saves the <paramref name="unlocker"/> callback to be executed on disposal.
         /// </summary>
-        /// <param name="locker">A callback to receiver the ActionDeferrer's defer delegate.</param>
-        /// <param name="unlocker">A callback for the ActionDeferrer to execute when the queue has been emptied after disposal.</param>
+        /// <param name="locker">A callback to receiver the <see cref="ActionDeferrer"/>'s defer delegate.</param>
+        /// <param name="unlocker">A callback for the <see cref="ActionDeferrer"/> to execute when the queue has been emptied after disposal.</param>
         public ActionDeferrer(Action<Action<Action>> locker, Action unlocker)
         {
             if (locker == null)

@@ -9,7 +9,7 @@ using System.Windows.Input;
 namespace UpbeatUI.ViewModel
 {
     /// <summary>
-    /// Provides a convenient means of creating an ICommand using delegates provided by the parent class.
+    /// Provides a convenient means of creating an <see cref="ICommand"/> using delegates provided by the parent class.
     /// </summary>
     public sealed class DelegateCommand : ICommand
     {
@@ -18,14 +18,14 @@ namespace UpbeatUI.ViewModel
         private bool _isAsyncExecuting = false;
 
         /// <summary>
-        /// Initializes a new instance of the DelegateCommand class that can always invoke the execute delegate.
+        /// Initializes a new instance of the <see cref="DelegateCommand"/> class that can always invoke the <paramref name="execute"/> delegate.
         /// </summary>
-        /// <param name="execute">The method to be invoked when the command is executed.</param>
+        /// <param name="execute">The delegate to be invoked when the command is executed.</param>
         public DelegateCommand(Action execute)
             : this(execute, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the DelegateCommand class that can invoke the execute delegate when the canExecute delegate returns true;
+        /// Initializes a new instance of the <see cref="DelegateCommand"/> class that can invoke the <paramref name="execute"/> delegate when the <paramref name="canExecute"/> delegate returns true;
         /// </summary>
         /// <param name="execute">The delegate to be invoked when the command is executed.</param>
         /// <param name="canExecute">The delegate to test if the command can be executed.</param>
@@ -36,19 +36,19 @@ namespace UpbeatUI.ViewModel
         }
 
         /// <summary>
-        /// Initializes a new asynchronous instance of the DelegateCommand class that can always invoke the executeAsync delegate.
+        /// Initializes a new asynchronous instance of the <see cref="DelegateCommand"/> class that can always invoke the <paramref name="executeAsync"/> delegate.
         /// </summary>
-        /// <param name="executeAsync">The method to be invoked when the command is executed.</param>
-        /// <param name="errorCallback">The callback delegate that will be executed if the executeAsync delegate fails.</param>
+        /// <param name="executeAsync">The delegate to be invoked when the command is executed.</param>
+        /// <param name="errorCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails.</param>
         public DelegateCommand(Func<Task> executeAsync, Action<Exception> errorCallback = null)
             : this(executeAsync, null, errorCallback) { }
 
         /// <summary>
-        /// Initializes a new asynchronous instance of the DelegateCommand class that can invoke the executeAsync delegate when the canExecute delegate returns true;
+        /// Initializes a new asynchronous instance of the <see cref="DelegateCommand"/> class that can invoke the <paramref name="executeAsync"/> delegate when the <paramref name="canExecute"/> delegate returns true;
         /// </summary>
-        /// <param name="executeAsync">The executeAsync delegate to be invoked when the command is executed.</param>
+        /// <param name="executeAsync">The delegate to be invoked when the command is executed.</param>
         /// <param name="canExecute">The delegate to test if the command can be executed.</param>
-        /// <param name="errorCallback">The callback delegate that will be executed if the executeAsync delegate fails.</param>
+        /// <param name="errorCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails.</param>
         public DelegateCommand(Func<Task> executeAsync, Func<bool> canExecute, Action<Exception> errorCallback = null)
         {
             if (executeAsync == null)
@@ -87,6 +87,10 @@ namespace UpbeatUI.ViewModel
             _execute.Invoke();
     }
 
+    /// <summary>
+    /// Provides a convenient means of creating an <see cref="ICommand"/> with a parameter using delegates provided by the parent class.
+    /// </summary>
+    /// <typeparam name="T">The type of the command's parameter.</typeparam>
     public sealed class DelegateCommand<T> : ICommand
     {
         private readonly Action<T> _execute;
@@ -94,14 +98,14 @@ namespace UpbeatUI.ViewModel
         private bool _isAsyncExecuting = false;
 
         /// <summary>
-        /// Initializes a new instance of the DelegateCommand class that can always invoke the execute delegate.
+        /// Initializes a new instance of the <see cref="DelegateCommand"/> class that can always invoke the <paramref name="execute"/> delegate.
         /// </summary>
         /// <param name="execute">The delegate to be invoked when the command is executed.</param>
         public DelegateCommand(Action<T> execute)
             : this(execute, null) { }
 
         /// <summary>
-        /// Initializes a new instance of the DelegateCommand class that can invoke the execute delegate when the canExecute delegate returns true;
+        /// Initializes a new instance of the <see cref="DelegateCommand"/> class that can invoke the <paramref name="execute"/> delegate when the <paramref name="canExecute"/> delegate returns true;
         /// </summary>
         /// <param name="execute">The delegate to be invoked when the command is executed.</param>
         /// <param name="canExecute">The delegate to test if the command can be executed.</param>
@@ -112,19 +116,19 @@ namespace UpbeatUI.ViewModel
         }
 
         /// <summary>
-        /// Initializes a new asynchronous instance of the DelegateCommand class that can always invoke the executeAsync delegate.
+        /// Initializes a new asynchronous instance of the <see cref="DelegateCommand"/> class that can always invoke the <paramref name="executeAsync"/> delegate.
         /// </summary>
-        /// <param name="executeAsync">The method to be invoked when the command is executed.</param>
-        /// <param name="errorCallback">The callback delegate that will be executed if the executeAsync delegate fails.</param>
+        /// <param name="executeAsync">The delegate to be invoked when the command is executed.</param>
+        /// <param name="errorCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails.</param>
         public DelegateCommand(Func<T, Task> executeAsync, Action<Exception> errorCallback = null)
             : this(executeAsync, null, errorCallback) { }
 
         /// <summary>
-        /// Initializes a new asynchronous instance of the DelegateCommand class that can invoke the executeAsync delegate when the canExecute delegate returns true;
+        /// Initializes a new asynchronous instance of the <see cref="DelegateCommand"/> class that can invoke the <paramref name="executeAsync"/> delegate when the <paramref name="canExecute"/> delegate returns true;
         /// </summary>
-        /// <param name="executeAsync">The executeAsync delegate to be invoked when the command is executed.</param>
+        /// <param name="executeAsync">The delegate to be invoked when the command is executed.</param>
         /// <param name="canExecute">The delegate to test if the command can be executed.</param>
-        /// <param name="errorCallback">The callback delegate that will be executed if the executeAsync delegate fails.</param>
+        /// <param name="errorCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails.</param>
         public DelegateCommand(Func<T, Task> executeAsync, Predicate<T> canExecute, Action<Exception> errorCallback = null)
         {
             if (executeAsync == null)

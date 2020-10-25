@@ -19,10 +19,10 @@ namespace UpbeatUI.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Returns a PropertyChangedEventArgs containing propertyName.
+        /// Returns a <see cref="PropertyChangedEventArgs"/> containing <paramref name="propertyName"/>.
         /// </summary>
         /// <param name="propertyName">The name of the property</param>
-        /// <returns>A PropertyChangedEventArgs containing propertyName</returns>
+        /// <returns>A <see cref="PropertyChangedEventArgs"/> containing <paramref name="propertyName"/></returns>
         public static PropertyChangedEventArgs GetPropertyChangedEventArgs(string propertyName)
         {
             if (string.IsNullOrEmpty(propertyName))
@@ -40,7 +40,7 @@ namespace UpbeatUI.ViewModel
         }
 
         /// <summary>
-        /// Raises PropertyChanged events for each property name in propertyNames.
+        /// Raises <see cref="PropertyChanged"/> events for each property name in <paramref name="propertyNames"/>.
         /// </summary>
         /// <param name="propertyNames">The names of the properties</param>
         protected void RaisePropertyChanged(params string[] propertyNames)
@@ -50,19 +50,19 @@ namespace UpbeatUI.ViewModel
         }
 
         /// <summary>
-        /// Raises a PropertyChanged event for propertyName.
+        /// Raises a <see cref="PropertyChanged"/> event for <paramref name="propertyName"/>.
         /// </summary>
         /// <param name="propertyName">The name of the property</param>
         protected void RaisePropertyChanged(string propertyName) =>
             PropertyChanged?.Invoke(this, GetPropertyChangedEventArgs(propertyName));
 
         /// <summary>
-        /// Sets a property's backing value and raises a PropertyChanged event, if necessary.
+        /// Sets a property's backing value and raises a <see cref="PropertyChanged"/> event, if necessary.
         /// </summary>
         /// <typeparam name="T">Type of the property and backing value.</typeparam>
         /// <param name="backingValue">Reference to the backing value.</param>
         /// <param name="newValue">The desired new value.</param>
-        /// <param name="propertyName">The name of the property (used in the PropertyChanged event). Optional, will be retrieved automatically using CallerMemberName.</param>
+        /// <param name="propertyName">The name of the property (used in the <see cref="PropertyChanged"/> event). Optional, will be retrieved automatically using <see cref="CallerMemberNameAttribute"/>.</param>
         /// <returns>True if the newValue differed from the backingValue and a PropertyChanged needed to be raised; false otherwise.</returns>
         protected bool SetProperty<T>(ref T backingValue, T newValue, [CallerMemberName] string propertyName = "")
         {
