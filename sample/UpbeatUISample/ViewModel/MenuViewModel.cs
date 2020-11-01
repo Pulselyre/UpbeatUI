@@ -3,26 +3,22 @@
  * https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
  */
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using UpbeatUI.ViewModel;
 
 namespace UpbeatUISample.ViewModel
 {
-    public class MenuViewModel : UpbeatViewModel
+    public class MenuViewModel
     {
-        private IUpbeatService _upbeatService;
-
-        public MenuViewModel(IUpbeatService upbeatService, Action exitCallback)
-        {
-            _upbeatService = upbeatService;
-            ExitCommand = new DelegateCommand(() => exitCallback());
-        }
+        public MenuViewModel(IUpbeatService upbeatService, Parameters parameters) =>
+            ExitCommand = new DelegateCommand(parameters.ExitCallback);
 
         public ICommand ExitCommand { get; }
 
         public class Parameters : BottomViewModel.Parameters
         {
-            public Parameters(Action exitCallback)
+            public Parameters(Func<Task> exitCallback)
                 : base(exitCallback)
             { }
         }

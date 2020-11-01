@@ -6,15 +6,10 @@ using UpbeatUI.ViewModel;
 
 namespace UpbeatUISample.ViewModel
 {
-    internal class PopupViewModel : UpbeatViewModel
+    internal class PopupViewModel
     {
-        protected readonly IUpbeatService _upbeatService;
-
-        public PopupViewModel(IUpbeatService upbeatService, string message)
-        {
-            _upbeatService = upbeatService;
-            Message = message;
-        }
+        public PopupViewModel(IUpbeatService upbeatService, Parameters parameters) =>
+            Message = parameters.Message;
 
         public string Message { get; }
 

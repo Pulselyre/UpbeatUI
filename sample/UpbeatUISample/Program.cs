@@ -25,20 +25,16 @@ namespace UpbeatUISample
                 using (var upbeatStack = new UpbeatStack())
                 {
                     // The UpbeatStack depends on mappings of parameter types to IUpbeatViewModels and controls to determine which IUpbeatViewMOdel to create and which View to show.
-                    upbeatStack.MapUpbeatViewModel<BottomViewModel.Parameters, BottomViewModel, BottomControl>(
-                        (service, parameters) => new BottomViewModel(service, parameters.ExitCallback));
-                    upbeatStack.MapUpbeatViewModel<MenuViewModel.Parameters, MenuViewModel, MenuControl>(
-                        (service, parameters) => new MenuViewModel(service, parameters.ExitCallback));
-                    upbeatStack.MapUpbeatViewModel<PopupViewModel.Parameters, PopupViewModel, PopupControl>(
-                        (service, parameters) => new PopupViewModel(service, parameters.Message));
-                    upbeatStack.MapUpbeatViewModel<PositionedPopupViewModel.Parameters, PositionedPopupViewModel, PositionedPopupControl>(
-                        (service, parameters) => new PositionedPopupViewModel(service, parameters.Message, parameters.Point));
-                    upbeatStack.MapUpbeatViewModel<ScaledPopupViewModel.Parameters, ScaledPopupViewModel, ScaledPopupControl>(
-                        (service, parameters) => new ScaledPopupViewModel(service, parameters.Message));
-
-                    // The UpbeatStack can execute the UpdateViewModelProperties method on IUpbeatViewModels that implement IUpdatableViewModel. Subscribing the UpbeatStack's RenderingHandler to the CompositionTarget.Rendering event ensures updates are executed once per frame draw.
-                    // (Note, the update feature is not demonstrated in this sample application.)
-                    CompositionTarget.Rendering += upbeatStack.RenderingHandler;
+                    upbeatStack.MapViewModel<BottomViewModel.Parameters, BottomViewModel, BottomControl>(
+                        (service, parameters) => new BottomViewModel(service, parameters));
+                    upbeatStack.MapViewModel<MenuViewModel.Parameters, MenuViewModel, MenuControl>(
+                        (service, parameters) => new MenuViewModel(service, parameters));
+                    upbeatStack.MapViewModel<PopupViewModel.Parameters, PopupViewModel, PopupControl>(
+                        (service, parameters) => new PopupViewModel(service, parameters));
+                    upbeatStack.MapViewModel<PositionedPopupViewModel.Parameters, PositionedPopupViewModel, PositionedPopupControl>(
+                        (service, parameters) => new PositionedPopupViewModel(service, parameters));
+                    upbeatStack.MapViewModel<ScaledPopupViewModel.Parameters, ScaledPopupViewModel, ScaledPopupControl>(
+                        (service, parameters) => new ScaledPopupViewModel(service, parameters));
 
                     // The included UpdateMainWindow class already provides the necessary controls to display Views for IUpbeatViewModels in a UpbeatStack set as the DataContext.
                     var mainWindow = new UpbeatMainWindow()
@@ -50,16 +46,28 @@ namespace UpbeatUISample
                     };
 
                     // Override the default Window Closing event to ensure that the UpbeatStack and all of its children IUpbeatViewModels are properly disposed.
-                    CancelEventHandler closingHandler = (sender, e) => { e.Cancel = true; upbeatStack.RemoveAllUpbeatViewModels(); };
+                    CancelEventHandler closingHandler =
+                        async (sender, e) =>
+                        {
+                            e.Cancel = true;
+                            try
+                            {
+                                // Give currently open ViewModels a chance to cancel. If successful, the base/bottom ViewModel (opened below) will be closed and the awaited task will end.
+                                await upbeatStack.TryCloseAllViewModelsAsync();
+                                throw new Exception();
+                            }
+                            catch (Exception)
+                            {
+                                // Something went wrong in attempting to close
+                                upbeatStack.Dispose();
+                            }
+                        };
                     mainWindow.Closing += closingHandler;
-
                     mainWindow.Show();
-
                     // Add a base BottomViewModel to the UpbeatStack and wait for it to be closed.
-                    await upbeatStack.OpenUpbeatViewModelAsync(new BottomViewModel.Parameters(upbeatStack.RemoveAllUpbeatViewModels));
+                    await upbeatStack.OpenViewModelAsync(new BottomViewModel.Parameters(upbeatStack.TryCloseAllViewModelsAsync));
 
                     mainWindow.Closing -= closingHandler;
-                    CompositionTarget.Rendering -= upbeatStack.RenderingHandler;
                     mainWindow.Close();
                 }
             };

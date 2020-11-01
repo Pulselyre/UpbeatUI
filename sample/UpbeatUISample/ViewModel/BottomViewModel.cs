@@ -3,32 +3,30 @@
  * https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
  */
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using UpbeatUI.ViewModel;
 
 namespace UpbeatUISample.ViewModel
 {
-    public class BottomViewModel : UpbeatViewModel
+    public class BottomViewModel
     {
-        private IUpbeatService _upbeatService;
-
-        public BottomViewModel(IUpbeatService upbeatService, Action exitCallback)
+        public BottomViewModel(IUpbeatService upbeatService, Parameters parameters)
         {
-            _upbeatService = upbeatService;
             OpenCenterPopupCommand = new DelegateCommand(
-                () => _upbeatService.OpenUpbeatViewModel(
+                () => upbeatService.OpenViewModel(
                     new PopupViewModel.Parameters("This popup appears in the center of the screen.")));
             OpenMenuCommand = new DelegateCommand(
-                () => _upbeatService.OpenUpbeatViewModel(
-                    new MenuViewModel.Parameters(exitCallback)));
+                () => upbeatService.OpenViewModel(
+                    new MenuViewModel.Parameters(parameters.ExitCallback)));
             OpenPositionedPopupCommand = new DelegateCommand<Func<Point>>(
-                pointGetter => _upbeatService.OpenUpbeatViewModel(
+                pointGetter => upbeatService.OpenViewModel(
                     new PositionedPopupViewModel.Parameters(
                         "This popup appears on top of\nthe button that opened it.",
                         pointGetter())));
             OpenSizedPopupCommand = new DelegateCommand(
-                () => _upbeatService.OpenUpbeatViewModel(
+                () => upbeatService.OpenViewModel(
                     new ScaledPopupViewModel.Parameters("This popup automatically scales to the window size.\nTry resizing the window to see.")));
         }
 
@@ -39,10 +37,10 @@ namespace UpbeatUISample.ViewModel
 
         public class Parameters
         {
-            public Parameters(Action exitCallback) =>
+            public Parameters(Func<Task> exitCallback) =>
                 ExitCallback = exitCallback ?? throw new ArgumentNullException(nameof(exitCallback));
 
-            public Action ExitCallback { get; }
+            public Func<Task> ExitCallback { get; }
         }
     }
 }

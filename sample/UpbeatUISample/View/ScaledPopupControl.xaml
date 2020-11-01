@@ -8,7 +8,7 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:uv="clr-namespace:UpbeatUI.View;assembly=UpbeatUI"
-                  HeightPercent="10% 90%"
+                  HeightPercent="80% 90%"
                   WidthPercent="0% 90%"
                   mc:Ignorable="d"
                   d:DesignHeight="450" d:DesignWidth="450">
