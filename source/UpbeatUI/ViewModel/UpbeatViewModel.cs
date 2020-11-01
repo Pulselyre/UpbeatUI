@@ -7,12 +7,14 @@ using System;
 namespace UpbeatUI.ViewModel
 {
     /// <summary>
-    /// Provides a base class for IUpbeatViewModels that will placed on a UpbeatStack.
+    /// Provides a base class for <see cref="IUpbeatViewModel"/>s that will placed on a <see cref="UpbeatStack"/>.
     /// </summary>
+    [Obsolete("The SignalToClose method is being replaced with the IUpbeatService.SetCloseCallback method. The UpbeatStack will no longer require the IUpbeatViewModel interface and will automatically handle IDisposables. This base UpbeatViewModel class will be removed in UpbeatUI 3.0.")]
     public abstract class UpbeatViewModel : BaseViewModel, IUpbeatViewModel
     {
         public virtual void Dispose() { }
 
+        [Obsolete("The SignalToClose method is being replaced with the IUpbeatService.SetCloseCallback method. This base UpbeatViewModel class will be removed in UpbeatUI 3.0.")]
         public virtual void SignalToClose(Action closeCallback)
             => closeCallback();
     }

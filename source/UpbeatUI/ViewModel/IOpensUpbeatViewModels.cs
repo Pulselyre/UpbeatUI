@@ -7,29 +7,11 @@ using System.Threading.Tasks;
 
 namespace UpbeatUI.ViewModel
 {
-    public interface IOpensUpbeatViewModels
-    {
-        /// <summary>
-        /// Adds a new IUpbeatViewModel to the UpbeatStack based on the parameters provided.
-        /// </summary>
-        /// <typeparam name="TParameters">The type of the parameters used to create the IUpbeatViewModel.</typeparam>
-        /// <param name="parameters">The parameters used to create the IUpbeatViewModel.</param>
-        void OpenUpbeatViewModel<TParameters>(TParameters parameters);
+    /// <summary>
+    /// Provides mechanisms for adding ViewModels to an <see cref="UpbeatStack"/>.
+    /// </summary>
+    [Obsolete("This interface has been renamed to IOpensViewModels and will be removed in UpbeatUI V3.0.")]
+    public interface IOpensUpbeatViewModels : IOpensViewModels
 
-        /// <summary>
-        /// Adds a new IUpbeatViewModel to the UpbeatStack based on the parameters provided and executes a callback after that IUpbeatViewModel closes.
-        /// </summary>
-        /// <typeparam name="TParameters">The type of the parameters used to create the IUpbeatViewModel.</typeparam>
-        /// <param name="parameters">The parameters used to create the IUpbeatViewModel.</param>
-        /// <param name="closeCallback">A delegate for the UpbeatStack to execute after the IUpbeatViewModel closes.</param>
-        void OpenUpbeatViewModel<TParameters>(TParameters parameters, Action closedCallback);
-
-        /// <summary>
-        /// Adds a new IUpbeatViewModel to the UpbeatStack based on the parameters provided and returns a Task that completes after the IUpbeatViewModel closes.
-        /// </summary>
-        /// <typeparam name="TParameters">The type of the parameters used to create the IUpbeatViewModel.</typeparam>
-        /// <param name="parameters">The parameters used to create the IUpbeatViewModel.</param>
-        /// <returns>A Task that represents the created IUpbeatViewModel being open</returns>
-        Task OpenUpbeatViewModelAsync<TParameters>(TParameters parameters);
-    }
+    { }
 }

@@ -10,156 +10,227 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace UpbeatUI.ViewModel
 {
     /// <summary>
-    /// Represents a stack of IUpbeatViewModels and provides methods and commands for controlling them.
+    /// Represents a stack of ViewModels and provides methods and commands for controlling them.
     /// </summary>
-    public partial class UpbeatStack : BaseViewModel, IOpensUpbeatViewModels, IDisposable
+    public partial class UpbeatStack : BaseViewModel, IOpensViewModels, IOpensUpbeatViewModels, IDisposable
     {
-        private delegate IUpbeatViewModel UpbeatViewModelCreator(IUpbeatService upbeatService, object parameters);
+        private delegate object UpbeatViewModelCreator(IUpbeatService upbeatService, object parameters);
 
-        private IDictionary<Type, UpbeatViewModelCreator> _upbeatViewModelCreators = new Dictionary<Type, UpbeatViewModelCreator>();
-        private IDictionary<Type, Type> _upbeatViewModelControlMappings = new Dictionary<Type, Type>();
-        private ObservableCollection<IUpbeatViewModel> _upbeatViewModels = new ObservableCollection<IUpbeatViewModel>();
-        private IDictionary<IUpbeatViewModel, UpbeatService> _upbeatViewModelServices = new Dictionary<IUpbeatViewModel, UpbeatService>();
+        private readonly ObservableCollection<object> _openViewModels = new ObservableCollection<object>();
+        private readonly IDictionary<object, UpbeatService> _openViewModelServices = new Dictionary<object, UpbeatService>();
+        private readonly bool _updateOnRender;
+        private readonly IDictionary<Type, UpbeatViewModelCreator> _viewModelCreators = new Dictionary<Type, UpbeatViewModelCreator>();
+        private readonly IDictionary<Type, Type> _viewModelControlMappings = new Dictionary<Type, Type>();
 
         /// <summary>
-        /// Initializes an empty UpbeatStack.
+        /// Initializes an empty <see cref="UpbeatStack"/>.
         /// </summary>
-        public UpbeatStack()
+        public UpbeatStack(bool updateOnRender = true)
         {
-            UpbeatViewModelControlMappings = new ReadOnlyDictionary<Type, Type>(_upbeatViewModelControlMappings);
-            UpbeatViewModels = new ReadOnlyObservableCollection<IUpbeatViewModel>(_upbeatViewModels);
-            RemoveTopUpbeatViewModelCommand = new DelegateCommand(RemoveTopUpbeatViewModel, CanRemoveTopUpbeatViewModel);
+            _updateOnRender = updateOnRender;
+            ViewModelControlMappings = new ReadOnlyDictionary<Type, Type>(_viewModelControlMappings);
+            ViewModels = new ReadOnlyObservableCollection<object>(_openViewModels);
+            RemoveTopViewModelCommand = new DelegateCommand(RemoveTopViewModelAsync, CanRemoveTopViewModel);
+            if (_updateOnRender)
+                CompositionTarget.Rendering += UpdateViewModelProperties;
         }
 
         /// <summary>
-        /// Gets the UpbeatStack's currently defined mappings between IUpbeatViewModels and Controls (Views).
+        /// Gets the <see cref="UpbeatStack"/>'s currently defined mappings between ViewModels and <see cref="UIElement"/> (Views).
         /// </summary>
-        public IReadOnlyDictionary<Type, Type> UpbeatViewModelControlMappings { get; }
+        [Obsolete("Renamed to ViewModelControlMappings. This property will be removed in UpbeatUI 3.0.")]
+        public IReadOnlyDictionary<Type, Type> UpbeatViewModelControlMappings => ViewModelControlMappings;
         /// <summary>
-        /// Gets the UpbeatStack's current IUpbeatViewModels.
+        /// Gets the <see cref="UpbeatStack"/>'s currently defined mappings between ViewModels and <see cref="UIElement"/> (Views).
         /// </summary>
-        public INotifyCollectionChanged UpbeatViewModels { get; }
+        public IReadOnlyDictionary<Type, Type> ViewModelControlMappings { get; }
         /// <summary>
-        /// Gets the count of the UpbeatStack's current IUpbeatViewModels.
+        /// Gets the <see cref="UpbeatStack"/>'s current ViewModels.
         /// </summary>
-        public int Count { get { return _upbeatViewModels.Count; } }
+        [Obsolete("Renamed to ViewModels. This property will be removed in UpbeatUI 3.0.")]
+        public INotifyCollectionChanged UpbeatViewModels => ViewModels;
         /// <summary>
-        /// Gets a command to remove the top (active) IUpbeatViewModel.
+        /// Gets the <see cref="UpbeatStack"/>'s current ViewModels.
         /// </summary>
-        public ICommand RemoveTopUpbeatViewModelCommand { get; }
+        public INotifyCollectionChanged ViewModels { get; }
         /// <summary>
-        /// Gets or sets an Action callback that the UpbeatStack will execute when it is empty of IUpbeatViewModels.
+        /// Gets the count of the <see cref="UpbeatStack"/>'s current ViewModels.
         /// </summary>
-        public Action UpbeatViewModelsEmptyCallback { get; set; }
+        public int Count { get { return _openViewModels.Count; } }
+        /// <summary>
+        /// Gets a command to remove the top (active) ViewModel.
+        /// </summary>
+        [Obsolete("Renamed to RemoveTopViewModelCommand. This property will be removed in UpbeatUI 3.0.")]
+        public ICommand RemoveTopUpbeatViewModelCommand => RemoveTopViewModelCommand;
+        /// <summary>
+        /// Gets a command to remove the top (active) ViewModel.
+        /// </summary>
+        public ICommand RemoveTopViewModelCommand { get; }
+        /// <summary>
+        /// Gets or sets an <see cref="Action"/> callback that the <see cref="UpbeatStack"/> will execute when it is empty of ViewModels.
+        /// </summary>
+        [Obsolete("Renamed to ViewModelsEmptyCallback. This property will be removed in UpbeatUI 3.0.")]
+        public Action UpbeatViewModelsEmptyCallback
+        {
+            get => ViewModelsEmptyCallback;
+            set => ViewModelsEmptyCallback = value;
+        }
+        /// <summary>
+        /// Gets or sets an <see cref="Action"/> callback that the <see cref="UpbeatStack"/> will execute when it is empty of ViewModels.
+        /// </summary>
+        public Action ViewModelsEmptyCallback { get; set; }
 
         public void Dispose()
         {
-            foreach (var upbeatViewModel in _upbeatViewModels.Reverse())
+            if (_updateOnRender)
+                CompositionTarget.Rendering -= UpdateViewModelProperties;
+            foreach (var upbeatViewModel in _openViewModels.OfType<IDisposable>().Reverse())
                 upbeatViewModel.Dispose();
         }
 
-        public void OpenUpbeatViewModel<TParameters>(TParameters parameters) =>
-            OpenUpbeatViewModel(parameters, null);
+        /// <summary>
+        /// Defines a mapping between the <typeparamref name="TParameters"/> type, the <typeparamref name="TViewModel"/> Type and the <typeparamref name="TView"/> Type.
+        /// </summary>
+        /// <typeparam name="TParameters">The type of the parameters used to create <typeparamref name="TViewModel"/>.</typeparam>
+        /// <typeparam name="TViewModel">The type of the ViewModel created from a <typeparamref name="TParameters"/>.</typeparam>
+        /// <typeparam name="TView">The Type of the <see cref="UIElement"/>.</typeparam>
+        /// <param name="viewModelCreator">The delegate that will executed to create the ViewModel from an <see cref="IUpbeatService"/> and <typeparamref name="TParameters"/>.</param>
+        [Obsolete("Renamed to MapViewModel. This method will be removed in UpbeatUI 3.0.")]
+        public void MapUpbeatViewModel<TParameters, TViewModel, TView>(
+            Func<IUpbeatService, TParameters, TViewModel> viewModelCreator)
+            where TView : UIElement =>
+            MapViewModel<TParameters, TViewModel, TView>(viewModelCreator);
 
-        public void OpenUpbeatViewModel<TParameters>(TParameters parameters, Action closedCallback)
+        /// <summary>
+        /// Defines a mapping between the <typeparamref name="TParameters"/> type, the <typeparamref name="TViewModel"/> Type and the <typeparamref name="TView"/> Type.
+        /// </summary>
+        /// <typeparam name="TParameters">The type of the parameters used to create <typeparamref name="TViewModel"/>.</typeparam>
+        /// <typeparam name="TViewModel">The type of the ViewModel created from a <typeparamref name="TParameters"/>.</typeparam>
+        /// <typeparam name="TView">The Type of the <see cref="UIElement"/>.</typeparam>
+        /// <param name="viewModelCreator">The delegate that will executed to create the ViewModel from an <see cref="IUpbeatService"/> and <typeparamref name="TParameters"/>.</param>
+        public void MapViewModel<TParameters, TViewModel, TView>(
+            Func<IUpbeatService, TParameters, TViewModel> viewModelCreator)
+            where TView : UIElement
         {
-            var upbeatViewModelService = new UpbeatService(
-                OpenUpbeatViewModel, CloseUpbeatViewModel, closedCallback,
-                c => _upbeatViewModels.Last() == c);
+            if (viewModelCreator == null)
+                throw new ArgumentNullException(nameof(viewModelCreator));
+            _viewModelCreators[typeof(TParameters)] = (service, parameters) => viewModelCreator(service, (TParameters)parameters);
+            _viewModelControlMappings[typeof(TViewModel)] = typeof(TView);
+        }
+
+        [Obsolete("Renamed to OpenViewModelAsync. This method will be removed in UpbeatUI 3.0.")]
+        public void OpenUpbeatViewModel<TParameters>(TParameters parameters) =>
+            OpenViewModel(parameters);
+
+        [Obsolete("Renamed to OpenViewModelAsync. This method will be removed in UpbeatUI 3.0.")]
+        public void OpenUpbeatViewModel<TParameters>(TParameters parameters, Action closedCallback) =>
+            OpenViewModel(parameters, closedCallback);
+
+        [Obsolete("Renamed to OpenViewModelAsync. This method will be removed in UpbeatUI 3.0.")]
+        public Task OpenUpbeatViewModelAsync<TParameters>(TParameters parameters) =>
+            OpenViewModelAsync(parameters);
+
+        public void OpenViewModel<TParameters>(TParameters parameters) =>
+            OpenViewModel(parameters, null);
+
+        public void OpenViewModel<TParameters>(TParameters parameters, Action closedCallback)
+        {
+            var upbeatViewModelService = new UpbeatService(_updateOnRender, OpenViewModel, closedCallback);
             using (var d = new UpbeatServiceDeferrer(upbeatViewModelService))
             {
-                var upbeatViewModel = upbeatViewModelService.CreateUpbeatViewModel(
-                    service => _upbeatViewModelCreators[parameters.GetType()](service, parameters));
-                _upbeatViewModelServices[upbeatViewModel] = upbeatViewModelService;
-                _upbeatViewModels.Add(upbeatViewModel);
+                var viewModel = upbeatViewModelService.Activate(
+                    service => _viewModelCreators[parameters.GetType()](service, parameters),
+                    vm => _openViewModels.Last() == vm,
+                    vm => RemoveViewModel(vm));
+                _openViewModelServices[viewModel] = upbeatViewModelService;
+                _openViewModels.Add(viewModel);
             }
         }
 
-        public async Task OpenUpbeatViewModelAsync<TParameters>(TParameters parameters)
+        public Task OpenViewModelAsync<TParameters>(TParameters parameters)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
-            OpenUpbeatViewModel(parameters, () => taskCompletionSource.SetResult(true));
-            await taskCompletionSource.Task;
+            OpenViewModel(parameters, () => taskCompletionSource.SetResult(true));
+            return taskCompletionSource.Task;
         }
 
         /// <summary>
-        /// Executes the UpdateViewModelProperties method on each IUpbeatViewModel that implements the IUpdatableViewModel interface.
+        /// Closes and disposes all ViewModels from the <see cref="UpbeatStack"/>.
         /// </summary>
-        public void UpdateViewModelProperties()
-        {
-            foreach (var upbeatViewModel in _upbeatViewModels)
-                (upbeatViewModel as IUpdatableViewModel)?.UpdateViewModelProperties();
-        }
-
-        /// <summary>
-        /// Disposes and removes all IUpbeatViewModels from the UpbeatStack.
-        /// </summary>
+        [Obsolete("Use TryCloseAllViewModelsAsync instead, which gives ViewModels a chance to cancel closing (e.g., to save unsaved work). This method will be removed in UpbeatUI 3.0.")]
         public void RemoveAllUpbeatViewModels()
         {
-            if (_upbeatViewModels.Count == 0)
-                UpbeatViewModelsEmptyCallback?.Invoke();
-            else
-            {
-                var upbeatViewModel = _upbeatViewModels[_upbeatViewModels.Count - 1];
-                upbeatViewModel.SignalToClose(() =>
-                {
-                    RemoveUpbeatViewModel(upbeatViewModel);
-                    RemoveAllUpbeatViewModels();
-                });
-            }
+            foreach (var viewModel in _openViewModels.Reverse())
+                RemoveViewModel(viewModel);
         }
 
         /// <summary>
-        /// Executes the UpdateViewModelProperties method on each IUpbeatViewModel that implements the IUpdatableViewModel interface. This is a convenience method that can easily be subscribed to the CompositionTarget.Rendering event, which fires for each frame render.
+        /// Executes the <see cref="UpdateViewModelProperties"/> method on each ViewModel that implements the <see cref="IUpdatableViewModel"/> interface. This is a convenience method that can easily be subscribed to the <see cref="CompositionTarget.Rendering"/> event, which fires for each frame render.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">An object that contains no event data.</param>
-        public void RenderingHandler(object sender, EventArgs e) =>
-            UpdateViewModelProperties();
+        [Obsolete("The UpbeatStack will automatically execute UpdateViewModelProperties on each frame render unless it is constructed with 'updateOnRender' as false. This handler is now a noop and will be removed in UpbeatUI 3.0.")]
+        public void RenderingHandler(object sender, EventArgs e)
+        {
+            return;
+        }
 
         /// <summary>
-        /// Defines a mapping between parameters, an IUpbeatViewModel Type and a Control (View) Type.
+        /// Tries to close and dispose all open ViewModels from the <see cref="UpbeatStack"/>.
         /// </summary>
-        /// <typeparam name="TParameters">The type of the parameters used to create IUpbeatViewModels.</typeparam>
-        /// <typeparam name="TUpbeatViewModel">The type of the IUpbeatViewModel created from TParameters.</typeparam>
-        /// <typeparam name="TView">The Type of the Control (View).</typeparam>
-        /// <param name="upbeatViewModelCreator"></param>
-        public void MapUpbeatViewModel<TParameters, TUpbeatViewModel, TView>(
-            Func<IUpbeatService, TParameters, IUpbeatViewModel> upbeatViewModelCreator)
-            where TUpbeatViewModel : IUpbeatViewModel
-            where TView : UIElement
+        /// <returns>A task that represents the process of closing all ViewModels with a result of whether it was successful or not.</returns>
+        public async Task<bool> TryCloseAllViewModelsAsync()
         {
-            if (upbeatViewModelCreator == null)
-                throw new ArgumentNullException(nameof(upbeatViewModelCreator));
-            _upbeatViewModelCreators[typeof(TParameters)] = (service, parameters) => upbeatViewModelCreator(service, (TParameters)parameters);
-            _upbeatViewModelControlMappings[typeof(TUpbeatViewModel)] = typeof(TView);
+            foreach (var viewModel in _openViewModels.Reverse())
+            {
+                if (await _openViewModelServices[viewModel].OkToCloseAsync())
+                    RemoveViewModel(viewModel);
+                else
+                    return false;
+            }
+            return true;
         }
 
-        private bool CanRemoveTopUpbeatViewModel()
-            => _upbeatViewModels.Count > 0;
-
-        private void CloseUpbeatViewModel(IUpbeatViewModel upbeatViewModel)
+        /// <summary>
+        /// Executes the <see cref="UpdateViewModelProperties"/> method on each ViewModel that implements the <see cref="IUpdatableViewModel"/> interface. Only executes if the <see cref="UpbeatStack"/> is set to NOT update on render; otherwise is a noop.
+        /// </summary>
+        public void UpdateViewModelProperties()
         {
-            using (var d = new UpbeatServiceDeferrer(_upbeatViewModelServices[upbeatViewModel]))
-                RemoveUpbeatViewModel(upbeatViewModel);
+            if (!_updateOnRender)
+                UpdateViewModelProperties(this, EventArgs.Empty);
         }
 
-        private void RemoveUpbeatViewModel(IUpbeatViewModel upbeatViewModel)
+        private bool CanRemoveTopViewModel()
+            => _openViewModels.Count > 0;
+
+        private void RemoveViewModel(object viewModel)
         {
-            upbeatViewModel.Dispose();
-            _upbeatViewModels.Remove(upbeatViewModel);
-            _upbeatViewModelServices[upbeatViewModel].CloseCallback();
-            _upbeatViewModelServices.Remove(upbeatViewModel);
+            (viewModel as IDisposable)?.Dispose();
+            _openViewModels.Remove(viewModel);
+            var closedCallback = _openViewModelServices[viewModel].ClosedCallback;
+            _openViewModelServices.Remove(viewModel);
+            closedCallback?.Invoke();
+            if (_openViewModels.Count == 0)
+                ViewModelsEmptyCallback?.Invoke();
         }
 
-        private void RemoveTopUpbeatViewModel()
+        private async Task RemoveTopViewModelAsync()
         {
-            var upbeatViewModel = _upbeatViewModels[_upbeatViewModels.Count - 1];
-            upbeatViewModel.SignalToClose(() => RemoveUpbeatViewModel(upbeatViewModel));
+            var viewModel = _openViewModels.Last();
+            if (await _openViewModelServices[viewModel].OkToCloseAsync())
+                RemoveViewModel(viewModel);
+            else
+                return;
+        }
+        private void UpdateViewModelProperties(object sender, EventArgs e)
+        {
+            foreach (var viewModel in _openViewModels)
+                _openViewModelServices[viewModel].Update();
         }
     }
 }
