@@ -18,3 +18,7 @@ $clearapikey = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System
 Write-Host "`n`n*** Publishing UpbeatUI to Nuget ***`n`n"
 $version = [Version] $([Xml] (Get-Content .\UpbeatUI\UpbeatUI.csproj)).Project.PropertyGroup.Version
 dotnet nuget push "UpbeatUI\bin\Release\UpbeatUI.$($version.Major).$($version.Minor).$($version.Build).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
+
+Write-Host "`n`n*** Publishing UpbeatUI.Extensions.Hosting to Nuget ***`n`n"
+$version = [Version] $([Xml] (Get-Content .\UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj)).Project.PropertyGroup.Version
+dotnet nuget push "UpbeatUI.Extensions.Hosting\bin\Release\UpbeatUI.Extensions.Hosting.$($version.Major).$($version.Minor).$($version.Build).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
