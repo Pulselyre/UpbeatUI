@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\source\UpbeatUI\UpbeatUI.csproj" />
+    <ProjectReference Include="..\..\..\source\UpbeatUI\UpbeatUI.csproj" />
   </ItemGroup>
 
 </Project>
