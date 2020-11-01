@@ -1,0 +1,28 @@
+<!-- This file is part of the UpbeatUI project, which is released under MIT License.
+     See LICENSE.md or visit:
+     https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
+     -->
+<uv:UpbeatControl x:Class="UpbeatUISample.View.ScaledPopupControl"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:uv="clr-namespace:UpbeatUI.View;assembly=UpbeatUI"
+                  HeightPercent="80% 90%"
+                  WidthPercent="0% 90%"
+                  mc:Ignorable="d"
+                  d:DesignHeight="450" d:DesignWidth="450">
+    <Border BorderBrush="Black"
+            BorderThickness="5"
+            Background="White">
+        <Viewbox Stretch="Uniform"
+                 StretchDirection="DownOnly"
+                 MinWidth="400"
+                 MinHeight="10">
+            <TextBlock Text="{Binding Message}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="10" />
+        </Viewbox>
+    </Border>
+</uv:UpbeatControl>

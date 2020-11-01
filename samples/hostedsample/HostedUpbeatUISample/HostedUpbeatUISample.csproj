@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is part of the UpbeatUI project, which is released under MIT License.
+     See LICENSE.md or visit:
+     https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
+     -->
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\source\UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj" />
+  </ItemGroup>
+
+</Project>
