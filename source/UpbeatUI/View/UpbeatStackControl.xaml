@@ -8,17 +8,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:uv="clr-namespace:UpbeatUI.View"
              xmlns:uvc="clr-namespace:UpbeatUI.View.Converters">
-    <ItemsControl ItemsSource="{Binding UpbeatViewModels}">
+    <ItemsControl ItemsSource="{Binding ViewModels}">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-                <uv:BlurredZPanel ClosePopupCommand="{Binding RemoveTopUpbeatViewModelCommand}"
+                <uv:BlurredZPanel ClosePopupCommand="{Binding RemoveTopViewModelCommand}"
                                   BlurColor="{Binding ElementName=Control, Path=BlurColor}"
                                   BlurRadius="{Binding ElementName=Control, Path=BlurRadius}" />
             </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
             <ItemContainerTemplate>
-                <ContentControl ContentTemplateSelector="{Binding ElementName=Control, Path=DataContext.UpbeatViewModelControlMappings, Converter={uvc:MappingsToSelectorConverter}}"
+                <ContentControl ContentTemplateSelector="{Binding ElementName=Control, Path=DataContext.ViewModelControlMappings, Converter={uvc:MappingsToSelectorConverter}}"
                                 Content="{Binding .}">
                 </ContentControl>
             </ItemContainerTemplate>
