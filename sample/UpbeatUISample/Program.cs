@@ -35,6 +35,8 @@ namespace UpbeatUISample
                         (service, parameters) => new PositionedPopupViewModel(service, parameters));
                     upbeatStack.MapViewModel<ScaledPopupViewModel.Parameters, ScaledPopupViewModel, ScaledPopupControl>(
                         (service, parameters) => new ScaledPopupViewModel(service, parameters));
+                    upbeatStack.MapViewModel<ConfirmPopupViewModel.Parameters, ConfirmPopupViewModel, ConfirmPopupControl>(
+                        (service, parameters) => new ConfirmPopupViewModel(service, parameters));
 
                     // The included UpdateMainWindow class already provides the necessary controls to display Views for IUpbeatViewModels in a UpbeatStack set as the DataContext.
                     var mainWindow = new UpbeatMainWindow()
