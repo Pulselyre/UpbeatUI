@@ -123,6 +123,29 @@ namespace UpbeatUI.ViewModel
             _viewModelControlMappings[typeof(TViewModel)] = typeof(TView);
         }
 
+        /// <summary>
+        /// Defines a mapping between the <typeparamref name="TParameters"/> type, the <typeparamref name="TViewModel"/> Type and the <typeparamref name="TView"/> Type. The <see cref="IServiceProvider"/> will be used to resolve dependencies when creating the <typeparamref name="TViewModel"/>.
+        /// </summary>
+        /// <typeparam name="TParameters">The type of the parameters used to create <typeparamref name="TViewModel"/>s.</typeparam>
+        /// <typeparam name="TViewModel">The type of the ViewModel created from a <typeparamref name="TParameters"/>.</typeparam>
+        /// <typeparam name="TView">The Type of the <see cref="UIElement"/>.</typeparam>
+        /// <param name="upbeatStack">The <see cref="UpbeatStack"/> to define the mapping on.</param>
+        /// <param name="serviceProvider">The <see cref="IServiceProvider"/> that will be used to resolve dependencies.</param>
+        public void MapViewModel<TParameters, TViewModel, TView>(IServiceProvider serviceProvider)
+            where TView : UIElement
+        {
+            var constructors = typeof(TViewModel).GetConstructors().ToList();
+            if (constructors.Count > 1)
+                throw new InvalidOperationException($"Type {typeof(TViewModel).Name} has more than one constructor.");
+            var constructor = constructors[0];
+            var serviceType = typeof(IUpbeatService);
+            MapViewModel<TParameters, TViewModel, TView>(
+                (service, parameters) => (TViewModel)constructor.Invoke(constructor.GetParameters().Select(
+                        p => p.ParameterType == typeof(IUpbeatService) ? service
+                            : p.ParameterType == typeof(TParameters) ? parameters
+                            : serviceProvider.GetService(p.ParameterType)).ToArray()));
+        }
+
         [Obsolete("Renamed to OpenViewModelAsync. This method will be removed in UpbeatUI 3.0.")]
         public void OpenUpbeatViewModel<TParameters>(TParameters parameters) =>
             OpenViewModel(parameters);
