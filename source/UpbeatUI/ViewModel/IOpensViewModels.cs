@@ -26,7 +26,7 @@ namespace UpbeatUI.ViewModel
         /// </summary>
         /// <typeparam name="TParameters">The type of the parameters used to create the ViewModel.</typeparam>
         /// <param name="parameters">The parameters used to create the ViewModel.</param>
-        /// <param name="closeCallback">A delegate for the UpbeatStack to execute after the ViewModel closes.</param>
+        /// <param name="closeCallback">A delegate for the <see cref="UpbeatStack"/> to execute after the ViewModel closes.</param>
         [Obsolete("Renamed to OpenViewModelAsync. This method will be removed in UpbeatUI 3.0.")]
         void OpenUpbeatViewModel<TParameters>(TParameters parameters, Action closedCallback);
 
@@ -35,7 +35,7 @@ namespace UpbeatUI.ViewModel
         /// </summary>
         /// <typeparam name="TParameters">The type of the parameters used to create the ViewModel.</typeparam>
         /// <param name="parameters">The parameters used to create the ViewModel.</param>
-        /// <returns>A Task that represents the created IUpbeatViewModel being open</returns>
+        /// <returns>A <see cref="Task"/> that represents the created ViewModel being open</returns>
         [Obsolete("Renamed to OpenViewModelAsync. This method will be removed in UpbeatUI 3.0.")]
         Task OpenUpbeatViewModelAsync<TParameters>(TParameters parameters);
 
@@ -51,7 +51,7 @@ namespace UpbeatUI.ViewModel
         /// </summary>
         /// <typeparam name="TParameters">The type of the parameters used to create the ViewModel.</typeparam>
         /// <param name="parameters">The parameters used to create the ViewModel.</param>
-        /// <param name="closeCallback">A delegate for the UpbeatStack to execute after the ViewModel closes.</param>
+        /// <param name="closeCallback">A delegate for the <see cref="UpbeatStack"/> to execute after the ViewModel closes.</param>
         void OpenViewModel<TParameters>(TParameters parameters, Action closedCallback);
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace UpbeatUI.ViewModel
         /// </summary>
         /// <typeparam name="TParameters">The type of the parameters used to create the ViewModel.</typeparam>
         /// <param name="parameters">The parameters used to create the ViewModel.</param>
-        /// <returns>A Task that represents the created IUpbeatViewModel being open</returns>
+        /// <returns>A <see cref="Task"/> that represents the created ViewModel being open</returns>
         Task OpenViewModelAsync<TParameters>(TParameters parameters);
     }
 }
