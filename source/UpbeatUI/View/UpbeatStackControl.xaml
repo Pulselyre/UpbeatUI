@@ -8,6 +8,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:uv="clr-namespace:UpbeatUI.View"
              xmlns:uvc="clr-namespace:UpbeatUI.View.Converters">
+    <UserControl.Resources>
+        <uvc:UpbeatViewSelector x:Key="UpbeatViewSelector" />
+    </UserControl.Resources>
     <ItemsControl ItemsSource="{Binding ViewModels}">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -18,7 +21,7 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
             <ItemContainerTemplate>
-                <ContentControl ContentTemplateSelector="{Binding ElementName=Control, Path=DataContext, Converter={uvc:MappingsToSelectorConverter}}"
+                <ContentControl ContentTemplateSelector="{StaticResource UpbeatViewSelector}"
                                 Content="{Binding .}">
                 </ContentControl>
             </ItemContainerTemplate>

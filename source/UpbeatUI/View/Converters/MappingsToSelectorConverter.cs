@@ -11,6 +11,7 @@ using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.View.Converters
 {
+    [Obsolete("This converter is no longer used by the the standard UpbeatControl implementation, and will be removed in UpbeatUI 3.0.")]
     public class MappingsToSelectorConverter : ValueConverterMarkupExtension<MappingsToSelectorConverter>
     {
         public override object Convert(object value,
