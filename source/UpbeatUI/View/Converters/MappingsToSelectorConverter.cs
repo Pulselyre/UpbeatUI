@@ -3,34 +3,34 @@
  * https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
  */
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.View.Converters
 {
     public class MappingsToSelectorConverter : ValueConverterMarkupExtension<MappingsToSelectorConverter>
     {
-        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            => new ControlMappingSelector(value as IDictionary<Type, Type>);
+        public override object Convert(object value,
+                                       Type targetType,
+                                       object parameter,
+                                       CultureInfo culture) =>
+            new ControlMappingSelector((UpbeatStack)(value ?? throw new ArgumentNullException(nameof(parameter))));
 
         private class ControlMappingSelector : DataTemplateSelector
         {
-            private IDictionary<Type, Type> _mappings;
+            private UpbeatStack _upbeatStack;
 
-            public ControlMappingSelector(IDictionary<Type, Type> mappings) =>
-                _mappings = mappings != null ? mappings : new Dictionary<Type, Type>();
+            public ControlMappingSelector(UpbeatStack upbeatStack) =>
+                _upbeatStack = upbeatStack ?? throw new ArgumentNullException(nameof(upbeatStack));
 
-            public override DataTemplate SelectTemplate(object item, DependencyObject container)
+            public override DataTemplate SelectTemplate(object item,
+                                                        DependencyObject container)
             {
                 var contextType = item?.GetType() ?? typeof(object);
-                var controlType
-                    = _mappings.ContainsKey(contextType)
-                      && typeof(FrameworkElement).IsAssignableFrom(_mappings[contextType])
-                        ? _mappings[contextType]
-                    : null;
+                var controlType = _upbeatStack.GetViewTypeFromViewModelType(contextType);
                 return
                     controlType != null ? (DataTemplate)XamlReader.Parse(
                         $"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xmlns:ns=\"clr-namespace:{controlType.Namespace};assembly={controlType.Assembly.FullName}\"><ns:{controlType.Name} /></DataTemplate>")

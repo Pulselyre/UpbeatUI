@@ -19,13 +19,14 @@ namespace UpbeatUI.ViewModel
     /// </summary>
     public partial class UpbeatStack : BaseViewModel, IOpensViewModels, IOpensUpbeatViewModels, IDisposable
     {
-        private delegate object UpbeatViewModelCreator(IUpbeatService upbeatService, object parameters);
+        private delegate object ViewModelCreator(IUpbeatService upbeatService, object parameters);
 
         private readonly ObservableCollection<object> _openViewModels = new ObservableCollection<object>();
         private readonly IDictionary<object, UpbeatService> _openViewModelServices = new Dictionary<object, UpbeatService>();
         private readonly bool _updateOnRender;
-        private readonly IDictionary<Type, UpbeatViewModelCreator> _viewModelCreators = new Dictionary<Type, UpbeatViewModelCreator>();
+        private readonly IDictionary<Type, ViewModelCreator> _viewModelCreators = new Dictionary<Type, ViewModelCreator>();
         private readonly IDictionary<Type, Type> _viewModelControlMappings = new Dictionary<Type, Type>();
+        private Action<Type> _autoMapper;
 
         /// <summary>
         /// Initializes an empty <see cref="UpbeatStack"/>.
@@ -33,7 +34,6 @@ namespace UpbeatUI.ViewModel
         public UpbeatStack(bool updateOnRender = true)
         {
             _updateOnRender = updateOnRender;
-            ViewModelControlMappings = new ReadOnlyDictionary<Type, Type>(_viewModelControlMappings);
             ViewModels = new ReadOnlyObservableCollection<object>(_openViewModels);
             RemoveTopViewModelCommand = new DelegateCommand(RemoveTopViewModelAsync, CanRemoveTopViewModel);
             if (_updateOnRender)
@@ -43,16 +43,16 @@ namespace UpbeatUI.ViewModel
         /// <summary>
         /// Gets the <see cref="UpbeatStack"/>'s currently defined mappings between ViewModels and <see cref="UIElement"/> (Views).
         /// </summary>
-        [Obsolete("Renamed to ViewModelControlMappings. This property will be removed in UpbeatUI 3.0.")]
+        [Obsolete("Replaced by internal mechanisms. This property returns null and will be removed in UpbeatUI 3.0.")]
         public IReadOnlyDictionary<Type, Type> UpbeatViewModelControlMappings => ViewModelControlMappings;
         /// <summary>
         /// Gets the <see cref="UpbeatStack"/>'s currently defined mappings between ViewModels and <see cref="UIElement"/> (Views).
         /// </summary>
-        public IReadOnlyDictionary<Type, Type> ViewModelControlMappings { get; }
+        public IReadOnlyDictionary<Type, Type> ViewModelControlMappings => null;
         /// <summary>
         /// Gets the <see cref="UpbeatStack"/>'s current ViewModels.
         /// </summary>
-        [Obsolete("Renamed to ViewModels. This property will be removed in UpbeatUI 3.0.")]
+        [Obsolete("Replaced by internal mechanisms. This property returns null and will be removed in UpbeatUI 3.0.")]
         public INotifyCollectionChanged UpbeatViewModels => ViewModels;
         /// <summary>
         /// Gets the <see cref="UpbeatStack"/>'s current ViewModels.
@@ -119,8 +119,8 @@ namespace UpbeatUI.ViewModel
         {
             if (viewModelCreator == null)
                 throw new ArgumentNullException(nameof(viewModelCreator));
-            _viewModelCreators[typeof(TParameters)] = (service, parameters) => viewModelCreator(service, (TParameters)parameters);
-            _viewModelControlMappings[typeof(TViewModel)] = typeof(TView);
+            MapViewModel(typeof(TParameters), typeof(TViewModel), typeof(TView),
+                (service, parameters) => viewModelCreator(service, (TParameters)parameters));
         }
 
         /// <summary>
@@ -132,19 +132,8 @@ namespace UpbeatUI.ViewModel
         /// <param name="upbeatStack">The <see cref="UpbeatStack"/> to define the mapping on.</param>
         /// <param name="serviceProvider">The <see cref="IServiceProvider"/> that will be used to resolve dependencies.</param>
         public void MapViewModel<TParameters, TViewModel, TView>(IServiceProvider serviceProvider)
-            where TView : UIElement
-        {
-            var constructors = typeof(TViewModel).GetConstructors().ToList();
-            if (constructors.Count > 1)
-                throw new InvalidOperationException($"Type {typeof(TViewModel).Name} has more than one constructor.");
-            var constructor = constructors[0];
-            var serviceType = typeof(IUpbeatService);
-            MapViewModel<TParameters, TViewModel, TView>(
-                (service, parameters) => (TViewModel)constructor.Invoke(constructor.GetParameters().Select(
-                        p => p.ParameterType == typeof(IUpbeatService) ? service
-                            : p.ParameterType == typeof(TParameters) ? parameters
-                            : serviceProvider.GetService(p.ParameterType)).ToArray()));
-        }
+            where TView : UIElement =>
+            MapViewModel(serviceProvider, typeof(TParameters), typeof(TViewModel), typeof(TView));
 
         [Obsolete("Renamed to OpenViewModelAsync. This method will be removed in UpbeatUI 3.0.")]
         public void OpenUpbeatViewModel<TParameters>(TParameters parameters) =>
@@ -163,11 +152,14 @@ namespace UpbeatUI.ViewModel
 
         public void OpenViewModel<TParameters>(TParameters parameters, Action closedCallback)
         {
+            var parametersType = parameters.GetType();
+            if (!_viewModelCreators.ContainsKey(parametersType))
+                _autoMapper?.Invoke(parametersType);
             var upbeatViewModelService = new UpbeatService(_updateOnRender, OpenViewModel, closedCallback);
             using (var d = new UpbeatServiceDeferrer(upbeatViewModelService))
             {
                 var viewModel = upbeatViewModelService.Activate(
-                    service => _viewModelCreators[parameters.GetType()](service, parameters),
+                    service => _viewModelCreators[parametersType](service, parameters),
                     vm => _openViewModels.Last() == vm,
                     vm => RemoveViewModel(vm));
                 _openViewModelServices[viewModel] = upbeatViewModelService;
@@ -204,6 +196,58 @@ namespace UpbeatUI.ViewModel
         }
 
         /// <summary>
+        /// Sets the <see cref="UpbeatStack"/> to automatically map Parameters <see cref="Type"/>s to ViewModel <see cref="Type"/>s and View <see cref="Type"/>s using the default conventions.
+        /// <para>Parameters class names must follow the pattern of: "{BaseNamespace}.ViewModel.{Name}ViewModel+Parameters" (The Parameters class must be a public nested class of the ViewModel class).</para>
+        /// <para>ViewModel class names must follow the pattern of: "{BaseNamespace}.ViewModel.{Name}ViewModel".</para>
+        /// <para>View class names must follow the pattern of: "{BaseNamespace}.View.{Name}Control".</para>
+        /// <para>For example: "Demo.ViewModel.MessageViewModel+Parameters", "Demo.ViewModel.MessageViewModel", and "Demo.View.MessageControl".</para>
+        /// </summary>
+        /// <param name="serviceProvider">The <see cref="IServiceProvider"/> that will be used to resolve dependencies.</param>
+        public void SetDefaultViewModelLocators(IServiceProvider serviceProvider) =>
+            SetViewModelLocators(serviceProvider,
+                (String parametersTypeString) => parametersTypeString.Replace("+Parameters", ""),
+                (String parametersTypeString) => parametersTypeString.Replace("ViewModel+Parameters", "Control").Replace(".ViewModel.", ".View."));
+
+        /// <summary>
+        /// Sets delegates the <see cref="UpbeatStack"/> can use to automatically map a <see cref="string"/> representation of a Parameters <see cref="Type"/> to <see cref="string"/> represetantions of a ViewModel <see cref="Type"/> and a View <see cref="Type"/>.
+        /// <para>Note: each <see cref="string"/> representation is a <see cref="Type.AssemblyQualifiedName"/></para>
+        /// </summary>
+        /// <param name="serviceProvider">The <see cref="IServiceProvider"/> that will be used to resolve dependencies.</param>
+        /// <param name="parameterToViewModelLocator">A delegate to identify a <see cref="string"/> representation of a ViewModel <see cref="Type"/> from a <see cref="string"/> represetnation of a Parameters <see cref="Type"/>.
+        /// <para>Note: each <see cref="string"/> representation is a <see cref="Type.AssemblyQualifiedName"/></para></param>
+        /// <param name="parameterToViewLocator">A delegate to identify a <see cref="string"/> represetnation of a View <see cref="Type"/> from a <see cref="string"/> represetnation of a Parameters <see cref="Type"/>.
+        /// <para>Note: The input <see cref="Type"/> is for the Parameters in the mapping, not the ViewModel.
+        /// <para>Note: each <see cref="string"/> representation is a <see cref="Type.AssemblyQualifiedName"/></para></para></param>
+        public void SetViewModelLocators(IServiceProvider serviceProvider,
+                                         Func<string, string> parameterToViewModelLocator,
+                                         Func<string, string> parameterToViewLocator) =>
+            SetViewModelLocators(serviceProvider,
+                (Type parametersType) => Type.GetType(parameterToViewModelLocator(parametersType.AssemblyQualifiedName)),
+                (Type parametersType) => Type.GetType(parameterToViewLocator(parametersType.AssemblyQualifiedName)));
+
+        /// <summary>
+        /// Sets delegates the <see cref="UpbeatStack"/> can use to automatically map a Parameters <see cref="Type"/> to a ViewModel <see cref="Type"/> and a View <see cref="Type"/>.
+        /// </summary>
+        /// <param name="serviceProvider">The <see cref="IServiceProvider"/> that will be used to resolve dependencies.</param>
+        /// <param name="parameterToViewModelLocator">A delegate to locate a ViewModel <see cref="Type"/> from a Parameters <see cref="Type"/>.</param>
+        /// <param name="parameterToViewLocator">A delegate to locate a View <see cref="Type"/> from a Parameters <see cref="Type"/>.
+        /// <para>Note: The input <see cref="Type"/> represents the Parameters in the mapping, not the ViewModel.</para></param>
+        public void SetViewModelLocators(IServiceProvider serviceProvider,
+                                         Func<Type, Type> parameterToViewModelLocator,
+                                         Func<Type, Type> parameterToViewLocator)
+        {
+            _ = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _ = parameterToViewModelLocator ?? throw new ArgumentNullException(nameof(parameterToViewModelLocator));
+            _ = parameterToViewLocator ?? throw new ArgumentNullException(nameof(parameterToViewLocator));
+            _autoMapper = parametersType =>
+            {
+                var viewModelType = parameterToViewModelLocator(parametersType) ?? throw new InvalidOperationException($"Unable to locate ViewModel Type from Parameters Type: {parametersType.GetType().Name}");
+                var viewType = parameterToViewLocator(parametersType) ?? throw new InvalidOperationException($"Unable to locate View Type from Parameters Type: {parametersType.GetType().Name}");
+                MapViewModel(serviceProvider, parametersType, viewModelType, viewType);
+            };
+        }
+
+        /// <summary>
         /// Tries to close and dispose all open ViewModels from the <see cref="UpbeatStack"/>.
         /// </summary>
         /// <returns>A task that represents the process of closing all ViewModels with a result of whether it was successful or not.</returns>
@@ -228,8 +272,35 @@ namespace UpbeatUI.ViewModel
                 UpdateViewModelProperties(this, EventArgs.Empty);
         }
 
+        internal Type GetViewTypeFromViewModelType(Type viewModelType) =>
+            _viewModelControlMappings.TryGetValue(viewModelType, out var viewType) ? viewType : null;
+
         private bool CanRemoveTopViewModel()
             => _openViewModels.Count > 0;
+
+        private void MapViewModel(Type parametersType, Type viewModelType, Type viewType, ViewModelCreator viewModelCreator)
+        {
+            _viewModelCreators[parametersType] = viewModelCreator;
+            _viewModelControlMappings[viewModelType] = viewType;
+        }
+
+        private void MapViewModel(IServiceProvider serviceProvider, Type parametersType, Type viewModelType, Type viewType)
+        {
+            _ = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _ = parametersType ?? throw new ArgumentNullException(nameof(parametersType));
+            _ = viewModelType ?? throw new ArgumentNullException(nameof(viewModelType));
+            _ = viewType ?? throw new ArgumentNullException(nameof(viewType));
+            var constructors = viewModelType.GetConstructors().ToList();
+            if (constructors.Count > 1)
+                throw new InvalidOperationException($"Type {viewModelType.Name} has more than one constructor.");
+            var constructor = constructors[0];
+            var serviceType = typeof(IUpbeatService);
+            MapViewModel(parametersType, viewModelType, viewType,
+                (service, parameters) => Convert.ChangeType(constructor.Invoke(constructor.GetParameters().Select(
+                        p => p.ParameterType == typeof(IUpbeatService) ? service
+                            : p.ParameterType == parametersType ? parameters
+                            : serviceProvider.GetService(p.ParameterType)).ToArray()), viewModelType));
+        }
 
         private void RemoveViewModel(object viewModel)
         {

@@ -7,7 +7,6 @@ using System.Windows.Media;
 using Microsoft.Extensions.Hosting;
 using UpbeatUI.Extensions.Hosting;
 using UpbeatUI.View;
-using UpbeatUISample.View;
 using UpbeatUISample.ViewModel;
 
 namespace UpbeatUISample
@@ -19,12 +18,6 @@ namespace UpbeatUISample
                 .ConfigureUpbeatHost(
                     () => new BottomViewModel.Parameters(), // Provide a delegate to create the bottom ViewModel. This is required.
                     builder => builder // The UpbeatStack depends on mappings of parameter types to ViewModels and controls to determine which ViewModel to create and which View to show.
-                        .MapViewModel<BottomViewModel.Parameters, BottomViewModel, BottomControl>()
-                        .MapViewModel<ConfirmPopupViewModel.Parameters, ConfirmPopupViewModel, ConfirmPopupControl>()
-                        .MapViewModel<MenuViewModel.Parameters, MenuViewModel, MenuControl>()
-                        .MapViewModel<PopupViewModel.Parameters, PopupViewModel, PopupControl>()
-                        .MapViewModel<PositionedPopupViewModel.Parameters, PositionedPopupViewModel, PositionedPopupControl>()
-                        .MapViewModel<ScaledPopupViewModel.Parameters, ScaledPopupViewModel, ScaledPopupControl>()
                         .ConfigureWindow(() => new UpbeatMainWindow() // The included UpdateMainWindow class already provides the necessary controls to display Views for IViewModels. The UpbeatService will set the Window's DataContext automatically.
                         {
                             Title = "UpbeatUI Sample Application",

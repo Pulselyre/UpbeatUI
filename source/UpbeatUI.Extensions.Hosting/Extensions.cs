@@ -3,7 +3,6 @@
  * https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
  */
 using System;
-using System.Linq;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -43,6 +42,7 @@ namespace UpbeatUI.Extensions.Hosting
                         {
                             var upbeatHostBuilder = sp.GetRequiredService<IHostedUpbeatBuilder>();
                             upbeatHostBuilder.ConfigureBaseViewModelParameters(baseViewModelParametersCreator);
+                            upbeatHostBuilder.SetDefaultViewModelLocators();
                             configure?.Invoke(upbeatHostBuilder);
                             return upbeatHostBuilder.Build();
                         })

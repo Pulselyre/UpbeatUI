@@ -65,5 +65,30 @@ namespace UpbeatUI.Extensions.Hosting
                     (upbeatService, parameters) => viewModelCreator(upbeatService, parameters, serviceProvider)));
             return this;
         }
+
+        public IHostedUpbeatBuilder SetDefaultViewModelLocators()
+        {
+            MappingRegisterers.Add(
+                (upbeatStack, serviceProvider) => upbeatStack.SetDefaultViewModelLocators(serviceProvider));
+            return this;
+        }
+
+        public IHostedUpbeatBuilder SetViewModelLocators(Func<string, string> parameterToViewModelLocator,
+                                                         Func<string, string> parameterToViewLocator)
+        {
+            MappingRegisterers.Add((upbeatStack, serviceProvider) =>
+                upbeatStack.SetViewModelLocators(serviceProvider,
+                    parameterToViewModelLocator, parameterToViewLocator));
+            return this;
+        }
+
+        public IHostedUpbeatBuilder SetViewModelLocators(Func<Type, Type> parameterToViewModelLocator,
+                                                         Func<Type, Type> parameterToViewLocator)
+        {
+            MappingRegisterers.Add((upbeatStack, serviceProvider) =>
+                upbeatStack.SetViewModelLocators(serviceProvider,
+                    parameterToViewModelLocator, parameterToViewLocator));
+            return this;
+        }
     }
 }

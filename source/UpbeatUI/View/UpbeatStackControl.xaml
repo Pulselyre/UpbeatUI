@@ -18,7 +18,7 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
             <ItemContainerTemplate>
-                <ContentControl ContentTemplateSelector="{Binding ElementName=Control, Path=DataContext.ViewModelControlMappings, Converter={uvc:MappingsToSelectorConverter}}"
+                <ContentControl ContentTemplateSelector="{Binding ElementName=Control, Path=DataContext, Converter={uvc:MappingsToSelectorConverter}}"
                                 Content="{Binding .}">
                 </ContentControl>
             </ItemContainerTemplate>
