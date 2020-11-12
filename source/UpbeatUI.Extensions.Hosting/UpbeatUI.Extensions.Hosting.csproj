@@ -4,8 +4,7 @@
      https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
      -->
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
-    <UseWPF>true</UseWPF>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/michaelpduda/UpbeatUI</PackageProjectUrl>
     <Description>Microsoft.Extensions.Hosting (IHostBuilder) support for UpbeatUI.</Description>
