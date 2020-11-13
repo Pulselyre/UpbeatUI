@@ -9,8 +9,8 @@
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                   xmlns:uv="clr-namespace:UpbeatUI.View;assembly=UpbeatUI"
                   KeepInBounds="True"
-                  XPositionPercent="{Binding PositionViewModel.XPosition}"
-                  YPositionPercent="{Binding PositionViewModel.YPosition}"
+                  XPositionPercent="{Binding XPosition}"
+                  YPositionPercent="{Binding YPosition}"
                   mc:Ignorable="d"
                   d:DesignHeight="450" d:DesignWidth="450">
     <Border BorderBrush="Black"

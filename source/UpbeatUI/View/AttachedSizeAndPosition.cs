@@ -17,23 +17,19 @@ namespace UpbeatUI.View
                 typeof(AttachedSizeAndPosition),
                 new PropertyMetadata(null));
 
-        public static readonly DependencyProperty PositionViewModelroperty =
+        public static readonly DependencyProperty PositionRetrieverProperty =
             DependencyProperty.RegisterAttached(
-                "PositionViewModel",
-                typeof(PositionViewModel),
+                "PositionRetriever",
+                typeof(PositionRetriever),
                 typeof(AttachedSizeAndPosition),
-                new PropertyMetadata(
-                    null,
-                    PositionViewModelChangedHandler));
+                new PropertyMetadata(null, PositionRetrieverChangedHandler));
 
-        public static readonly DependencyProperty SizeViewModelProperty =
+        public static readonly DependencyProperty SizeRetrieverProperty =
             DependencyProperty.RegisterAttached(
-                "SizeViewModel",
-                typeof(SizeViewModel),
+                "SizeRetriever",
+                typeof(SizeRetriever),
                 typeof(AttachedSizeAndPosition),
-                new PropertyMetadata(
-                    null,
-                    SizeViewModelChangedHandler));
+                new PropertyMetadata(null, SizeRetrieverChangedHandler));
 
         public static FrameworkElement GetContainer(FrameworkElement frameworkElement) =>
             (FrameworkElement)frameworkElement.GetValue(ContainerProperty);
@@ -41,43 +37,37 @@ namespace UpbeatUI.View
         public static void SetContainer(FrameworkElement frameworkElement, FrameworkElement container) =>
             frameworkElement.SetValue(ContainerProperty, container);
 
-        public static PositionViewModel GetPositionViewModel(FrameworkElement frameworkElement) =>
-            (PositionViewModel)frameworkElement.GetValue(PositionViewModelroperty);
+        public static PositionRetriever GetPositionRetriever(FrameworkElement frameworkElement) =>
+            (PositionRetriever)frameworkElement.GetValue(PositionRetrieverProperty);
 
-        public static void SetPositionViewModel(FrameworkElement frameworkElement, PositionViewModel positionViewModel) =>
-            frameworkElement.SetValue(PositionViewModelroperty, positionViewModel);
+        public static void SetPositionRetriever(FrameworkElement frameworkElement, PositionRetriever positionRetriever) =>
+            frameworkElement.SetValue(PositionRetrieverProperty, positionRetriever);
 
-        public static SizeViewModel GetSizeViewModel(FrameworkElement frameworkElement) =>
-            (SizeViewModel)frameworkElement.GetValue(PositionViewModelroperty);
+        public static SizeRetriever GetSizeRetriever(FrameworkElement frameworkElement) =>
+            (SizeRetriever)frameworkElement.GetValue(SizeRetrieverProperty);
 
-        public static void SetSizeViewModel(FrameworkElement frameworkElement, SizeViewModel sizeViewModel) =>
-            frameworkElement.SetValue(PositionViewModelroperty, sizeViewModel);
+        public static void SetSizeRetriever(FrameworkElement frameworkElement, SizeRetriever sizeRetriever) =>
+            frameworkElement.SetValue(SizeRetrieverProperty, sizeRetriever);
 
-        private static void PositionViewModelChangedHandler(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void PositionRetrieverChangedHandler(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var target = d as FrameworkElement;
-            if (target == null)
+            if (!(d is FrameworkElement target))
                 return;
-            var positionViewModel = e.NewValue as PositionViewModel;
-            if (positionViewModel != null)
-                positionViewModel.Finder = new Func<Point>(
-                    () =>
-                    {
-                        var point = target.TranslatePoint(new Point(), GetContainer(target));
-                        point.X += (target.FlowDirection == FlowDirection.LeftToRight ? 1 : -1) * (target.ActualWidth / 2.0);
-                        point.Y += (target.ActualHeight / 2.0);
-                        return point;
-                    });
+            GetPositionRetriever(target).Retriever = () =>
+            {
+                var container = GetContainer(target) ?? throw new InvalidOperationException($"The {nameof(AttachedSizeAndPosition.ContainerProperty)} has not been initialized.");
+                var point = target.TranslatePoint(new Point(), container);
+                point.X += (target.FlowDirection == FlowDirection.LeftToRight ? 1 : -1) * (target.ActualWidth / 2.0);
+                point.Y += (target.ActualHeight / 2.0);
+                return point;
+            };
         }
 
-        private static void SizeViewModelChangedHandler(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void SizeRetrieverChangedHandler(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var target = d as FrameworkElement;
-            if (target == null)
+            if (!(d is FrameworkElement target))
                 return;
-            var sizeViewModel = e.NewValue as SizeViewModel;
-            if (sizeViewModel != null)
-                sizeViewModel.Finder = new Func<Size>(() => new Size(target.ActualWidth, target.ActualHeight));
+            GetSizeRetriever(target).Retriever = () => new Size(target.ActualWidth, target.ActualHeight);
         }
     }
 }

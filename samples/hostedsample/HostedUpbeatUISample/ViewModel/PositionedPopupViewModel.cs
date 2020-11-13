@@ -10,10 +10,14 @@ namespace UpbeatUISample.ViewModel
     internal class PositionedPopupViewModel : PopupViewModel
     {
         public PositionedPopupViewModel(IUpbeatService upbeatService, Parameters parameters)
-            : base(upbeatService, parameters) =>
-            PositionViewModel = new PositionViewModel(parameters.Point);
+            : base(upbeatService, parameters)
+        {
+            XPosition = parameters.Point.X;
+            YPosition = parameters.Point.Y;
+        }
 
-        public PositionViewModel PositionViewModel { get; }
+        public double XPosition { get; }
+        public double YPosition { get; }
 
         public new class Parameters : PopupViewModel.Parameters
         {
