@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
   <!-- This file is part of the UpbeatUI project, which is released under MIT License.
      See LICENSE.md or visit:
      https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
@@ -13,7 +13,7 @@
     <RepositoryType>Github</RepositoryType>
     <Copyright>© Michael P. Duda 2020</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Version>1.0.0.0</Version>
+    <Version>2.0.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
