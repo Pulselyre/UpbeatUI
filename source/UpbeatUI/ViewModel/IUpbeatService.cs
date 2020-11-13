@@ -11,13 +11,11 @@ namespace UpbeatUI.ViewModel
     /// <summary>
     /// Provides methods for a ViewModel to interact with the <see cref="UpbeatStack"/> that it is a part of. <see cref="IUpbeatService"/> instancess are created by the <see cref="UpbeatStack"/> unique to each ViewModel, so do not share them.
     /// </summary>
-    public interface IUpbeatService : IOpensViewModels, IOpensUpbeatViewModels
+    public interface IUpbeatService : IOpensViewModels
     {
         /// <summary>
         /// Gets whether or not the ViewModel is the top item in the <see cref="UpbeatStack"/>, and thus active for the user.
         /// </summary>
-        [Obsolete("Renamed to IsActiveViewModel. This property will be removed in UpbeatUI 3.0.")]
-        bool IsActiveUpbeatViewModel { get; }
         bool IsActiveViewModel { get; }
         /// <summary>
         /// Gets whether or not the parent <see cref="UpbeatStack"/> is configured to update ViewModels on each rendering event.
@@ -28,20 +26,6 @@ namespace UpbeatUI.ViewModel
         /// Signals to the parent <see cref="UpbeatStack"/> that this ViewModel would like to close and be removed. If a CloseCallback has been set, it will NOT be called.
         /// </summary>
         void Close();
-
-        /// <summary>
-        /// Gets the current string contents of the clipboard. This is a convenience method for assemblies that do not want to reference <see cref="System.Windows"/>.
-        /// </summary>
-        /// <returns>The current contents of the clipboard.</returns>
-        [Obsolete("This will be removed in UpbeatUI 3.0. Use another injected service instead.")]
-        string GetClipboard();
-
-        /// <summary>
-        /// Sets the string contents of the clipboard. This is a convenience method for assemblies that do not want to reference <see cref="System.Windows"/>.
-        /// </summary>
-        /// <param name="text">What to set the clipboard to.</param>
-        [Obsolete("This will be removed in UpbeatUI 3.0. Use another injected service instead.")]
-        void SetClipboard(string text);
 
         /// <summary>
         /// Sets the delegate that the containing <see cref="UpbeatStack"/> will call before closing this ViewModel (instead of closing it automatically). The delegate should return true if okay to close and false if the ViewModel needs to stay open.

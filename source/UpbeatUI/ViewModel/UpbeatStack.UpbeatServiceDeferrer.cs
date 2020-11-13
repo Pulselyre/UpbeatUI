@@ -6,7 +6,7 @@ using System;
 
 namespace UpbeatUI.ViewModel
 {
-    public partial class UpbeatStack : BaseViewModel, IDisposable, IUpdatableViewModel
+    public partial class UpbeatStack : BaseViewModel, IDisposable
     {
         private class UpbeatServiceDeferrer : ActionDeferrer
         {

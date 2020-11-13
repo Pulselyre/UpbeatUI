@@ -4,7 +4,6 @@
  */
 using System;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace UpbeatUI.ViewModel
 {
@@ -26,8 +25,6 @@ namespace UpbeatUI.ViewModel
                 ClosedCallback = closedCallback;
             }
 
-            [Obsolete("Renamed to IsActiveViewModel. This property will be removed in UpbeatUI 3.0.")]
-            public bool IsActiveUpbeatViewModel => IsActiveViewModel;
             public bool IsActiveViewModel => _isActiveViewModel();
             public bool UpdatesOnRender { get; }
             internal Action ClosedCallback { get; }
@@ -39,22 +36,6 @@ namespace UpbeatUI.ViewModel
                 else
                     _deferrer(() => _closer());
             }
-
-            [Obsolete("This will be removed in UpbeatUI 3.0. Use another injected service instead.")]
-            public string GetClipboard() =>
-                Clipboard.GetText();
-
-            [Obsolete("Renamed to OpenViewModel. This method will be removed in UpbeatUI 3.0.")]
-            public void OpenUpbeatViewModel<TParameters>(TParameters parameters) =>
-                OpenViewModel(parameters);
-
-            [Obsolete("Renamed to OpenViewModel. This method will be removed in UpbeatUI 3.0.")]
-            public void OpenUpbeatViewModel<TParameters>(TParameters parameters, Action closedCallback) =>
-                OpenViewModel(parameters, closedCallback);
-
-            [Obsolete("Renamed to OpenViewModelAsync. This method will be removed in UpbeatUI 3.0.")]
-            public Task OpenUpbeatViewModelAsync<TParameters>(TParameters parameters) =>
-                OpenViewModelAsync(parameters);
 
             public void OpenViewModel<TParameters>(TParameters parameters) =>
                 OpenViewModel(parameters, null);
@@ -76,10 +57,6 @@ namespace UpbeatUI.ViewModel
                 return taskCompletionSource.Task;
             }
 
-            [Obsolete("This will be removed in UpbeatUI 3.0. Use another injected service instead.")]
-            public void SetClipboard(string text) =>
-                    Clipboard.SetText(text);
-
             public void SetCloseCallback(Func<bool> okToCloseCallback) =>
                 _asyncOkToCloseCallback = () => Task.FromResult(okToCloseCallback());
 
@@ -94,15 +71,6 @@ namespace UpbeatUI.ViewModel
                 var viewModel = viewModelCreator(this);
                 _isActiveViewModel = () => isActiveViewModel(viewModel);
                 _closer = () => closer(viewModel);
-                if (viewModel is IUpdatableViewModel updatableViewModel)
-                    _updateCallback = updatableViewModel.UpdateViewModelProperties;
-                if (viewModel is IUpbeatViewModel upbeatViewModel)
-                    _asyncOkToCloseCallback = () =>
-                    {
-                        bool okToClose = false;
-                        upbeatViewModel.SignalToClose(() => okToClose = true);
-                        return Task.FromResult(okToClose);
-                    };
                 return viewModel;
             }
 
