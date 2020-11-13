@@ -20,7 +20,7 @@ UpbeatUI implementations are available as NuGet packages:
 
 Two samples are included: one showing [manual setup](samples/basicsample) and teardown and one showing [automatic setup](samples/hostedsample) using an **IHostBuilder**. Both samples demonstrate the following capabilities:
 
-![UpbeatUI Sample](https://user-images.githubusercontent.com/20475952/98895393-da6afa80-245b-11eb-8eab-dc97be3bed4a.gif)
+![UpbeatUI Sample](https://user-images.githubusercontent.com/20475952/99129911-c04c2c00-25c3-11eb-8059-50abb76805ea.gif)
 
 >Note: The background in the sample is OrangeRed to demonstrate how the effect can be configured. The default value is Gray.
 
