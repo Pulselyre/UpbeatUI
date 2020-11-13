@@ -22,6 +22,8 @@ Two samples are included: one showing [manual setup](samples/basicsample) and te
 
 ![UpbeatUI Sample](https://user-images.githubusercontent.com/20475952/98895393-da6afa80-245b-11eb-8eab-dc97be3bed4a.gif)
 
+>Note: The background in the sample is OrangeRed to demonstrate how the effect can be configured. The default value is Gray.
+
 ## How UpbeatUI Works
 
 There are two central components of UpbeatUI: The first is the [**UpbeatStack**](source/UpbeatUI/ViewModel/UpbeatStack.cs) class. It is responsible for managing the stack of open ViewModels and also maintaining mappings between ViewModelParameters, ViewModels, and Views. The second is the [**IUpbeatService**](source/UpbeatUI/ViewModel/IUpbeatService.cs) interface which provides ViewModels with methods and properties for interacting with their parent UpbeatStack. For example, the [**IUpbeatService**](source/UpbeatUI/ViewModel/IUpbeatService.cs) has methods for opening a new ViewModel on top of the stack. The [**UpbeatStack**](source/UpbeatUI/ViewModel/UpbeatStack.cs) provides a unique [**IUpbeatService**](source/UpbeatUI/ViewModel/IUpbeatService.cs) to each ViewModel.
