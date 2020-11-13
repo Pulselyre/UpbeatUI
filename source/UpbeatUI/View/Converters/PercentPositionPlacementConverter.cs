@@ -4,12 +4,13 @@
  */
 using System;
 using System.Globalization;
+using System.Windows.Data;
 
 namespace UpbeatUI.View.Converters
 {
-    public class PercentPositionPlacementConverter : MultiValueConverterMarkupExtension<PercentPositionPlacementConverter>
+    public class PercentPositionPlacementConverter : IMultiValueConverter
     {
-        public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             var percentPosition = values[0] switch
             {
@@ -29,5 +30,8 @@ namespace UpbeatUI.View.Converters
                         containerSize - controlSize));
             return (invert ? 1.0 - percentPosition : percentPosition) * containerSize - (controlSize / 2.0);
         }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>
+            throw new NotImplementedException();
     }
 }

@@ -7,6 +7,10 @@
                     xmlns:uv="clr-namespace:UpbeatUI.View"
                     xmlns:uvc="clr-namespace:UpbeatUI.View.Converters">
     <Style TargetType="{x:Type uv:UpbeatControl}">
+        <Style.Resources>
+            <uvc:PercentOfToSizeConverter x:Key="PercentOfToSizeConverter" />
+            <uvc:PercentPositionPlacementConverter x:Key="PercentPositionPlacementConverter" />
+        </Style.Resources>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type uv:UpbeatControl}">
@@ -16,7 +20,7 @@
                                 <Style TargetType="ContentPresenter">
                                     <Setter Property="MinHeight">
                                         <Setter.Value>
-                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                            <MultiBinding Converter="{StaticResource PercentOfToSizeConverter}"
                                                           ConverterParameter="Min">
                                                 <Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                          Path="HeightPercent" />
@@ -27,7 +31,7 @@
                                     </Setter>
                                     <Setter Property="Height">
                                         <Setter.Value>
-                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                            <MultiBinding Converter="{StaticResource PercentOfToSizeConverter}"
                                                           ConverterParameter="Size">
                                                 <Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                          Path="HeightPercent" />
@@ -38,7 +42,7 @@
                                     </Setter>
                                     <Setter Property="MaxHeight">
                                         <Setter.Value>
-                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                            <MultiBinding Converter="{StaticResource PercentOfToSizeConverter}"
                                                           ConverterParameter="Max">
                                                 <Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                          Path="HeightPercent" />
@@ -49,7 +53,7 @@
                                     </Setter>
                                     <Setter Property="MinWidth">
                                         <Setter.Value>
-                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                            <MultiBinding Converter="{StaticResource PercentOfToSizeConverter}"
                                                           ConverterParameter="Min">
                                                 <Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                          Path="WidthPercent" />
@@ -60,7 +64,7 @@
                                     </Setter>
                                     <Setter Property="Width">
                                         <Setter.Value>
-                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                            <MultiBinding Converter="{StaticResource PercentOfToSizeConverter}"
                                                           ConverterParameter="Size">
                                                 <Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                          Path="WidthPercent" />
@@ -71,7 +75,7 @@
                                     </Setter>
                                     <Setter Property="MaxWidth">
                                         <Setter.Value>
-                                            <MultiBinding Converter="{uvc:PercentOfToSizeConverter}"
+                                            <MultiBinding Converter="{StaticResource PercentOfToSizeConverter}"
                                                           ConverterParameter="Max">
                                                 <Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                          Path="WidthPercent" />
@@ -83,7 +87,7 @@
                                 </Style>
                             </ContentPresenter.Style>
                             <Canvas.Top>
-                                <MultiBinding Converter="{uvc:PercentPositionPlacementConverter}">
+                                <MultiBinding Converter="{StaticResource PercentPositionPlacementConverter}">
                                     <Binding RelativeSource="{RelativeSource TemplatedParent}"
                                              Path="YPositionPercent" />
                                     <Binding ElementName="PositionCanvas"
@@ -96,7 +100,7 @@
                                 </MultiBinding>
                             </Canvas.Top>
                             <Canvas.Left>
-                                <MultiBinding Converter="{uvc:PercentPositionPlacementConverter}">
+                                <MultiBinding Converter="{StaticResource PercentPositionPlacementConverter}">
                                     <Binding RelativeSource="{RelativeSource TemplatedParent}"
                                              Path="XPositionPercent" />
                                     <Binding ElementName="PositionCanvas"

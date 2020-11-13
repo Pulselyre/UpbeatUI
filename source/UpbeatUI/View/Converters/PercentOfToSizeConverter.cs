@@ -4,12 +4,13 @@
  */
 using System;
 using System.Globalization;
+using System.Windows.Data;
 
 namespace UpbeatUI.View.Converters
 {
-    public class PercentOfToSizeConverter : MultiValueConverterMarkupExtension<PercentOfToSizeConverter>
+    public class PercentOfToSizeConverter : IMultiValueConverter
     {
-        public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             var sizes = (values[0] as string)?.Split(' ');
             if (sizes == null)
@@ -41,5 +42,8 @@ namespace UpbeatUI.View.Converters
                 _ => throw new ArgumentException("Invalid size string"),
             };
         }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>
+            throw new NotImplementedException();
     }
 }

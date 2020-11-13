@@ -13,6 +13,9 @@
                   WidthPercent="1"
                   mc:Ignorable="d"
                   d:DesignHeight="450" d:DesignWidth="450">
+    <uv:UpbeatControl.Resources>
+        <uvc:PercentPositionWithinUpbeatStackConverter x:Key="PositionConverter" />
+    </uv:UpbeatControl.Resources>
     <UniformGrid Margin="5"
                  Rows="2"
                  Columns="2">
@@ -22,7 +25,7 @@
         <Button Command="{Binding OpenPositionedPopupCommand}"
                 Margin="5"
                 Content="Open a popup on top of this"
-                CommandParameter="{Binding RelativeSource={RelativeSource Self}, Converter={uvc:PercentPositionWithinUpbeatStackConverter}}" />
+                CommandParameter="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource PositionConverter}}" />
         <Button Command="{Binding OpenCenterPopupCommand}"
                 Margin="5"
                 Content="Open a popup in the center" />

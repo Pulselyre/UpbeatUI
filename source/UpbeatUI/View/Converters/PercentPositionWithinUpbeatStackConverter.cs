@@ -5,13 +5,14 @@
 using System;
 using System.Globalization;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace UpbeatUI.View.Converters
 {
-    public class PercentPositionWithinUpbeatStackConverter : ValueConverterMarkupExtension<PercentPositionWithinUpbeatStackConverter>
+    public class PercentPositionWithinUpbeatStackConverter : IValueConverter
     {
-        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var control = value as FrameworkElement;
             return new Func<Point>(() =>
@@ -25,5 +26,8 @@ namespace UpbeatUI.View.Converters
                     (rawPoint.Y + control.ActualHeight / 2.0) / container.ActualHeight);
             });
         }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+            throw new NotImplementedException();
     }
 }
