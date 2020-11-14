@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/michaelpduda/UpbeatUI/blob/main/LICENSE.md)
 [![Nuget](https://img.shields.io/nuget/v/UpbeatUI)](https://www.nuget.org/packages/UpbeatUI/)
 
-UpbeatUI is an open-source lightweight MVVM framework for quickly developing mobile-style touch based Windows applications using [Windows Presentation Foundation (WPF)](https://github.com/dotnet/wpf). It provides a simple API for stacking Views in the Z-Axis where only the top View is active to the user. The user can close the the active view (remove it from the top of the stack) by tapping/clicking the surrounding blurred background area. UpbeatUI also includes versions of several standard MVVM objects and base classes.
+UpbeatUI is an open-source lightweight MVVM framework for quickly developing mobile-style touch based Windows applications using [Windows Presentation Foundation (WPF)](https://github.com/dotnet/wpf). It provides a simple API for stacking Views in the Z-Axis where only the top View is active to the user. The user can close the active view (remove it from the top of the stack) by tapping/clicking the surrounding blurred background area. UpbeatUI also includes versions of several standard MVVM objects and base classes.
 
 UpbeatUI supports **.NET Core 3.0**, **.NET Core 3.1**, and **.NET 5**.
 
