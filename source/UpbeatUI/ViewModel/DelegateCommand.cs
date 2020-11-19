@@ -49,7 +49,8 @@ namespace UpbeatUI.ViewModel
         /// <param name="executeAsync">The delegate to be invoked when the command is executed.</param>
         /// <param name="canExecute">The delegate to test if the command can be executed.</param>
         /// <param name="errorCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails.</param>
-        public DelegateCommand(Func<Task> executeAsync, Func<bool> canExecute, Action<Exception> errorCallback = null)
+        /// <param name="singleExecution">If true, the command will allow only one async operation to execute at once.</param>
+        public DelegateCommand(Func<Task> executeAsync, Func<bool> canExecute, Action<Exception> errorCallback = null, bool singleExecution = true)
         {
             if (executeAsync == null)
                 throw new ArgumentNullException(nameof(executeAsync));
@@ -59,7 +60,7 @@ namespace UpbeatUI.ViewModel
                     return;
                 try
                 {
-                    _isAsyncExecuting = true;
+                    _isAsyncExecuting = singleExecution;
                     await executeAsync();
                 }
                 catch (Exception e)
@@ -129,7 +130,8 @@ namespace UpbeatUI.ViewModel
         /// <param name="executeAsync">The delegate to be invoked when the command is executed.</param>
         /// <param name="canExecute">The delegate to test if the command can be executed.</param>
         /// <param name="errorCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails.</param>
-        public DelegateCommand(Func<T, Task> executeAsync, Predicate<T> canExecute, Action<Exception> errorCallback = null)
+        /// <param name="singleExecution">If true, the command will allow only one async operation to execute at once.</param>
+        public DelegateCommand(Func<T, Task> executeAsync, Predicate<T> canExecute, Action<Exception> errorCallback = null, bool singleExecution = true)
         {
             if (executeAsync == null)
                 throw new ArgumentNullException(nameof(executeAsync));
@@ -139,7 +141,7 @@ namespace UpbeatUI.ViewModel
                     return;
                 try
                 {
-                    _isAsyncExecuting = true;
+                    _isAsyncExecuting = singleExecution;
                     await executeAsync(commandParameter);
                 }
                 catch (Exception e)
