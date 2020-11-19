@@ -35,7 +35,7 @@ namespace UpbeatUI.ViewModel
         {
             _updateOnRender = updateOnRender;
             ViewModels = new ReadOnlyObservableCollection<object>(_openViewModels);
-            RemoveTopViewModelCommand = new DelegateCommand(RemoveTopViewModelAsync, CanRemoveTopViewModel);
+            RemoveTopViewModelCommand = new DelegateCommand(RemoveTopViewModelAsync, CanRemoveTopViewModel, singleExecution: false);
             if (_updateOnRender)
                 CompositionTarget.Rendering += UpdateViewModelProperties;
         }
