@@ -18,46 +18,46 @@ namespace UpbeatUI.ViewModel
         private bool _isAsyncExecuting = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateCommand"/> class that can always invoke the <paramref name="execute"/> delegate.
-        /// </summary>
-        /// <param name="execute">The delegate to be invoked when the command is executed.</param>
-        public DelegateCommand(Action execute)
-            : this(execute, null) { }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DelegateCommand"/> class that can invoke the <paramref name="execute"/> delegate when the <paramref name="canExecute"/> delegate returns true;
         /// </summary>
         /// <param name="execute">The delegate to be invoked when the command is executed.</param>
         /// <param name="canExecute">The delegate to test if the command can be executed.</param>
-        public DelegateCommand(Action execute, Func<bool> canExecute)
+        /// <param name="exceptionCallback">The delegate that will be executed if the <paramref name="execute"/> delegate fails. If null, any uncaught exceptions thrown in <paramref name="execute"/> will likely crash the application.</param>
+        public DelegateCommand(Action execute, Func<bool> canExecute = null, Action<Exception> exceptionCallback = null)
         {
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            _execute = execute switch
+            {
+                null => throw new ArgumentNullException(nameof(execute)),
+                _ => () =>
+                {
+                    try
+                    {
+                        execute();
+                    }
+                    catch (Exception e)
+                    {
+                        if (exceptionCallback == null)
+                            throw;
+                        exceptionCallback(e);
+                    }
+                }
+            };
             _canExecute = canExecute;
         }
-
-        /// <summary>
-        /// Initializes a new asynchronous instance of the <see cref="DelegateCommand"/> class that can always invoke the <paramref name="executeAsync"/> delegate.
-        /// </summary>
-        /// <param name="executeAsync">The delegate to be invoked when the command is executed.</param>
-        /// <param name="errorCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails.</param>
-        public DelegateCommand(Func<Task> executeAsync, Action<Exception> errorCallback = null)
-            : this(executeAsync, null, errorCallback) { }
 
         /// <summary>
         /// Initializes a new asynchronous instance of the <see cref="DelegateCommand"/> class that can invoke the <paramref name="executeAsync"/> delegate when the <paramref name="canExecute"/> delegate returns true;
         /// </summary>
         /// <param name="executeAsync">The delegate to be invoked when the command is executed.</param>
         /// <param name="canExecute">The delegate to test if the command can be executed.</param>
-        /// <param name="errorCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails.</param>
+        /// <param name="exceptionCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails. If null, any uncaught exceptions thrown in <paramref name="executeAsync"/> will likely crash the application.</param>
         /// <param name="singleExecution">If true, the command will allow only one async operation to execute at once.</param>
-        public DelegateCommand(Func<Task> executeAsync, Func<bool> canExecute, Action<Exception> errorCallback = null, bool singleExecution = true)
+        public DelegateCommand(Func<Task> executeAsync, Func<bool> canExecute = null, Action<Exception> exceptionCallback = null, bool singleExecution = true)
         {
             if (executeAsync == null)
                 throw new ArgumentNullException(nameof(executeAsync));
             _execute = async () =>
             {
-                if (!CanExecute(null))
-                    return;
                 try
                 {
                     _isAsyncExecuting = singleExecution;
@@ -65,7 +65,9 @@ namespace UpbeatUI.ViewModel
                 }
                 catch (Exception e)
                 {
-                    errorCallback?.Invoke(e);
+                    if (exceptionCallback == null)
+                        throw;
+                    exceptionCallback(e);
                 }
                 finally
                 {
@@ -81,11 +83,20 @@ namespace UpbeatUI.ViewModel
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public bool CanExecute(object parameter) =>
+        bool ICommand.CanExecute(object parameter) =>
+            CanExecute();
+
+        public bool CanExecute() =>
             !_isAsyncExecuting && (_canExecute?.Invoke() ?? true);
 
-        public void Execute(object parameter) =>
-            _execute.Invoke();
+        void ICommand.Execute(object parameter) =>
+            Execute();
+
+        public void Execute()
+        {
+            if (CanExecute())
+                _execute.Invoke();
+        }
     }
 
     /// <summary>
@@ -99,46 +110,46 @@ namespace UpbeatUI.ViewModel
         private bool _isAsyncExecuting = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateCommand"/> class that can always invoke the <paramref name="execute"/> delegate.
-        /// </summary>
-        /// <param name="execute">The delegate to be invoked when the command is executed.</param>
-        public DelegateCommand(Action<T> execute)
-            : this(execute, null) { }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DelegateCommand"/> class that can invoke the <paramref name="execute"/> delegate when the <paramref name="canExecute"/> delegate returns true;
         /// </summary>
         /// <param name="execute">The delegate to be invoked when the command is executed.</param>
         /// <param name="canExecute">The delegate to test if the command can be executed.</param>
-        public DelegateCommand(Action<T> execute, Predicate<T> canExecute)
+        /// <param name="exceptionCallback">The delegate that will be executed if the <paramref name="execute"/> delegate fails. If null, any uncaught exceptions thrown in <paramref name="execute"/> will likely crash the application.</param>
+        public DelegateCommand(Action<T> execute, Predicate<T> canExecute = null, Action<Exception> exceptionCallback = null)
         {
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+            _execute = execute switch
+            {
+                null => throw new ArgumentNullException(nameof(execute)),
+                _ => commandParameter =>
+                {
+                    try
+                    {
+                        execute(commandParameter);
+                    }
+                    catch (Exception e)
+                    {
+                        if (exceptionCallback == null)
+                            throw;
+                        exceptionCallback(e);
+                    }
+                }
+            };
             _canExecute = canExecute;
         }
-
-        /// <summary>
-        /// Initializes a new asynchronous instance of the <see cref="DelegateCommand"/> class that can always invoke the <paramref name="executeAsync"/> delegate.
-        /// </summary>
-        /// <param name="executeAsync">The delegate to be invoked when the command is executed.</param>
-        /// <param name="errorCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails.</param>
-        public DelegateCommand(Func<T, Task> executeAsync, Action<Exception> errorCallback = null)
-            : this(executeAsync, null, errorCallback) { }
 
         /// <summary>
         /// Initializes a new asynchronous instance of the <see cref="DelegateCommand"/> class that can invoke the <paramref name="executeAsync"/> delegate when the <paramref name="canExecute"/> delegate returns true;
         /// </summary>
         /// <param name="executeAsync">The delegate to be invoked when the command is executed.</param>
         /// <param name="canExecute">The delegate to test if the command can be executed.</param>
-        /// <param name="errorCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails.</param>
+        /// <param name="exceptionCallback">The delegate that will be executed if the <paramref name="executeAsync"/> delegate fails. If null, any uncaught exceptions thrown in <paramref name="executeAsync"/> will likely crash the application.</param>
         /// <param name="singleExecution">If true, the command will allow only one async operation to execute at once.</param>
-        public DelegateCommand(Func<T, Task> executeAsync, Predicate<T> canExecute, Action<Exception> errorCallback = null, bool singleExecution = true)
+        public DelegateCommand(Func<T, Task> executeAsync, Predicate<T> canExecute = null, Action<Exception> exceptionCallback = null, bool singleExecution = true)
         {
             if (executeAsync == null)
                 throw new ArgumentNullException(nameof(executeAsync));
             _execute = async commandParameter =>
             {
-                if (!CanExecute(commandParameter))
-                    return;
                 try
                 {
                     _isAsyncExecuting = singleExecution;
@@ -146,7 +157,9 @@ namespace UpbeatUI.ViewModel
                 }
                 catch (Exception e)
                 {
-                    errorCallback?.Invoke(e);
+                    if (exceptionCallback == null)
+                        throw;
+                    exceptionCallback(e);
                 }
                 finally
                 {
@@ -166,7 +179,10 @@ namespace UpbeatUI.ViewModel
             !_isAsyncExecuting &&
             (_canExecute?.Invoke((parameter == null && typeof(T).IsValueType) ? default : (T)parameter) ?? true);
 
-        public void Execute(object parameter) =>
-            _execute((parameter == null && typeof(T).IsValueType) ? default : (T)parameter);
+        public void Execute(object parameter)
+        {
+            if (CanExecute(parameter))
+                _execute((parameter == null && typeof(T).IsValueType) ? default : (T)parameter);
+        }
     }
 }
