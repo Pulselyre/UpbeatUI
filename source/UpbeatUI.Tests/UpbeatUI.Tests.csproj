@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is part of the UpbeatUI project, which is released under MIT License.
+     See LICENSE.md or visit:
+     https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
+     -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <Description>Unit tests for UpbeatUI.</Description>
+    <Authors>Michael P. Duda</Authors>
+    <RepositoryUrl>https://github.com/michaelpduda/UpbeatUI.git</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <Copyright>© Michael P. Duda 2020</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UpbeatUI\UpbeatUI.csproj" />
+  </ItemGroup>
+
+</Project>
