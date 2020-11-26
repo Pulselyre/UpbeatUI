@@ -17,7 +17,7 @@ namespace UpbeatUI.ViewModel
     /// <summary>
     /// Represents a stack of ViewModels and provides methods and commands for controlling them.
     /// </summary>
-    public partial class UpbeatStack : BaseViewModel, IOpensViewModels, IDisposable
+    public partial class UpbeatStack : BaseViewModel, IUpbeatStack, IDisposable
     {
         private delegate object ViewModelCreator(IUpbeatService upbeatService, object parameters);
 
@@ -40,25 +40,9 @@ namespace UpbeatUI.ViewModel
                 CompositionTarget.Rendering += UpdateViewModelProperties;
         }
 
-        /// <summary>
-        /// Gets the <see cref="UpbeatStack"/>'s currently defined mappings between ViewModels and <see cref="UIElement"/> (Views).
-        /// </summary>
-        public IReadOnlyDictionary<Type, Type> ViewModelControlMappings => null;
-        /// <summary>
-        /// Gets the <see cref="UpbeatStack"/>'s current ViewModels.
-        /// </summary>
-        public INotifyCollectionChanged ViewModels { get; }
-        /// <summary>
-        /// Gets the count of the <see cref="UpbeatStack"/>'s current ViewModels.
-        /// </summary>
         public int Count { get { return _openViewModels.Count; } }
-        /// <summary>
-        /// Gets a command to remove the top (active) ViewModel.
-        /// </summary>
         public ICommand RemoveTopViewModelCommand { get; }
-        /// <summary>
-        /// Gets or sets an <see cref="Action"/> callback that the <see cref="UpbeatStack"/> will execute when it is empty of ViewModels.
-        /// </summary>
+        public INotifyCollectionChanged ViewModels { get; }
         public Action ViewModelsEmptyCallback { get; set; }
 
         public void Dispose()
@@ -69,13 +53,6 @@ namespace UpbeatUI.ViewModel
                 upbeatViewModel.Dispose();
         }
 
-        /// <summary>
-        /// Defines a mapping between the <typeparamref name="TParameters"/> type, the <typeparamref name="TViewModel"/> Type and the <typeparamref name="TView"/> Type.
-        /// </summary>
-        /// <typeparam name="TParameters">The type of the parameters used to create <typeparamref name="TViewModel"/>.</typeparam>
-        /// <typeparam name="TViewModel">The type of the ViewModel created from a <typeparamref name="TParameters"/>.</typeparam>
-        /// <typeparam name="TView">The Type of the <see cref="UIElement"/>.</typeparam>
-        /// <param name="viewModelCreator">The delegate that will executed to create the ViewModel from an <see cref="IUpbeatService"/> and <typeparamref name="TParameters"/>.</param>
         public void MapViewModel<TParameters, TViewModel, TView>(
             Func<IUpbeatService, TParameters, TViewModel> viewModelCreator)
             where TView : UIElement
@@ -86,14 +63,6 @@ namespace UpbeatUI.ViewModel
                 (service, parameters) => viewModelCreator(service, (TParameters)parameters));
         }
 
-        /// <summary>
-        /// Defines a mapping between the <typeparamref name="TParameters"/> type, the <typeparamref name="TViewModel"/> Type and the <typeparamref name="TView"/> Type. The <see cref="IServiceProvider"/> will be used to resolve dependencies when creating the <typeparamref name="TViewModel"/>.
-        /// </summary>
-        /// <typeparam name="TParameters">The type of the parameters used to create <typeparamref name="TViewModel"/>s.</typeparam>
-        /// <typeparam name="TViewModel">The type of the ViewModel created from a <typeparamref name="TParameters"/>.</typeparam>
-        /// <typeparam name="TView">The Type of the <see cref="UIElement"/>.</typeparam>
-        /// <param name="upbeatStack">The <see cref="UpbeatStack"/> to define the mapping on.</param>
-        /// <param name="serviceProvider">The <see cref="IServiceProvider"/> that will be used to resolve dependencies.</param>
         public void MapViewModel<TParameters, TViewModel, TView>(IServiceProvider serviceProvider)
             where TView : UIElement =>
             MapViewModel(serviceProvider, typeof(TParameters), typeof(TViewModel), typeof(TView));
@@ -125,29 +94,11 @@ namespace UpbeatUI.ViewModel
             return taskCompletionSource.Task;
         }
 
-        /// <summary>
-        /// Sets the <see cref="UpbeatStack"/> to automatically map Parameters <see cref="Type"/>s to ViewModel <see cref="Type"/>s and View <see cref="Type"/>s using the default conventions.
-        /// <para>Parameters class names must follow the pattern of: "{BaseNamespace}.ViewModel.{Name}ViewModel+Parameters" (The Parameters class must be a public nested class of the ViewModel class).</para>
-        /// <para>ViewModel class names must follow the pattern of: "{BaseNamespace}.ViewModel.{Name}ViewModel".</para>
-        /// <para>View class names must follow the pattern of: "{BaseNamespace}.View.{Name}Control".</para>
-        /// <para>For example: "Demo.ViewModel.MessageViewModel+Parameters", "Demo.ViewModel.MessageViewModel", and "Demo.View.MessageControl".</para>
-        /// </summary>
-        /// <param name="serviceProvider">The <see cref="IServiceProvider"/> that will be used to resolve dependencies.</param>
         public void SetDefaultViewModelLocators(IServiceProvider serviceProvider) =>
             SetViewModelLocators(serviceProvider,
                 (String parametersTypeString) => parametersTypeString.Replace("+Parameters", ""),
                 (String parametersTypeString) => parametersTypeString.Replace("ViewModel+Parameters", "Control").Replace(".ViewModel.", ".View."));
 
-        /// <summary>
-        /// Sets delegates the <see cref="UpbeatStack"/> can use to automatically map a <see cref="string"/> representation of a Parameters <see cref="Type"/> to <see cref="string"/> represetantions of a ViewModel <see cref="Type"/> and a View <see cref="Type"/>.
-        /// <para>Note: each <see cref="string"/> representation is a <see cref="Type.AssemblyQualifiedName"/></para>
-        /// </summary>
-        /// <param name="serviceProvider">The <see cref="IServiceProvider"/> that will be used to resolve dependencies.</param>
-        /// <param name="parameterToViewModelLocator">A delegate to identify a <see cref="string"/> representation of a ViewModel <see cref="Type"/> from a <see cref="string"/> represetnation of a Parameters <see cref="Type"/>.
-        /// <para>Note: each <see cref="string"/> representation is a <see cref="Type.AssemblyQualifiedName"/></para></param>
-        /// <param name="parameterToViewLocator">A delegate to identify a <see cref="string"/> represetnation of a View <see cref="Type"/> from a <see cref="string"/> represetnation of a Parameters <see cref="Type"/>.
-        /// <para>Note: The input <see cref="Type"/> is for the Parameters in the mapping, not the ViewModel.
-        /// <para>Note: each <see cref="string"/> representation is a <see cref="Type.AssemblyQualifiedName"/></para></para></param>
         public void SetViewModelLocators(IServiceProvider serviceProvider,
                                          Func<string, string> parameterToViewModelLocator,
                                          Func<string, string> parameterToViewLocator) =>
@@ -155,13 +106,6 @@ namespace UpbeatUI.ViewModel
                 (Type parametersType) => Type.GetType(parameterToViewModelLocator(parametersType.AssemblyQualifiedName)),
                 (Type parametersType) => Type.GetType(parameterToViewLocator(parametersType.AssemblyQualifiedName)));
 
-        /// <summary>
-        /// Sets delegates the <see cref="UpbeatStack"/> can use to automatically map a Parameters <see cref="Type"/> to a ViewModel <see cref="Type"/> and a View <see cref="Type"/>.
-        /// </summary>
-        /// <param name="serviceProvider">The <see cref="IServiceProvider"/> that will be used to resolve dependencies.</param>
-        /// <param name="parameterToViewModelLocator">A delegate to locate a ViewModel <see cref="Type"/> from a Parameters <see cref="Type"/>.</param>
-        /// <param name="parameterToViewLocator">A delegate to locate a View <see cref="Type"/> from a Parameters <see cref="Type"/>.
-        /// <para>Note: The input <see cref="Type"/> represents the Parameters in the mapping, not the ViewModel.</para></param>
         public void SetViewModelLocators(IServiceProvider serviceProvider,
                                          Func<Type, Type> parameterToViewModelLocator,
                                          Func<Type, Type> parameterToViewLocator)
@@ -177,10 +121,6 @@ namespace UpbeatUI.ViewModel
             };
         }
 
-        /// <summary>
-        /// Tries to close and dispose all open ViewModels from the <see cref="UpbeatStack"/>.
-        /// </summary>
-        /// <returns>A task that represents the process of closing all ViewModels with a result of whether it was successful or not.</returns>
         public async Task<bool> TryCloseAllViewModelsAsync()
         {
             foreach (var viewModel in _openViewModels.Reverse())
@@ -193,9 +133,6 @@ namespace UpbeatUI.ViewModel
             return true;
         }
 
-        /// <summary>
-        /// Executes the <see cref="UpdateViewModelProperties"/> method on each ViewModel that implements the <see cref="IUpdatableViewModel"/> interface. Only executes if the <see cref="UpbeatStack"/> is set to NOT update on render; otherwise is a noop.
-        /// </summary>
         public void UpdateViewModelProperties()
         {
             if (!_updateOnRender)
