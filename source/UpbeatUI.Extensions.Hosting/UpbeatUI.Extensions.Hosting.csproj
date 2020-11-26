@@ -1,8 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <!-- This file is part of the UpbeatUI project, which is released under MIT License.
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file is part of the UpbeatUI project, which is released under MIT License.
      See LICENSE.md or visit:
      https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
      -->
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.0;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
