@@ -40,7 +40,7 @@ namespace UpbeatUI.ViewModel
         }
 
         /// <summary>
-        /// Raises <see cref="PropertyChanged"/> events for each property name in <paramref name="propertyNames"/>.
+        /// Raises <see cref="INotifyPropertyChanged.PropertyChanged"/> events for each property name in <paramref name="propertyNames"/>.
         /// </summary>
         /// <param name="propertyNames">The names of the properties</param>
         protected void RaisePropertyChanged(params string[] propertyNames)
@@ -52,8 +52,8 @@ namespace UpbeatUI.ViewModel
         /// <summary>
         /// Raises a <see cref="PropertyChanged"/> event for <paramref name="propertyName"/>.
         /// </summary>
-        /// <param name="propertyName">The name of the property</param>
-        protected void RaisePropertyChanged(string propertyName) =>
+        /// <param name="propertyName">The name of the property (used in the <see cref="INotifyPropertyChanged.PropertyChanged"/> event). Optional, will be retrieved automatically using <see cref="CallerMemberNameAttribute"/>.</param>
+        protected void RaisePropertyChanged([CallerMemberName] string propertyName = "") =>
             PropertyChanged?.Invoke(this, GetPropertyChangedEventArgs(propertyName));
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace UpbeatUI.ViewModel
         /// <typeparam name="T">Type of the property and backing value.</typeparam>
         /// <param name="backingValue">Reference to the backing value.</param>
         /// <param name="newValue">The desired new value.</param>
-        /// <param name="propertyName">The name of the property (used in the <see cref="PropertyChanged"/> event). Optional, will be retrieved automatically using <see cref="CallerMemberNameAttribute"/>.</param>
+        /// <param name="propertyName">The name of the property (used in the <see cref="INotifyPropertyChanged.PropertyChanged"/> event). Optional, will be retrieved automatically using <see cref="CallerMemberNameAttribute"/>.</param>
         /// <returns>True if the newValue differed from the backingValue and a PropertyChanged needed to be raised; false otherwise.</returns>
         protected bool SetProperty<T>(ref T backingValue, T newValue, [CallerMemberName] string propertyName = "")
         {
