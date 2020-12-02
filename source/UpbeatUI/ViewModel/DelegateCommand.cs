@@ -83,7 +83,7 @@ namespace UpbeatUI.ViewModel
             remove { CommandManager.RequerySuggested -= value; }
         }
 
-        public void CanExecute(object parameter) =>
+        public bool CanExecute(object parameter) =>
             CanExecute();
 
         public bool CanExecute() =>
