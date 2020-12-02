@@ -5,6 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace UpbeatUI.ViewModel
@@ -50,14 +52,14 @@ namespace UpbeatUI.ViewModel
         }
 
         /// <summary>
-        /// Raises a <see cref="PropertyChanged"/> event for <paramref name="propertyName"/>.
+        /// Raises a <see cref="INotifyPropertyChanged.PropertyChanged"/> event for <paramref name="propertyName"/>.
         /// </summary>
         /// <param name="propertyName">The name of the property (used in the <see cref="INotifyPropertyChanged.PropertyChanged"/> event). Optional, will be retrieved automatically using <see cref="CallerMemberNameAttribute"/>.</param>
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = "") =>
             PropertyChanged?.Invoke(this, GetPropertyChangedEventArgs(propertyName));
 
         /// <summary>
-        /// Sets a property's backing value and raises a <see cref="PropertyChanged"/> event, if necessary.
+        /// Sets a property's backing value and raises a <see cref="INotifyPropertyChanged.PropertyChanged"/> event, if necessary.
         /// </summary>
         /// <typeparam name="T">Type of the property and backing value.</typeparam>
         /// <param name="backingValue">Reference to the backing value.</param>
@@ -69,6 +71,32 @@ namespace UpbeatUI.ViewModel
             if (EqualityComparer<T>.Default.Equals(backingValue, newValue))
                 return false;
             backingValue = newValue;
+            RaisePropertyChanged(propertyName);
+            return true;
+        }
+
+        /// <summary>
+        /// Sets a property's backing value on a backing object and raises a <see cref="INotifyPropertyChanged.PropertyChanged"/> event, if necessary.
+        /// </summary>
+        /// <typeparam name="TClass">The type of the backing object containing the backing value.</typeparam>
+        /// <typeparam name="TValue">Type of the property and backing value.</typeparam>
+        /// <param name="backingObject">The backing object containing the backing property.</param>
+        /// <param name="backingExpression"></param>
+        /// <param name="newValue">The desired new value.</param>
+        /// <param name="propertyName">The name of the property (used in the <see cref="INotifyPropertyChanged.PropertyChanged"/> event). Optional, will be retrieved automatically using <see cref="CallerMemberNameAttribute"/>.</param>
+        /// <returns>True if the newValue differed from the backingValue and a PropertyChanged needed to be raised; false otherwise.</returns>
+        protected bool SetProperty<TClass, TValue>(
+            TClass backingObject,
+            Expression<Func<TClass, TValue>> backingExpression,
+            TValue newValue,
+            [CallerMemberName] string propertyName = "")
+        {
+            var objectExpression = (MemberExpression)backingExpression?.Body ?? throw new ArgumentNullException(nameof(backingExpression));
+            var propertyInfo = objectExpression.Member as PropertyInfo ?? throw new ArgumentException($"Invalid backing expression.", nameof(backingExpression));
+            var backingValue = (TValue)propertyInfo.GetValue(backingObject);
+            if (EqualityComparer<TValue>.Default.Equals(backingValue, newValue))
+                return false;
+            propertyInfo.SetValue(backingObject, newValue);
             RaisePropertyChanged(propertyName);
             return true;
         }
