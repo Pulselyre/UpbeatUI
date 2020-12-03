@@ -81,7 +81,7 @@ namespace UpbeatUI.ViewModel
         /// <typeparam name="TClass">The type of the backing object containing the backing value.</typeparam>
         /// <typeparam name="TValue">Type of the property and backing value.</typeparam>
         /// <param name="backingObject">The backing object containing the backing property.</param>
-        /// <param name="backingExpression"></param>
+        /// <param name="backingExpression">An <see cref="Expression"/> that points to a specific property of type <typeparamref name="TValue"/> on <typeparamref name="TClass"/>.</param>
         /// <param name="newValue">The desired new value.</param>
         /// <param name="propertyName">The name of the property (used in the <see cref="INotifyPropertyChanged.PropertyChanged"/> event). Optional, will be retrieved automatically using <see cref="CallerMemberNameAttribute"/>.</param>
         /// <returns>True if the newValue differed from the backingValue and a PropertyChanged needed to be raised; false otherwise.</returns>
@@ -91,8 +91,9 @@ namespace UpbeatUI.ViewModel
             TValue newValue,
             [CallerMemberName] string propertyName = "")
         {
-            var objectExpression = (MemberExpression)backingExpression?.Body ?? throw new ArgumentNullException(nameof(backingExpression));
-            var propertyInfo = objectExpression.Member as PropertyInfo ?? throw new ArgumentException($"Invalid backing expression.", nameof(backingExpression));
+            var propertyInfo = ((backingExpression ?? throw new ArgumentNullException(nameof(backingExpression)))
+                ?.Body as MemberExpression)?.Member as PropertyInfo
+                ?? throw new ArgumentException($"Invalid backing expression.", nameof(backingExpression));
             var backingValue = (TValue)propertyInfo.GetValue(backingObject);
             if (EqualityComparer<TValue>.Default.Equals(backingValue, newValue))
                 return false;

@@ -23,7 +23,8 @@ namespace UpbeatUI.Tests
             {
                 testViewModel.InvalidModelField = 1;
                 Assert.Fail();
-            } catch (Exception) { }
+            }
+            catch (Exception e) { Assert.IsInstanceOf<ArgumentException>(e); }
             Assert.AreEqual(notifedPropertyName, "");
             Assert.AreEqual(testModel._backingField, 0);
 
@@ -31,8 +32,53 @@ namespace UpbeatUI.Tests
             {
                 testViewModel.InvalidModelMethod = 1;
                 Assert.Fail();
-            } catch (Exception) { }
+            }
+            catch (Exception e) { Assert.IsInstanceOf<ArgumentException>(e); }
             Assert.AreEqual(notifedPropertyName, "");
+
+            try
+            {
+                testViewModel.InvalidViewModelField = 1;
+                Assert.Fail();
+            }
+            catch (Exception e) { Assert.IsInstanceOf<ArgumentException>(e); }
+            Assert.AreEqual(notifedPropertyName, "");
+            Assert.AreEqual(testViewModel._backingField, 0);
+
+            try
+            {
+                testViewModel.InvalidViewModelMethod = 1;
+                Assert.Fail();
+            }
+            catch (Exception e) { Assert.IsInstanceOf<ArgumentException>(e); }
+            Assert.AreEqual(notifedPropertyName, "");
+
+            try
+            {
+                testViewModel.InvalidNullProperty = 1;
+                Assert.Fail();
+            }
+            catch (Exception e) { Assert.IsInstanceOf<ArgumentNullException>(e); }
+            Assert.AreEqual(notifedPropertyName, "");
+            Assert.AreEqual(testViewModel.BackingProperty, 0);
+        }
+
+        [Test]
+        public void Notifies()
+        {
+            var testModel = new TestModel();
+            var testViewModel = new TestViewModel(testModel);
+
+            var notifedPropertyName = "";
+            testViewModel.PropertyChanged += (o, e) => notifedPropertyName = e.PropertyName;
+            testViewModel.TriggerPropertyChangedEvent("test");
+            Assert.AreEqual(notifedPropertyName, "test");
+
+            var notifiedPropertyNames = new List<string>();
+            testViewModel.PropertyChanged += (o, e) => notifiedPropertyNames.Add(e.PropertyName);
+            testViewModel.TriggerPropertyChangedEvents("test1", "test2");
+            Assert.Contains("test1", notifiedPropertyNames);
+            Assert.Contains("test2", notifiedPropertyNames);
         }
 
         [Test]
@@ -59,24 +105,6 @@ namespace UpbeatUI.Tests
             Assert.AreEqual(testModel.BackingProperty, 1);
         }
 
-        [Test]
-        public void Notifies()
-        {
-            var testModel = new TestModel();
-            var testViewModel = new TestViewModel(testModel);
-
-            var notifedPropertyName = "";
-            testViewModel.PropertyChanged += (o, e) => notifedPropertyName = e.PropertyName;
-            testViewModel.TriggerPropertyChangedEvent("test");
-            Assert.AreEqual(notifedPropertyName, "test");
-
-            var notifiedPropertyNames = new List<string>();
-            testViewModel.PropertyChanged += (o, e) => notifiedPropertyNames.Add(e.PropertyName);
-            testViewModel.TriggerPropertyChangedEvents("test1", "test2");
-            Assert.Contains("test1", notifiedPropertyNames);
-            Assert.Contains("test2", notifiedPropertyNames);
-        }
-
         private class TestModel
         {
             public int _backingField;
@@ -93,6 +121,8 @@ namespace UpbeatUI.Tests
 
             public TestViewModel(TestModel testModel) =>
                 _testModel = testModel;
+
+            public int BackingProperty { get; set; }
 
             public int ModelField
             {
@@ -119,6 +149,28 @@ namespace UpbeatUI.Tests
                 get => _testModel.TestMethod();
                 set => SetProperty(_testModel, t => t.TestMethod(), value);
             }
+            public int InvalidViewModelField
+            {
+                get => _testModel._backingField;
+                set => SetProperty(_testModel, t => _backingField, value);
+            }
+            public int InvalidViewModelMethod
+            {
+                get => _testModel.TestMethod();
+                set => SetProperty(_testModel, t => TestMethod(), value);
+            }
+            public int InvalidViewModelProperty
+            {
+                get => _testModel.TestMethod();
+                set => SetProperty(_testModel, t => BackingProperty, value);
+            }
+            public int InvalidNullProperty
+            {
+                get => 1;
+                set => SetProperty(_testModel, null, value);
+            }
+
+            public int TestMethod() => 0;
 
             public void TriggerPropertyChangedEvent(string name) =>
                 RaisePropertyChanged(name);
