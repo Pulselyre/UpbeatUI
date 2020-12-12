@@ -35,6 +35,7 @@ namespace UpbeatUI.Extensions.Hosting
                             registerer.Invoke(_upbeatStack, _serviceProvider);
                         mainWindow = _upbeatHostBuilder.WindowCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.WindowCreator)} provided.");
                         mainWindow.DataContext = _upbeatStack;
+                        _upbeatStack.ViewModelsEmptyCallback = () => _hostApplicationLifetime.StopApplication();
                         baseViewModelOpen = _upbeatStack.OpenViewModelAsync(_upbeatHostBuilder.BaseViewModelParametersCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.BaseViewModelParametersCreator)} provided."));
                         mainWindow.Closing += MainWindowClosingRequested;
                         mainWindow.Show();
