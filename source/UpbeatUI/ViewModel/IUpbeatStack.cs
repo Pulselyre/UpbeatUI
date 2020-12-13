@@ -3,7 +3,6 @@
  * https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
  */
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
@@ -50,7 +49,9 @@ namespace UpbeatUI.ViewModel
         /// <typeparam name="TView">The Type of the <see cref="UIElement"/>.</typeparam>
         /// <param name="upbeatStack">The <see cref="UpbeatStack"/> to define the mapping on.</param>
         /// <param name="serviceProvider">The <see cref="IServiceProvider"/> that will be used to resolve dependencies.</param>
-        void MapViewModel<TParameters, TViewModel, TView>(IServiceProvider serviceProvider) where TView : UIElement;
+        /// <param name="allowNullServices">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
+        void MapViewModel<TParameters, TViewModel, TView>(IServiceProvider serviceProvider, bool allowNullServices = false)
+            where TView : UIElement;
 
         /// <summary>
         /// Sets the <see cref="UpbeatStack"/> to automatically map Parameters <see cref="Type"/>s to ViewModel <see cref="Type"/>s and View <see cref="Type"/>s using the default conventions.
@@ -60,7 +61,8 @@ namespace UpbeatUI.ViewModel
         /// <para>For example: "Demo.ViewModel.MessageViewModel+Parameters", "Demo.ViewModel.MessageViewModel", and "Demo.View.MessageControl".</para>
         /// </summary>
         /// <param name="serviceProvider">The <see cref="IServiceProvider"/> that will be used to resolve dependencies.</param>
-        void SetDefaultViewModelLocators(IServiceProvider serviceProvider);
+        /// <param name="allowNullServices">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
+        void SetDefaultViewModelLocators(IServiceProvider serviceProvider, bool allowNullServices = false);
 
         /// <summary>
         /// Sets delegates the <see cref="UpbeatStack"/> can use to automatically map a <see cref="string"/> representation of a Parameters <see cref="Type"/> to <see cref="string"/> represetantions of a ViewModel <see cref="Type"/> and a View <see cref="Type"/>.
@@ -72,7 +74,8 @@ namespace UpbeatUI.ViewModel
         /// <param name="parameterToViewLocator">A delegate to identify a <see cref="string"/> represetnation of a View <see cref="Type"/> from a <see cref="string"/> represetnation of a Parameters <see cref="Type"/>.
         /// <para>Note: The input <see cref="Type"/> is for the Parameters in the mapping, not the ViewModel.
         /// <para>Note: each <see cref="string"/> representation is a <see cref="Type.AssemblyQualifiedName"/></para></para></param>
-        void SetViewModelLocators(IServiceProvider serviceProvider, Func<string, string> parameterToViewModelLocator, Func<string, string> parameterToViewLocator);
+        /// <param name="allowNullServices">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
+        void SetViewModelLocators(IServiceProvider serviceProvider, Func<string, string> parameterToViewModelLocator, Func<string, string> parameterToViewLocator, bool allowNullServices = false);
 
         /// <summary>
         /// Sets delegates the <see cref="UpbeatStack"/> can use to automatically map a Parameters <see cref="Type"/> to a ViewModel <see cref="Type"/> and a View <see cref="Type"/>.
@@ -81,7 +84,8 @@ namespace UpbeatUI.ViewModel
         /// <param name="parameterToViewModelLocator">A delegate to locate a ViewModel <see cref="Type"/> from a Parameters <see cref="Type"/>.</param>
         /// <param name="parameterToViewLocator">A delegate to locate a View <see cref="Type"/> from a Parameters <see cref="Type"/>.
         /// <para>Note: The input <see cref="Type"/> represents the Parameters in the mapping, not the ViewModel.</para></param>
-        void SetViewModelLocators(IServiceProvider serviceProvider, Func<Type, Type> parameterToViewModelLocator, Func<Type, Type> parameterToViewLocator);
+        /// <param name="allowNullServices">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
+        void SetViewModelLocators(IServiceProvider serviceProvider, Func<Type, Type> parameterToViewModelLocator, Func<Type, Type> parameterToViewLocator, bool allowNullServices = false);
 
         /// <summary>
         /// Tries to close and dispose all open ViewModels from the <see cref="UpbeatStack"/>.

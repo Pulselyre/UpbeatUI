@@ -41,11 +41,11 @@ namespace UpbeatUI.Extensions.Hosting
             return this;
         }
 
-        public IHostedUpbeatBuilder MapViewModel<TParameters, TUpbeatViewModel, TView>()
+        public IHostedUpbeatBuilder MapViewModel<TParameters, TUpbeatViewModel, TView>(bool allowNullServices = false)
             where TView : UIElement
         {
             MappingRegisterers.Add(
-                (upbeatStack, serviceProvider) => upbeatStack.MapViewModel<TParameters, TUpbeatViewModel, TView>(serviceProvider));
+                (upbeatStack, serviceProvider) => upbeatStack.MapViewModel<TParameters, TUpbeatViewModel, TView>(serviceProvider, allowNullServices));
             return this;
         }
 
@@ -66,28 +66,38 @@ namespace UpbeatUI.Extensions.Hosting
             return this;
         }
 
-        public IHostedUpbeatBuilder SetDefaultViewModelLocators()
+        public IHostedUpbeatBuilder SetDefaultViewModelLocators(bool allowNullServices = false)
         {
             MappingRegisterers.Add(
-                (upbeatStack, serviceProvider) => upbeatStack.SetDefaultViewModelLocators(serviceProvider));
+                (upbeatStack, serviceProvider) => upbeatStack.SetDefaultViewModelLocators(
+                    serviceProvider,
+                    allowNullServices));
             return this;
         }
 
         public IHostedUpbeatBuilder SetViewModelLocators(Func<string, string> parameterToViewModelLocator,
-                                                         Func<string, string> parameterToViewLocator)
+                                                         Func<string, string> parameterToViewLocator,
+                                                         bool allowNullServices = false)
         {
             MappingRegisterers.Add((upbeatStack, serviceProvider) =>
-                upbeatStack.SetViewModelLocators(serviceProvider,
-                    parameterToViewModelLocator, parameterToViewLocator));
+                upbeatStack.SetViewModelLocators(
+                    serviceProvider,
+                    parameterToViewModelLocator,
+                    parameterToViewLocator,
+                    allowNullServices));
             return this;
         }
 
         public IHostedUpbeatBuilder SetViewModelLocators(Func<Type, Type> parameterToViewModelLocator,
-                                                         Func<Type, Type> parameterToViewLocator)
+                                                         Func<Type, Type> parameterToViewLocator,
+                                                         bool allowNullServices = false)
         {
             MappingRegisterers.Add((upbeatStack, serviceProvider) =>
-                upbeatStack.SetViewModelLocators(serviceProvider,
-                    parameterToViewModelLocator, parameterToViewLocator));
+                upbeatStack.SetViewModelLocators(
+                    serviceProvider,
+                    parameterToViewModelLocator,
+                    parameterToViewLocator,
+                    allowNullServices));
             return this;
         }
     }

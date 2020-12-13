@@ -63,9 +63,9 @@ namespace UpbeatUI.ViewModel
                 (service, parameters) => viewModelCreator(service, (TParameters)parameters));
         }
 
-        public void MapViewModel<TParameters, TViewModel, TView>(IServiceProvider serviceProvider)
+        public void MapViewModel<TParameters, TViewModel, TView>(IServiceProvider serviceProvider, bool allowNullServices = false)
             where TView : UIElement =>
-            MapViewModel(serviceProvider, typeof(TParameters), typeof(TViewModel), typeof(TView));
+            MapViewModel(serviceProvider, typeof(TParameters), typeof(TViewModel), typeof(TView), allowNullServices);
 
         public void OpenViewModel<TParameters>(TParameters parameters) =>
             OpenViewModel(parameters, null);
@@ -94,21 +94,25 @@ namespace UpbeatUI.ViewModel
             return taskCompletionSource.Task;
         }
 
-        public void SetDefaultViewModelLocators(IServiceProvider serviceProvider) =>
+        public void SetDefaultViewModelLocators(IServiceProvider serviceProvider, bool allowNullServices = false) =>
             SetViewModelLocators(serviceProvider,
                 (String parametersTypeString) => parametersTypeString.Replace("+Parameters", ""),
-                (String parametersTypeString) => parametersTypeString.Replace("ViewModel+Parameters", "Control").Replace(".ViewModel.", ".View."));
+                (String parametersTypeString) => parametersTypeString.Replace("ViewModel+Parameters", "Control").Replace(".ViewModel.", ".View."),
+                allowNullServices);
 
         public void SetViewModelLocators(IServiceProvider serviceProvider,
                                          Func<string, string> parameterToViewModelLocator,
-                                         Func<string, string> parameterToViewLocator) =>
+                                         Func<string, string> parameterToViewLocator,
+                                         bool allowNullServices = false) =>
             SetViewModelLocators(serviceProvider,
                 (Type parametersType) => Type.GetType(parameterToViewModelLocator(parametersType.AssemblyQualifiedName)),
-                (Type parametersType) => Type.GetType(parameterToViewLocator(parametersType.AssemblyQualifiedName)));
+                (Type parametersType) => Type.GetType(parameterToViewLocator(parametersType.AssemblyQualifiedName)),
+                allowNullServices);
 
         public void SetViewModelLocators(IServiceProvider serviceProvider,
                                          Func<Type, Type> parameterToViewModelLocator,
-                                         Func<Type, Type> parameterToViewLocator)
+                                         Func<Type, Type> parameterToViewLocator,
+                                         bool allowNullServices = false)
         {
             _ = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _ = parameterToViewModelLocator ?? throw new ArgumentNullException(nameof(parameterToViewModelLocator));
@@ -117,7 +121,7 @@ namespace UpbeatUI.ViewModel
             {
                 var viewModelType = parameterToViewModelLocator(parametersType) ?? throw new InvalidOperationException($"Unable to locate ViewModel Type from Parameters Type: {parametersType.GetType().Name}");
                 var viewType = parameterToViewLocator(parametersType) ?? throw new InvalidOperationException($"Unable to locate View Type from Parameters Type: {parametersType.GetType().Name}");
-                MapViewModel(serviceProvider, parametersType, viewModelType, viewType);
+                MapViewModel(serviceProvider, parametersType, viewModelType, viewType, allowNullServices);
             };
         }
 
@@ -151,7 +155,7 @@ namespace UpbeatUI.ViewModel
             _viewModelControlMappings[viewModelType] = viewType;
         }
 
-        private void MapViewModel(IServiceProvider serviceProvider, Type parametersType, Type viewModelType, Type viewType)
+        private void MapViewModel(IServiceProvider serviceProvider, Type parametersType, Type viewModelType, Type viewType, bool allowNullServices = false)
         {
             _ = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _ = parametersType ?? throw new ArgumentNullException(nameof(parametersType));
@@ -163,10 +167,21 @@ namespace UpbeatUI.ViewModel
             var constructor = constructors[0];
             var serviceType = typeof(IUpbeatService);
             MapViewModel(parametersType, viewModelType, viewType,
-                (service, parameters) => Convert.ChangeType(constructor.Invoke(constructor.GetParameters().Select(
-                        p => p.ParameterType == typeof(IUpbeatService) ? service
-                            : p.ParameterType == parametersType ? parameters
-                            : serviceProvider.GetService(p.ParameterType)).ToArray()), viewModelType));
+                (service, parameters) => Convert.ChangeType(
+                    constructor.Invoke(constructor.GetParameters()
+                        .Select(p =>
+                        {
+                            if (p.ParameterType == typeof(IUpbeatService))
+                                return service;
+                            if (p.ParameterType == parametersType)
+                                return parameters;
+                            var locatedService = serviceProvider.GetService(p.ParameterType);
+                            if (locatedService == null && !allowNullServices)
+                                throw new InvalidOperationException($"No service for type '{p.ParameterType.FullName}' has been registered.");
+                            return locatedService;
+                        })
+                        .ToArray()),
+                    viewModelType));
         }
 
         private void RemoveViewModel(object viewModel)
