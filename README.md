@@ -14,7 +14,7 @@ Please note that UpbeatUI is fairly new and may have unidentified bugs or perfor
 UpbeatUI implementations are available as NuGet packages:
 
 * [![Nuget](https://img.shields.io/nuget/v/UpbeatUI)](https://www.nuget.org/packages/UpbeatUI/) - **UpbeatUI**: Basic implementation requiring manual setup and teardown.
-* [![Nuget](https://img.shields.io/nuget/v/UpbeatUI.Extensions.DependencyInjection)](https://www.nuget.org/packages/UpbeatUI.Extensions.DependencyInjection/) - **UpbeatUI.Extensions.DependencyInjection**: An implementation integrated with [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection) (**IServiceProvider*) that provides dependency injection capabilities and naming-convention support for ViewModels.
+* [![Nuget](https://img.shields.io/nuget/v/UpbeatUI.Extensions.DependencyInjection)](https://www.nuget.org/packages/UpbeatUI.Extensions.DependencyInjection/) - **UpbeatUI.Extensions.DependencyInjection**: An implementation integrated with [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection) (**IServiceProvider**) that provides dependency injection capabilities and automatic Parameters-ViewModel-View mapping via naming convention.
 * [![Nuget](https://img.shields.io/nuget/v/UpbeatUI.Extensions.Hosting)](https://www.nuget.org/packages/UpbeatUI.Extensions.Hosting/) - **UpbeatUI.Extensions.Hosting**: An implementation integrated with [Microsoft.Extensions.Hosting](https://www.nuget.org/packages/Microsoft.Extensions.Hosting) (**IHostBuilder**) for easy setup and automatic teardown.
 
 ## Examples
