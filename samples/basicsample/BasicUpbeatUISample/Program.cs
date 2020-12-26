@@ -24,7 +24,7 @@ namespace UpbeatUISample
                 // The UpbeatStack is the central data structure for an UpbeatUI app. One must be created for the life of the application and should be disposed at the end.
                 using (var upbeatStack = new UpbeatStack())
                 {
-                    // The UpbeatStack depends on mappings of parameter types to IUpbeatViewModels and controls to determine which IUpbeatViewMOdel to create and which View to show.
+                    // The UpbeatStack depends on mappings of parameter types to ViewModels and controls to determine which ViewMOdel to create and which View to show.
                     upbeatStack.MapViewModel<BottomViewModel.Parameters, BottomViewModel, BottomControl>(
                         (service, parameters) => new BottomViewModel(service, parameters));
                     upbeatStack.MapViewModel<MenuViewModel.Parameters, MenuViewModel, MenuControl>(
@@ -38,7 +38,7 @@ namespace UpbeatUISample
                     upbeatStack.MapViewModel<ConfirmPopupViewModel.Parameters, ConfirmPopupViewModel, ConfirmPopupControl>(
                         (service, parameters) => new ConfirmPopupViewModel(service, parameters));
 
-                    // The included UpdateMainWindow class already provides the necessary controls to display Views for IUpbeatViewModels in a UpbeatStack set as the DataContext.
+                    // The included UpdateMainWindow class already provides the necessary controls to display Views for ViewModels in a UpbeatStack set as the DataContext.
                     var mainWindow = new UpbeatMainWindow()
                     {
                         DataContext = upbeatStack,
@@ -47,7 +47,7 @@ namespace UpbeatUISample
                         BlurColor = new SolidColorBrush(Brushes.OrangeRed.Color) { Opacity = 0.5 }, // The brush to overlay Views underneath the top View.
                     };
 
-                    // Override the default Window Closing event to ensure that the UpbeatStack and all of its children IUpbeatViewModels are properly disposed.
+                    // Override the default Window Closing event to ensure that the UpbeatStack and all of its children ViewModels are properly disposed.
                     CancelEventHandler closingHandler =
                         async (sender, e) =>
                         {
