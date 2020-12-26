@@ -30,9 +30,19 @@ By default, using UpbeatUI with **IHostBuilder** enables automatic mapping betwe
 
 >Note: In the default convention, the ViewModelParameters class must be a nested class within the ViewModel class (hence, the '+').
 
+An **IHostBuilder** UpbeatUI applciation will create ViewModels and perform constructor dependency injection automatically using the **IServiceProvider** created by the **IHostBuilder**. UpbeatUI with dependency injection supports Scoped dependencies, where each ViewModel is an independent scope.
+
 ## Initiating Manually
 
-To start an UpbeatUI application without **IHostBuilder**, both the containing window and the [**UpbeatStack**](source/UpbeatUI/ViewModel/UpbeatStack.cs) must be created, configured, and wired together manually. If the application uses an **IServiceProvider**, mapping by convention is possible using the *SetDefaultViewModelLocators* method. Otherwise, mappings between ViewModelParameters, ViewModels, and Views will also need to be manually set and factory methods provided. The process is considerably more involved, so please see the comments in the [**Program.cs**](samples/basicsample/BasicUpbeatUISample/Program.cs) file in the (basic sample)(samples/basicsample) for a guidance.
+An UpbeatUI application can be started manually with automatic Dependency Injection and without.
+
+### Without Dependency Injection
+
+To start an UpbeatUI application without **IHostBuilder** or an **IServiceProvider**, both the containing window and the [**UpbeatStack**](source/UpbeatUI/ViewModel/UpbeatStack.cs) must be created, configured, and wired together manually. Mappings between ViewModelParameters, ViewModels, and Views will also need to be manually set and factory methods provided. The process is considerably more involved, so please see the comments in the [**Program.cs**](samples/basicsample/BasicUpbeatUISample/Program.cs) file in the (basic sample)(samples/basicsample) for a guidance.
+
+### With Dependency Injection
+
+To start an UpbeatUI application without **IHostBuilder** but with an **IServiceProvider** for dependency injection, the containing window and the [**ServiceProvidedUpbeatStack**](source/UpbeatUI.Extensions.DependencyInjection/ServiceProvidedUpbeatStack.cs) must be created, configured, and wired together manually. However, mappings between ViewModelParameters, ViewModels, and Views do not need to be set manually. Using [**ServiceProvidedUpbeatStack**](source/UpbeatUI.Extensions.DependencyInjection/ServiceProvidedUpbeatStack.cs), mapping by convention is possible using the *SetDefaultViewModelLocators* method, or with more control using the other *SetViewModelLocators* methods. UpbeatUI will create ViewModels and perform constructor dependency injection automatically using the **IServiceProvider** provided in the constructor. UpbeatUI with dependency injection supports Scoped dependencies, where each ViewModel is an independent scope.
 
 ## Using [**IUpbeatService**](source/UpbeatUI/ViewModel/IUpbeatService.cs)
 
