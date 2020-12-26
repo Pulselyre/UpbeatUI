@@ -19,15 +19,13 @@ namespace UpbeatUI.ViewModel
     /// </summary>
     public partial class UpbeatStack : BaseViewModel, IUpbeatStack, IDisposable
     {
-        private delegate object Instantiator(IUpbeatService upbeatService, object parameters);
+        protected delegate object ViewModelInstantiator(IUpbeatService upbeatService, object parameters);
 
-        private readonly IDictionary<Type, Instantiator> _instantiators = new Dictionary<Type, Instantiator>();
+        protected readonly IDictionary<Type, Type> _viewModelControlMappings = new Dictionary<Type, Type>();
+        protected readonly IDictionary<Type, ViewModelInstantiator> _viewModelInstantiators = new Dictionary<Type, ViewModelInstantiator>();
         private readonly ObservableCollection<object> _openViewModels = new ObservableCollection<object>();
         private readonly IDictionary<object, UpbeatService> _openViewModelServices = new Dictionary<object, UpbeatService>();
         private readonly bool _updateOnRender;
-        private readonly IDictionary<Type, Type> _viewModelCreators = new Dictionary<Type, Type>();
-        private readonly IDictionary<Type, Type> _viewModelControlMappings = new Dictionary<Type, Type>();
-        private Action<Type> _autoMapper;
 
         /// <summary>
         /// Initializes an empty <see cref="UpbeatStack"/>.
@@ -54,6 +52,9 @@ namespace UpbeatUI.ViewModel
                 upbeatViewModel.Dispose();
         }
 
+        public Type GetViewTypeFromViewModelType(Type viewModelType) =>
+            _viewModelControlMappings.TryGetValue(viewModelType, out var viewType) ? viewType : null;
+
         public void MapViewModel<TParameters, TViewModel, TView>(
             Func<IUpbeatService, TParameters, TViewModel> viewModelCreator)
             where TView : UIElement
@@ -67,14 +68,14 @@ namespace UpbeatUI.ViewModel
         public void OpenViewModel<TParameters>(TParameters parameters) =>
             OpenViewModel(parameters, null);
 
-        public void OpenViewModel<TParameters>(TParameters parameters, Action closedCallback)
+        public virtual void OpenViewModel<TParameters>(TParameters parameters, Action closedCallback)
         {
             var parametersType = parameters.GetType();
             var upbeatViewModelService = new UpbeatService(_updateOnRender, OpenViewModel, closedCallback);
             using (var d = new UpbeatServiceDeferrer(upbeatViewModelService))
             {
                 var viewModel = upbeatViewModelService.Activate(
-                    service => _instantiators[_viewModelCreators[parametersType]](service, parameters),
+                    service => _viewModelInstantiators[parametersType](service, parameters),
                     vm => _openViewModels.Last() == vm,
                     vm => RemoveViewModel(vm));
                 _openViewModelServices[viewModel] = upbeatViewModelService;
@@ -110,10 +111,9 @@ namespace UpbeatUI.ViewModel
         private bool CanRemoveTopViewModel()
             => _openViewModels.Count > 0;
 
-        private void MapViewModel(Type parametersType, Type viewModelType, Type viewType, Instantiator viewModelCreator)
+        private void MapViewModel(Type parametersType, Type viewModelType, Type viewType, ViewModelInstantiator viewModelCreator)
         {
-            _instantiators[viewModelType] = viewModelCreator;
-            _viewModelCreators[parametersType] = viewModelType;
+            _viewModelInstantiators[parametersType] = viewModelCreator;
             _viewModelControlMappings[viewModelType] = viewType;
         }
 

@@ -33,6 +33,13 @@ namespace UpbeatUI.ViewModel
         Action ViewModelsEmptyCallback { get; set; }
 
         /// <summary>
+        /// Gets a View <see cref="Type"/> that is mapped to the <paramref name="viewModelType"/> <see cref="Type"/>.
+        /// </summary>
+        /// <param name="viewModelType">The ViewModel <see cref="Type"/> to get the mapped View <see cref="Type"/> for.</param>
+        /// <returns>The mapped View <see cref="Type"/> or null if not mapped.</returns>
+        public Type GetViewTypeFromViewModelType(Type viewModelType);
+
+        /// <summary>
         /// Defines a mapping between the <typeparamref name="TParameters"/> type, the <typeparamref name="TViewModel"/> Type and the <typeparamref name="TView"/> Type.
         /// </summary>
         /// <typeparam name="TParameters">The type of the parameters used to create <typeparamref name="TViewModel"/>.</typeparam>
