@@ -14,11 +14,12 @@ Please note that UpbeatUI is fairly new and may have unidentified bugs or perfor
 UpbeatUI implementations are available as NuGet packages:
 
 * [![Nuget](https://img.shields.io/nuget/v/UpbeatUI)](https://www.nuget.org/packages/UpbeatUI/) - **UpbeatUI**: Basic implementation requiring manual setup and teardown.
+* [![Nuget](https://img.shields.io/nuget/v/UpbeatUI.Extensions.DependencyInjection)](https://www.nuget.org/packages/UpbeatUI.Extensions.DependencyInjection/) - **UpbeatUI.Extensions.DependencyInjection**: An implementation integrated with [Microsoft.Extensions.DependencyInjection](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection) (**IServiceProvider*) that provides dependency injection capabilities and naming-convention support for ViewModels.
 * [![Nuget](https://img.shields.io/nuget/v/UpbeatUI.Extensions.Hosting)](https://www.nuget.org/packages/UpbeatUI.Extensions.Hosting/) - **UpbeatUI.Extensions.Hosting**: An implementation integrated with [Microsoft.Extensions.Hosting](https://www.nuget.org/packages/Microsoft.Extensions.Hosting) (**IHostBuilder**) for easy setup and automatic teardown.
 
 ## Examples
 
-Two samples are included: one showing [manual setup](samples/basicsample) and teardown and one showing [automatic setup](samples/hostedsample) using an **IHostBuilder**. Both samples demonstrate the following capabilities:
+Three samples are included: one showing [manual setup](samples/basicsample) and teardown, one showing manual setup and teardown with [dependency injection](samples/serviceprovidedsample) using an **IServiceProvider**, and one showing [automatic setup](samples/hostedsample) using an **IHostBuilder**. All samples demonstrate the following capabilities:
 
 ![UpbeatUI Sample](https://user-images.githubusercontent.com/20475952/99129911-c04c2c00-25c3-11eb-8059-50abb76805ea.gif)
 

@@ -31,7 +31,7 @@ namespace UpbeatUI.ViewModel
         public void Synchronize<TSource>(Action<TSource, TSyncable> synchronizer, params IEnumerable<TSource>[] sources)
         {
             if (typeof(TSyncable).GetConstructor(Type.EmptyTypes) == null)
-                throw new Exception("Type of " + typeof(TSyncable).Name + " does not provide a default constructor.");
+                throw new Exception("Type of " + typeof(TSyncable).FullName + " does not provide a default constructor.");
             Synchronize(
                 () =>
                 {
@@ -78,7 +78,7 @@ namespace UpbeatUI.ViewModel
         public SynchronizableCollection(Action<TSource, TSyncable> synchronizer)
         {
             if (typeof(TSyncable).GetConstructor(Type.EmptyTypes) == null)
-                throw new Exception("Type of " + typeof(TSyncable).Name + " does not provide a default constructor.");
+                throw new Exception("Type of " + typeof(TSyncable).FullName + " does not provide a default constructor.");
             _synchronizer = synchronizer;
         }
 

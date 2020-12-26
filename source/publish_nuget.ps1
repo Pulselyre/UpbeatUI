@@ -22,3 +22,7 @@ dotnet nuget push "UpbeatUI\bin\Release\UpbeatUI.$($version.Major).$($version.Mi
 Write-Host "`n`n*** Publishing UpbeatUI.Extensions.Hosting to Nuget ***`n`n"
 $version = [Version] $([Xml] (Get-Content .\UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj)).Project.PropertyGroup.Version
 dotnet nuget push "UpbeatUI.Extensions.Hosting\bin\Release\UpbeatUI.Extensions.Hosting.$($version.Major).$($version.Minor).$($version.Build).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
+
+Write-Host "`n`n*** Publishing UpbeatUI.Extensions.DependencyInjection to Nuget ***`n`n"
+$version = [Version] $([Xml] (Get-Content .\UpbeatUI.Extensions.DependencyInjection\UpbeatUI.Extensions.DependencyInjection.csproj)).Project.PropertyGroup.Version
+dotnet nuget push "UpbeatUI.Extensions.DependencyInjection\bin\Release\UpbeatUI.Extensions.DependencyInjection.$($version.Major).$($version.Minor).$($version.Build).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"

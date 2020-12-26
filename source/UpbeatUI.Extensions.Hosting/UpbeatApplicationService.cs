@@ -5,7 +5,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using UpbeatUI.ViewModel;
+using UpbeatUI.Extensions.DependencyInjection;
 
 namespace UpbeatUI.Extensions.Hosting
 {
@@ -13,16 +13,16 @@ namespace UpbeatUI.Extensions.Hosting
     {
         protected readonly HostedUpbeatBuilder _upbeatHostBuilder;
         protected readonly IServiceProvider _serviceProvider;
-        protected readonly UpbeatStack _upbeatStack;
+        protected readonly ServiceProvidedUpbeatStack _upbeatStack;
         protected readonly IHostApplicationLifetime _hostApplicationLifetime;
-        protected Task _applicationTask;
+        protected readonly TaskCompletionSource<bool> _applicationTaskSource = new TaskCompletionSource<bool>();
 
         protected UpbeatApplicationService(HostedUpbeatBuilder upbeatHostBuilder, IServiceProvider serviceProvider, IHostApplicationLifetime hostApplicationLifetime)
         {
             _upbeatHostBuilder = upbeatHostBuilder ?? throw new ArgumentNullException(nameof(upbeatHostBuilder));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _hostApplicationLifetime = hostApplicationLifetime ?? throw new ArgumentNullException(nameof(hostApplicationLifetime));
-            _upbeatStack = new UpbeatStack();
+            _upbeatStack = new ServiceProvidedUpbeatStack(_serviceProvider);
         }
 
         public async void CloseUpbeatApplication()

@@ -18,7 +18,7 @@ namespace UpbeatUI.View.Converters
     public class UpbeatViewSelector : DataTemplateSelector
     {
         private readonly IDictionary<Type, DataTemplate> _templateCache = new Dictionary<Type, DataTemplate>();
-        private UpbeatStack _upbeatStack;
+        private IUpbeatStack _upbeatStack;
 
         /// <summary>
         /// Returns a <see cref="DataTemplate"/> for the View mappened to the bound ViewModel using the parent <see cref="UpbeatStack"/>.
@@ -32,9 +32,9 @@ namespace UpbeatUI.View.Converters
             if (_upbeatStack is null)
             {
                 var element = (FrameworkElement)container;
-                while (!(element.DataContext is UpbeatStack))
+                while (!(element.DataContext is IUpbeatStack))
                     element = (FrameworkElement)VisualTreeHelper.GetParent(element);
-                _upbeatStack = (UpbeatStack)element.DataContext;
+                _upbeatStack = (IUpbeatStack)element.DataContext;
             }
             var contextType = item?.GetType() ?? typeof(object);
             if (_templateCache.TryGetValue(contextType, out var dataTemplate))
@@ -43,7 +43,7 @@ namespace UpbeatUI.View.Converters
             dataTemplate = controlType != null ? (DataTemplate)XamlReader.Parse(
                     $"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xmlns:ns=\"clr-namespace:{controlType.Namespace};assembly={controlType.Assembly.FullName}\"><ns:{controlType.Name} /></DataTemplate>")
                 : (DataTemplate)XamlReader.Parse(
-                    $"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"><Label Content=\"{contextType.GetType().Name}\" /></DataTemplate>");
+                    $"<DataTemplate xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"><Label Content=\"{contextType.GetType().FullName}\" /></DataTemplate>");
             _templateCache[contextType] = dataTemplate;
             return dataTemplate;
         }
