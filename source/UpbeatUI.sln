@@ -6,7 +6,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpbeatUI", "UpbeatUI\Upbeat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpbeatUI.Extensions.Hosting", "UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj", "{8427772B-7563-400A-8011-8B5E49A4FFD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpbeatUI.Tests", "UpbeatUI.Tests\UpbeatUI.Tests.csproj", "{A8C41BD6-00F7-49AA-AA26-0F7F75772F6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpbeatUI.Tests", "UpbeatUI.Tests\UpbeatUI.Tests.csproj", "{A8C41BD6-00F7-49AA-AA26-0F7F75772F6E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UpbeatUI.Extensions.DependencyInjection", "UpbeatUI.Extensions.DependencyInjection\UpbeatUI.Extensions.DependencyInjection.csproj", "{A6B47069-1565-47AF-8707-FCC100E0EA9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,10 @@ Global
 		{A8C41BD6-00F7-49AA-AA26-0F7F75772F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8C41BD6-00F7-49AA-AA26-0F7F75772F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8C41BD6-00F7-49AA-AA26-0F7F75772F6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6B47069-1565-47AF-8707-FCC100E0EA9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6B47069-1565-47AF-8707-FCC100E0EA9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6B47069-1565-47AF-8707-FCC100E0EA9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6B47069-1565-47AF-8707-FCC100E0EA9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
