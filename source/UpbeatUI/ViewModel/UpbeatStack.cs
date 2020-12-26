@@ -30,6 +30,7 @@ namespace UpbeatUI.ViewModel
         /// <summary>
         /// Initializes an empty <see cref="UpbeatStack"/>.
         /// </summary>
+        /// <param name="updateOnRender">True to have the <see cref="UpbeatStack"/> execute any UppdateCallback <see cref="Action"/>s registered by ViewModels on each WPF frame render; false to only execute UpdateCallback <see cref="Action"/>s manually.</param>
         public UpbeatStack(bool updateOnRender = true)
         {
             _updateOnRender = updateOnRender;
