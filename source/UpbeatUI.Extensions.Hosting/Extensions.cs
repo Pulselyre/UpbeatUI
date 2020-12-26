@@ -23,7 +23,7 @@ namespace UpbeatUI.Extensions.Hosting
             this IHostBuilder hostBuilder, Func<object> baseViewModelParametersCreator,
             Action<IHostedUpbeatBuilder> configure = null) =>
             hostBuilder.ConfigureServices(
-                serviceCollection => serviceCollection
+                (hostBuilderContext, serviceCollection) => serviceCollection
                     .AddSingleton<IHostedUpbeatBuilder, HostedUpbeatBuilder>()
                     .AddSingleton(
                         sp =>
