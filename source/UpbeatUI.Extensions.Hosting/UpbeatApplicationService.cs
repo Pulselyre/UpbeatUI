@@ -15,7 +15,7 @@ namespace UpbeatUI.Extensions.Hosting
         protected readonly IServiceProvider _serviceProvider;
         protected readonly ServiceProvidedUpbeatStack _upbeatStack;
         protected readonly IHostApplicationLifetime _hostApplicationLifetime;
-        protected Task _applicationTask;
+        protected readonly TaskCompletionSource<bool> _applicationTaskSource = new TaskCompletionSource<bool>();
 
         protected UpbeatApplicationService(HostedUpbeatBuilder upbeatHostBuilder, IServiceProvider serviceProvider, IHostApplicationLifetime hostApplicationLifetime)
         {
