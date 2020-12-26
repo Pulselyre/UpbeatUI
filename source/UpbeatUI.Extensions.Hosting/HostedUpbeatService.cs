@@ -32,7 +32,7 @@ namespace UpbeatUI.Extensions.Hosting
                     try
                     {
                         foreach (var registerer in _upbeatHostBuilder.MappingRegisterers ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.MappingRegisterers)} provided."))
-                            registerer.Invoke(_upbeatStack, _serviceProvider);
+                            registerer.Invoke(_upbeatStack);
                         mainWindow = _upbeatHostBuilder.WindowCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.WindowCreator)} provided.");
                         mainWindow.DataContext = _upbeatStack;
                         _upbeatStack.ViewModelsEmptyCallback = () => _hostApplicationLifetime.StopApplication();

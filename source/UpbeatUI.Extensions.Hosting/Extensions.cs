@@ -13,18 +13,6 @@ namespace UpbeatUI.Extensions.Hosting
     public static class Extensions
     {
         /// <summary>
-        /// Defines a mapping between the <typeparamref name="TParameters"/> type, the <typeparamref name="TViewModel"/> Type and the <typeparamref name="TView"/> Type. The <see cref="IHost"/> will be used to resolve dependencies when creating the <typeparamref name="TViewModel"/>.
-        /// </summary>
-        /// <typeparam name="TParameters">The type of the parameters used to create <typeparamref name="TViewModel"/>s.</typeparam>
-        /// <typeparam name="TViewModel">The type of the ViewModel created from a <typeparamref name="TParameters"/>.</typeparam>
-        /// <typeparam name="TView">The Type of the <see cref="UIElement"/>.</typeparam>
-        /// <param name="upbeatStack">The <see cref="UpbeatStack"/> to define the mapping on.</param>
-        /// <param name="host">The <see cref="IHost"/> that will be used to resolve dependencies.</param>
-        public static void MapViewModel<TParameters, TViewModel, TView>(this UpbeatStack upbeatStack, IHost host)
-            where TView : UIElement =>
-            upbeatStack.MapViewModel<TParameters, TViewModel, TView>(host.Services);
-
-        /// <summary>
         /// Configures an <see cref="IHostBuilder"/> to create and start a <see cref="IHostedUpbeatService"/> to manage the <see cref="UpbeatStack"/> and main <see cref="Window"/>.
         /// </summary>
         /// <param name="hostBuilder">The <see cref="IHostBuilder"/> instance to configure UpbeatUI on.</param>

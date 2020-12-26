@@ -39,9 +39,9 @@ namespace UpbeatUI.Extensions.Hosting
         /// <typeparam name="TParameters">The type of the parameters used to create <typeparamref name="TViewModel"/>s.</typeparam>
         /// <typeparam name="TViewModel">The type of the ViewModel created from a <typeparamref name="TParameters"/>.</typeparam>
         /// <typeparam name="TView">The Type of the <see cref="UIElement"/>.</typeparam>
-        /// <param name="allowNullServices">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
+        /// <param name="allowUnresolvedDependencies">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
         /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
-        IHostedUpbeatBuilder MapViewModel<TParameters, TViewModel, TView>(bool allowNullServices = false)
+        IHostedUpbeatBuilder MapViewModel<TParameters, TViewModel, TView>(bool allowUnresolvedDependencies = false)
             where TView : UIElement;
 
         /// <summary>
@@ -75,9 +75,9 @@ namespace UpbeatUI.Extensions.Hosting
         /// <para>View class names must follow the pattern of: "{BaseNamespace}.View.{Name}Control".</para>
         /// <para>For example: "Demo.ViewModel.MessageViewModel+Parameters", "Demo.ViewModel.MessageViewModel", and "Demo.View.MessageControl".</para>
         /// </summary>
-        /// <param name="allowNullServices">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
+        /// <param name="allowUnresolvedDependencies">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
         /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
-        IHostedUpbeatBuilder SetDefaultViewModelLocators(bool allowNullServices = false);
+        IHostedUpbeatBuilder SetDefaultViewModelLocators(bool allowUnresolvedDependencies = false);
 
         /// <summary>
         /// Sets delegates the <see cref="UpbeatStack"/> can use to automatically map a <see cref="string"/> representation of a Parameters <see cref="Type"/> to <see cref="string"/> represetantions of a ViewModel <see cref="Type"/> and a View <see cref="Type"/>.
@@ -88,11 +88,11 @@ namespace UpbeatUI.Extensions.Hosting
         /// <param name="parameterToViewLocator">A delegate to identify a <see cref="string"/> represetnation of a View <see cref="Type"/> from a <see cref="string"/> represetnation of a Parameters <see cref="Type"/>.
         /// <para>Note: The input <see cref="Type"/> is for the Parameters in the mapping, not the ViewModel.</para>
         /// <para>Note: each <see cref="string"/> representation is a <see cref="Type.AssemblyQualifiedName"/></para></param>
-        /// <param name="allowNullServices">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
+        /// <param name="allowUnresolvedDependencies">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
         /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
         IHostedUpbeatBuilder SetViewModelLocators(Func<string, string> parameterToViewModelLocator,
                                                   Func<string, string> parameterToViewLocator,
-                                                  bool allowNullServices = false);
+                                                  bool allowUnresolvedDependencies = false);
 
         /// <summary>
         /// Sets delegates the <see cref="UpbeatStack"/> can use to automatically map a Parameters <see cref="Type"/> to a ViewModel <see cref="Type"/> and a View <see cref="Type"/>.
@@ -100,10 +100,10 @@ namespace UpbeatUI.Extensions.Hosting
         /// <param name="parameterToViewModelLocator">A delegate to locate a ViewModel <see cref="Type"/> from a Parameters <see cref="Type"/>.</param>
         /// <param name="parameterToViewLocator">A delegate to locate a View <see cref="Type"/> from a Parameters <see cref="Type"/>.
         /// <para>Note: The input <see cref="Type"/> represents the Parameters in the mapping, not the ViewModel.</para></param>
-        /// <param name="allowNullServices">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
+        /// <param name="allowUnresolvedDependencies">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
         /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
         IHostedUpbeatBuilder SetViewModelLocators(Func<Type, Type> parameterToViewModelLocator,
                                                   Func<Type, Type> parameterToViewLocator,
-                                                  bool allowNullServices = false);
+                                                  bool allowUnresolvedDependencies = false);
     }
 }

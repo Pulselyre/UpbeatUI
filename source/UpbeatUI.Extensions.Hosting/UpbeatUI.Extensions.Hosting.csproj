@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UpbeatUI\UpbeatUI.csproj" />
+    <ProjectReference Include="..\UpbeatUI.Extensions.DependencyInjection\UpbeatUI.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
 </Project>
