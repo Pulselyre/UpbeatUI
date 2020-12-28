@@ -12,29 +12,27 @@ namespace UpbeatUI.Extensions.Hosting
     internal class UpbeatApplicationService : IUpbeatApplicationService, IDisposable
     {
         protected readonly HostedUpbeatBuilder _upbeatHostBuilder;
-        protected readonly IServiceProvider _serviceProvider;
         protected readonly ServiceProvidedUpbeatStack _upbeatStack;
         protected readonly IHostApplicationLifetime _hostApplicationLifetime;
         protected readonly TaskCompletionSource<bool> _applicationTaskSource = new TaskCompletionSource<bool>();
+        protected readonly TaskCompletionSource<bool> _forcedClosedTaskSource = new TaskCompletionSource<bool>();
 
         protected UpbeatApplicationService(HostedUpbeatBuilder upbeatHostBuilder, IServiceProvider serviceProvider, IHostApplicationLifetime hostApplicationLifetime)
         {
             _upbeatHostBuilder = upbeatHostBuilder ?? throw new ArgumentNullException(nameof(upbeatHostBuilder));
-            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _hostApplicationLifetime = hostApplicationLifetime ?? throw new ArgumentNullException(nameof(hostApplicationLifetime));
-            _upbeatStack = new ServiceProvidedUpbeatStack(_serviceProvider);
+            _upbeatStack = new ServiceProvidedUpbeatStack(serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider)));
         }
 
         public async void CloseUpbeatApplication()
         {
             try
             {
-                if (await _upbeatStack.TryCloseAllViewModelsAsync())
-                    _hostApplicationLifetime.StopApplication();
+                await _upbeatStack.TryCloseAllViewModelsAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                _hostApplicationLifetime.StopApplication();
+                _forcedClosedTaskSource.SetException(e);
             }
         }
 
