@@ -17,7 +17,7 @@ namespace UpbeatUISample.ViewModel
         public BottomViewModel(IUpbeatService upbeatService, Parameters parameters)
         {
             _upbeatService = upbeatService;
-            _upbeatService.SetCloseCallback(AskBeforeClosingAsync);
+            _upbeatService.RegisterCloseCallback(AskBeforeClosingAsync);
 
             OpenCenterPopupCommand = new DelegateCommand(
                 () => _upbeatService.OpenViewModel(

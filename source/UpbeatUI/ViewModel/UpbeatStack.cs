@@ -35,7 +35,9 @@ namespace UpbeatUI.ViewModel
         {
             _updateOnRender = updateOnRender;
             ViewModels = new ReadOnlyObservableCollection<object>(_openViewModels);
-            RemoveTopViewModelCommand = new DelegateCommand(RemoveTopViewModelAsync, CanRemoveTopViewModel, singleExecution: false);
+            RemoveTopViewModelCommand = new DelegateCommand(
+                () => TryRemoveViewModelAsync(_openViewModels.Last()),
+                CanRemoveTopViewModel, singleExecution: false);
             if (_updateOnRender)
                 CompositionTarget.Rendering += UpdateViewModelProperties;
         }
@@ -78,7 +80,7 @@ namespace UpbeatUI.ViewModel
                 var viewModel = upbeatViewModelService.Activate(
                     service => _viewModelInstantiators[parametersType](service, parameters),
                     vm => _openViewModels.Last() == vm,
-                    vm => RemoveViewModel(vm));
+                    async vm => await TryRemoveViewModelAsync(vm));
                 _openViewModelServices[viewModel] = upbeatViewModelService;
                 _openViewModels.Add(viewModel);
             }
@@ -94,12 +96,8 @@ namespace UpbeatUI.ViewModel
         public async Task<bool> TryCloseAllViewModelsAsync()
         {
             foreach (var viewModel in _openViewModels.Reverse())
-            {
-                if (await _openViewModelServices[viewModel].OkToCloseAsync())
-                    RemoveViewModel(viewModel);
-                else
+                if (!await TryRemoveViewModelAsync(viewModel))
                     return false;
-            }
             return true;
         }
 
@@ -129,13 +127,14 @@ namespace UpbeatUI.ViewModel
                 ViewModelsEmptyCallback?.Invoke();
         }
 
-        private async Task RemoveTopViewModelAsync()
+        private async Task<bool> TryRemoveViewModelAsync(object viewModel)
         {
-            var viewModel = _openViewModels.Last();
             if (await _openViewModelServices[viewModel].OkToCloseAsync())
+            {
                 RemoveViewModel(viewModel);
-            else
-                return;
+                return true;
+            }
+            return false;
         }
 
         private void UpdateViewModelProperties(object sender, EventArgs e)

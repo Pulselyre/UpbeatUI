@@ -3,6 +3,7 @@
  * https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
  */
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace UpbeatUI.ViewModel
@@ -12,11 +13,11 @@ namespace UpbeatUI.ViewModel
         private class UpbeatService : IUpbeatService
         {
             private readonly Action<object, Action> _childViewModelOpener;
-            private Func<Task<bool>> _asyncOkToCloseCallback;
+            private List<Func<Task<bool>>> _asyncOkToCloseCallbacks = new List<Func<Task<bool>>>();
             private Action _closer;
             private Action<Action> _deferrer;
             private Func<bool> _isActiveViewModel;
-            private Action _updateCallback;
+            private List<Action> _updateCallbacks = new List<Action>();
 
             internal UpbeatService(bool updatesOnRender, Action<object, Action> childViewModelOpener, Action closedCallback = null)
             {
@@ -57,14 +58,26 @@ namespace UpbeatUI.ViewModel
                 return taskCompletionSource.Task;
             }
 
+            public void RegisterCloseCallback(Func<bool> okToCloseCallback) =>
+                _asyncOkToCloseCallbacks.Add(() => Task.FromResult(okToCloseCallback()));
+
+            public void RegisterCloseCallback(Func<Task<bool>> asyncOkToCloseCallback) =>
+                _asyncOkToCloseCallbacks.Add(asyncOkToCloseCallback);
+
+            public void RegisterUpdateCallback(Action updateCallback) =>
+                _updateCallbacks.Add(updateCallback);
+
+            [Obsolete("Method has been renamed to 'RegisterCloseCallback' which better describes how the UpbeatStack handles multiple okToCloseCallback. The 'SetCloseCallback' method will be removed in UpbeatUI 5.0.0.")]
             public void SetCloseCallback(Func<bool> okToCloseCallback) =>
-                _asyncOkToCloseCallback = () => Task.FromResult(okToCloseCallback());
+                RegisterCloseCallback(okToCloseCallback);
 
+            [Obsolete("Method has been renamed to 'RegisterCloseCallback' which better describes how the UpbeatStack handles multiple asyncOkToCloseCallback. The 'SetCloseCallback' method will be removed in UpbeatUI 5.0.0.")]
             public void SetCloseCallback(Func<Task<bool>> asyncOkToCloseCallback) =>
-                _asyncOkToCloseCallback = asyncOkToCloseCallback;
+                RegisterCloseCallback(asyncOkToCloseCallback);
 
+            [Obsolete("Method has been renamed to 'RegisterUpdateCallback' which better describes how the UpbeatStack handles multiple updateCallbacks. The 'SetUpdateCallback' method will be removed in UpbeatUI 5.0.0.")]
             public void SetUpdateCallback(Action updateCallback) =>
-                _updateCallback = updateCallback;
+                RegisterUpdateCallback(updateCallback);
 
             internal object Activate(Func<IUpbeatService, object> viewModelCreator, Func<object, bool> isActiveViewModel, Action<object> closer)
             {
@@ -77,14 +90,22 @@ namespace UpbeatUI.ViewModel
             internal void Lock(Action<Action> deferrer) =>
                 _deferrer = deferrer;
 
-            internal Task<bool> OkToCloseAsync() =>
-                _asyncOkToCloseCallback?.Invoke() ?? Task.FromResult(true);
+            internal async Task<bool> OkToCloseAsync()
+            {
+                foreach (var asyncOkToCloseCallback in _asyncOkToCloseCallbacks)
+                    if (!await asyncOkToCloseCallback())
+                        return false;
+                return true;
+            }
 
             internal void Unlock() =>
                 _deferrer = null;
 
-            internal void Update() =>
-                _updateCallback?.Invoke();
+            internal void Update()
+            {
+                foreach (var updateCallback in _updateCallbacks)
+                    updateCallback.Invoke();
+            }
         }
     }
 }
