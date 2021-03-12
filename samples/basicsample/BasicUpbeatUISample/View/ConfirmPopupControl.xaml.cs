@@ -4,7 +4,7 @@
  */
 using UpbeatUI.View;
 
-namespace UpbeatUISample.View
+namespace BasicUpbeatUISample.View
 {
     public partial class ConfirmPopupControl : UpbeatControl
     {

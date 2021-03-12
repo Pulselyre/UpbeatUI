@@ -6,9 +6,9 @@ using UpbeatUI.View;
 
 namespace BasicUpbeatUISample.View
 {
-    public partial class MenuControl : UpbeatControl
+    public partial class TextEntryPopupControl : UpbeatControl
     {
-        public MenuControl() =>
+        public TextEntryPopupControl() =>
             InitializeComponent();
     }
 }
