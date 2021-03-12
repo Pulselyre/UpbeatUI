@@ -6,9 +6,9 @@ using UpbeatUI.View;
 
 namespace HostedUpbeatUISample.View
 {
-    public partial class ConfirmPopupControl : UpbeatControl
+    public partial class SharedListControl : UpbeatControl
     {
-        public ConfirmPopupControl() =>
+        public SharedListControl() =>
             InitializeComponent();
     }
 }

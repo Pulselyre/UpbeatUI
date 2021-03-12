@@ -4,11 +4,11 @@
  */
 using UpbeatUI.View;
 
-namespace UpbeatUISample.View
+namespace HostedUpbeatUISample.View
 {
-    public partial class PositionedPopupControl : UpbeatControl
+    public partial class RandomDataControl : UpbeatControl
     {
-        public PositionedPopupControl() =>
+        public RandomDataControl() =>
             InitializeComponent();
     }
 }

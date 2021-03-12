@@ -8,9 +8,9 @@ using UpbeatUI.ViewModel;
 
 namespace HostedUpbeatUISample.ViewModel
 {
-    internal class ConfirmPopupViewModel : PopupViewModel
+    internal class TextEntryPopupViewModel : PopupViewModel
     {
-        public ConfirmPopupViewModel
+        public TextEntryPopupViewModel
             // This will be a unique IUpbeatService created and injected by the IUpbeatStack specifically for this ViewModel.
             (IUpbeatService upbeatService,
             // These are the parameters the parent used when opening this ViewModel. The IUpbeatService can inject the Parameters object into this constructor to pass initialization data or callbacks.
@@ -19,22 +19,22 @@ namespace HostedUpbeatUISample.ViewModel
             SharedTimer sharedTimer)
             : base(parameters, sharedTimer)
         {
-            // DelegateCommand is a common convenience ICommand implementation to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
-            ConfirmCommand = new DelegateCommand(
-                () =>
+            // DelegateCommand is a common convenience ICommand implementation to call methods or lambda expressions when the command is executed.
+            ReturnCommand = new DelegateCommand<string>(
+                entryString =>
                 {
-                    parameters?.ConfirmCallback?.Invoke();
+                    parameters?.ReturnCallback?.Invoke(entryString);
                     // Will close this ViewModel.
                     upbeatService.Close();
                 });
         }
 
-        public ICommand ConfirmCommand { get; }
+        public ICommand ReturnCommand { get; }
 
         // This nested Parameters class (full class name: "ConfirmPopupViewModel.Parameters") is what other ViewModels will create instances of to tell the IUpbeatStack what type of child ViewModel to add to the stack.
         public new class Parameters : PopupViewModel.Parameters
         {
-            public Action ConfirmCallback { get; init; }
+            public Action<string> ReturnCallback { get; init; }
         }
     }
 }
