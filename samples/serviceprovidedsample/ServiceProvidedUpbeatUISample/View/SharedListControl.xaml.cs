@@ -4,11 +4,11 @@
  */
 using UpbeatUI.View;
 
-namespace UpbeatUISample.View
+namespace ServiceProvidedUpbeatUISample.View
 {
-    public partial class ScaledPopupControl : UpbeatControl
+    public partial class SharedListControl : UpbeatControl
     {
-        public ScaledPopupControl() =>
+        public SharedListControl() =>
             InitializeComponent();
     }
 }

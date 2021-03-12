@@ -6,9 +6,9 @@ using UpbeatUI.View;
 
 namespace ServiceProvidedUpbeatUISample.View
 {
-    public partial class BottomControl : UpbeatControl
+    public partial class RandomDataControl : UpbeatControl
     {
-        public BottomControl() =>
+        public RandomDataControl() =>
             InitializeComponent();
     }
 }
