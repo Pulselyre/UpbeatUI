@@ -8,54 +8,70 @@ using System.Windows;
 using System.Windows.Input;
 using UpbeatUI.ViewModel;
 
-namespace UpbeatUISample.ViewModel
+namespace BasicUpbeatUISample.ViewModel
 {
-    public class BottomViewModel
+    // This extends BaseViewModel, which provides pre-written SetProperty and RaisePropertyChanged methods.
+    public class BottomViewModel : BaseViewModel, IDisposable
     {
-        private IUpbeatService _upbeatService;
+        private readonly IUpbeatService _upbeatService;
+        private readonly SharedTimer _sharedTimer;
 
-        public BottomViewModel(IUpbeatService upbeatService, Parameters parameters)
+        public BottomViewModel(
+            // This will be a unique IUpbeatService created and injected by the IUpbeatStack specifically for this ViewModel.
+            IUpbeatService upbeatService,
+            // This is a shared singleton service.
+            SharedTimer sharedTimer)
         {
-            _upbeatService = upbeatService;
+            _upbeatService = upbeatService ?? throw new NullReferenceException(nameof(upbeatService));
+            _sharedTimer = sharedTimer ?? throw new NullReferenceException(nameof(sharedTimer));
+
+            // Registering a CloseCallback allows the ViewModel to prevent itself from closing. For example: if there is unsaved work. This can also completely prevent the application from shutting down. CloseCallbacks can be either async or non-async methods/lambdas.
             _upbeatService.RegisterCloseCallback(AskBeforeClosingAsync);
 
-            OpenCenterPopupCommand = new DelegateCommand(
-                () => _upbeatService.OpenViewModel(
-                    new PopupViewModel.Parameters("This popup appears in the center of the screen.")));
+            _sharedTimer.Ticked += SharedTimerTicked;
+
+            // DelegateCommand is a common convenience ICommand implementation to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
             OpenMenuCommand = new DelegateCommand(
+                // Create a Parameters object for a ViewModel and pass it to the IUpbeatStack using OpenViewModel. The IUpbeatStack will use the configured mappings to create the appropriate ViewModel from the Parameters type.
                 () => _upbeatService.OpenViewModel(
-                    new MenuViewModel.Parameters(parameters.ExitCallback)));
-            OpenPositionedPopupCommand = new DelegateCommand<Func<Point>>(
-                pointGetter => _upbeatService.OpenViewModel(
-                    new PositionedPopupViewModel.Parameters(
-                        "This popup appears on top of\nthe button that opened it.",
-                        pointGetter())));
-            OpenSizedPopupCommand = new DelegateCommand(
+                    new MenuViewModel.Parameters()));
+            OpenSharedListCommand = new DelegateCommand(
                 () => _upbeatService.OpenViewModel(
-                    new ScaledPopupViewModel.Parameters("This popup automatically scales to the window size.\nTry resizing the window to see.")));
+                    new SharedListViewModel.Parameters()));
+            OpenRandomDataCommand = new DelegateCommand(
+                () => _upbeatService.OpenViewModel(
+                    new RandomDataViewModel.Parameters()));
         }
 
-        public ICommand OpenCenterPopupCommand { get; }
         public ICommand OpenMenuCommand { get; }
-        public ICommand OpenPositionedPopupCommand { get; }
-        public ICommand OpenSizedPopupCommand { get; }
+        public ICommand OpenSharedListCommand { get; }
+        public ICommand OpenRandomDataCommand { get; }
+        public string SecondsElapsed => $"{_sharedTimer.ElapsedSeconds} Seconds";
 
+        public void Dispose() =>
+            _sharedTimer.Ticked -= SharedTimerTicked;
+
+        // This CloseCallback method opens a new ViewModel and View to confirm that the user wants to close this ViewModel.
         private async Task<bool> AskBeforeClosingAsync()
         {
             bool okToClose = false;
+            // OpenViewModelAsync can be awaited, and will return once the child ViewModel is closed. This is useful to show a popup requesting input from the user.
             await _upbeatService.OpenViewModelAsync(
-                new ConfirmPopupViewModel.Parameters(
-                    "The application is trying to exit.\nClick Confirm to exit or off this popup to cancel.",
-                    () => okToClose = true));
+                new ConfirmPopupViewModel.Parameters
+                {
+                    Message = "The application is trying to exit.\nClick Confirm to exit or off this popup to cancel.",
+                    // The ConfirmPopupViewModel will execute this callback (set the okToClose bool to true) if the user confirms that closing. If the popup closes without the user confirming, okToClose remains false, and the application will remain running.
+                    ConfirmCallback = () => okToClose = true,
+                });
             return okToClose;
         }
 
-        public class Parameters
-        {
-            public Parameters(Func<Task> exitCallback) =>
-                ExitCallback = exitCallback ?? throw new ArgumentNullException(nameof(exitCallback));
+        private void SharedTimerTicked(object sender, EventArgs e) =>
+            // Ensure that the PropertyChanged event is raised on the UI thread
+            Application.Current.Dispatcher.Invoke(() => RaisePropertyChanged(nameof(SecondsElapsed)));
 
-            public Func<Task> ExitCallback { get; }
-        }
+        // This nested Parameters class (full class name: "BottomViewModel.Parameters") is what other ViewModels will create instances of to tell the IUpbeatStack what type of child ViewModel to add to the stack.
+        public class Parameters
+        { }
     }
 }

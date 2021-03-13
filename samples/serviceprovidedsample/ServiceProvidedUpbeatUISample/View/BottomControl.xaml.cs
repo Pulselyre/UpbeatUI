@@ -4,7 +4,7 @@
  */
 using UpbeatUI.View;
 
-namespace UpbeatUISample.View
+namespace ServiceProvidedUpbeatUISample.View
 {
     public partial class BottomControl : UpbeatControl
     {

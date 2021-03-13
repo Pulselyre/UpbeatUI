@@ -4,7 +4,7 @@
  */
 using UpbeatUI.View;
 
-namespace UpbeatUISample.View
+namespace HostedUpbeatUISample.View
 {
     public partial class PopupControl : UpbeatControl
     {
