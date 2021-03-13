@@ -19,9 +19,9 @@ UpbeatUI implementations are available as NuGet packages:
 
 ## Examples
 
-Three samples are included: one showing [manual setup](samples/basicsample) and teardown, one showing manual setup and teardown with [dependency injection](samples/serviceprovidedsample) using an **IServiceProvider**, and one showing [automatic setup](samples/hostedsample) using an **IHostBuilder**. All samples demonstrate the following capabilities:
+Three samples are included: one showing [manual setup](samples/basicsample) and teardown, one showing manual setup and teardown with [dependency injection](samples/serviceprovidedsample) using an **IServiceProvider**, and one showing [automatic setup and teardown](samples/hostedsample) using an **IHostBuilder**. All samples demonstrate the following capabilities:
 
-![UpbeatUI Sample](https://user-images.githubusercontent.com/20475952/99129911-c04c2c00-25c3-11eb-8059-50abb76805ea.gif)
+![UpbeatUI Sample](https://user-images.githubusercontent.com/20475952/111044956-6c7e1200-8400-11eb-82f3-1befa64c951b.gif)
 
 >Note: The background in the sample is OrangeRed to demonstrate how the effect can be configured. The default value is Gray.
 
