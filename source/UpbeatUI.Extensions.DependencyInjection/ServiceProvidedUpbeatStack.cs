@@ -18,9 +18,9 @@ namespace UpbeatUI.Extensions.DependencyInjection
     public class ServiceProvidedUpbeatStack : UpbeatStack, IServiceProvidedUpbeatStack
     {
         private readonly IDictionary<Type, Func<IUpbeatService, object, object>> _childViewModelInstantiators = new Dictionary<Type, Func<IUpbeatService, object, object>>();
-        private readonly IServiceProvider _rootServiceProvider;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IDictionary<object, ViewModelScope> _viewModelParametersServiceScopes = new Dictionary<object, ViewModelScope>();
         private Action<Type> _autoMapper;
-        private ViewModelScope _currentServiceScope;
 
         /// <summary>
         /// Initializes an empty <see cref="ServiceProvidedUpbeatStack"/>.
@@ -29,9 +29,7 @@ namespace UpbeatUI.Extensions.DependencyInjection
         /// <param name="updateOnRender">True to have the <see cref="UpbeatStack"/> execute any UppdateCallback <see cref="Action"/>s registered by ViewModels on each WPF frame render; false to only execute UpdateCallback <see cref="Action"/>s manually.</param>
         public ServiceProvidedUpbeatStack(IServiceProvider serviceProvider, bool updateOnRender = true)
             : base(updateOnRender) =>
-            _rootServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-
-        private IServiceProvider CurrentServiceProvider => _currentServiceScope?.ServiceProvider ?? _rootServiceProvider;
+            _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
         public void MapViewModel<TParameters, TViewModel, TView>(bool allowUnresolvedDependencies)
             where TView : UIElement =>
@@ -39,21 +37,25 @@ namespace UpbeatUI.Extensions.DependencyInjection
 
         public void MapViewModel<TParameters, TViewModel, TView>(Func<IUpbeatService, TParameters, IServiceProvider, TViewModel> viewModelCreator)
             where TView : UIElement =>
-            MapViewModel<TParameters, TViewModel, TView>((upbeatService, parameters) => viewModelCreator(upbeatService, parameters, CurrentServiceProvider));
+            MapViewModel<TParameters, TViewModel, TView>((upbeatService, parameters) =>
+                viewModelCreator(
+                    upbeatService,
+                    parameters,
+                    _viewModelParametersServiceScopes[parameters].ServiceProvider));
 
         public override void OpenViewModel<TParameters>(TParameters parameters, Action closedCallback)
         {
             var parametersType = parameters.GetType();
             if (!_viewModelInstantiators.ContainsKey(parametersType))
                 _autoMapper?.Invoke(parametersType);
-            var previousScope = _currentServiceScope;
-            _currentServiceScope = new ViewModelScope(_rootServiceProvider.CreateScope());
+            _viewModelParametersServiceScopes[parameters] = new ViewModelScope(_serviceProvider.CreateScope());
             base.OpenViewModel(parameters,
                 () =>
                 {
+                    var viewModelScope = _viewModelParametersServiceScopes[parameters];
+                    viewModelScope.Dispose();
+                    _viewModelParametersServiceScopes.Remove(viewModelScope);
                     closedCallback?.Invoke();
-                    _currentServiceScope.Dispose();
-                    _currentServiceScope = previousScope;
                 });
         }
 
@@ -97,15 +99,16 @@ namespace UpbeatUI.Extensions.DependencyInjection
                             return upbeatService;
                         if (p.ParameterType == parameters.GetType())
                             return parameters;
-                        var locatedService = CurrentServiceProvider.GetService(p.ParameterType);
+                        var viewModelScope = _viewModelParametersServiceScopes[parameters];
+                        var locatedService = viewModelScope.ServiceProvider.GetService(p.ParameterType);
                         if (locatedService != null)
                             return locatedService;
-                        if (_currentServiceScope.ChildViewModels.TryGetValue(p.ParameterType, out var childViewModel))
+                        if (viewModelScope.ChildViewModels.TryGetValue(p.ParameterType, out var childViewModel))
                             return childViewModel;
                         childViewModel = ResolveDependency(p.ParameterType, allowUnresolvedDependencies, upbeatService, parameters);
                         if (childViewModel == null && !allowUnresolvedDependencies)
                             throw new InvalidOperationException($"No service for type '{p.ParameterType.FullName}' has been registered.");
-                        _currentServiceScope.ChildViewModels[p.ParameterType] = childViewModel;
+                        viewModelScope.ChildViewModels[p.ParameterType] = childViewModel;
                         return childViewModel;
                     })
                     .ToArray()),
