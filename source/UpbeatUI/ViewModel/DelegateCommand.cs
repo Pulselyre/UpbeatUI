@@ -71,7 +71,11 @@ namespace UpbeatUI.ViewModel
                 }
                 finally
                 {
-                    _isAsyncExecuting = false;
+                    if (_isAsyncExecuting)
+                    {
+                        _isAsyncExecuting = false;
+                        CommandManager.InvalidateRequerySuggested();
+                    }
                 }
             };
             _canExecute = canExecute;
@@ -163,7 +167,11 @@ namespace UpbeatUI.ViewModel
                 }
                 finally
                 {
-                    _isAsyncExecuting = false;
+                    if (_isAsyncExecuting)
+                    {
+                        _isAsyncExecuting = false;
+                        CommandManager.InvalidateRequerySuggested();
+                    }
                 }
             };
             _canExecute = canExecute;
