@@ -19,7 +19,7 @@ UpbeatUI implementations are available as NuGet packages:
 
 ## Examples
 
-Three samples are included: one showing [manual setup](samples/manualsample) and teardown without dependency injection, one showing manual setup and teardown with [dependency injection](samples/serviceprovidedsample) using an **IServiceProvider**, and one showing [automatic setup and teardown](samples/hostedsample) using an **IHostBuilder**. All samples demonstrate the following capabilities:
+Three samples are included: one showing [manual setup](samples/ManualUpbeatUISample) and teardown without dependency injection, one showing manual setup and teardown with [dependency injection](samples/ServiceProvidedUpbeatUISample) using an **IServiceProvider**, and one showing [automatic setup and teardown](samples/HostedUpbeatUISample) using an **IHostBuilder**. All samples demonstrate the following capabilities:
 
 ![UpbeatUI Sample](https://user-images.githubusercontent.com/20475952/111044956-6c7e1200-8400-11eb-82f3-1befa64c951b.gif)
 
