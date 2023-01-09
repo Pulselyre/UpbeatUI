@@ -1,0 +1,78 @@
+// This file is part of the UpbeatUI project, which is released under MIT License.
+// See LICENSE.md or visit:
+// https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "powershell",
+      "type": "process",
+      "args": [
+        "${workspaceFolder}/build.ps1",
+        "build",
+        "all",
+        "quiet"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build_msample",
+      "command": "powershell",
+      "type": "process",
+      "args": [
+        "${workspaceFolder}/build.ps1",
+        "build",
+        "msample",
+        "quiet"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build_spsample",
+      "command": "powershell",
+      "type": "process",
+      "args": [
+        "${workspaceFolder}/build.ps1",
+        "build",
+        "spsample",
+        "quiet"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build_hsample",
+      "command": "powershell",
+      "type": "process",
+      "args": [
+        "${workspaceFolder}/build.ps1",
+        "build",
+        "hsample",
+        "quiet"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "clean",
+      "command": "powershell",
+      "type": "process",
+      "args": [
+        "${workspaceFolder}/build.ps1",
+        "clean"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "restore",
+      "command": "powershell",
+      "type": "process",
+      "args": [
+        "${workspaceFolder}/build.ps1",
+        "restore",
+        "all",
+        "quiet"
+      ],
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}
