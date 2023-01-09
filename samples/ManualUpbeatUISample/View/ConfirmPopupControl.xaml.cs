@@ -1,14 +1,13 @@
 /* This file is part of the UpbeatUI project, which is released under MIT License.
  * See LICENSE.md or visit:
- * https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
+ * https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
  */
 using UpbeatUI.View;
 
-namespace BasicUpbeatUISample.View
+namespace ManualUpbeatUISample.View;
+
+public partial class ConfirmPopupControl : UpbeatControl
 {
-    public partial class ConfirmPopupControl : UpbeatControl
-    {
-        public ConfirmPopupControl() =>
-            InitializeComponent();
-    }
+    public ConfirmPopupControl() =>
+        InitializeComponent();
 }

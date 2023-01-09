@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This file is part of the UpbeatUI project, which is released under MIT License.
      See LICENSE.md or visit:
-     https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
+     https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
      -->
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.0;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageProjectUrl>https://github.com/michaelpduda/UpbeatUI</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/pulselyre/UpbeatUI</PackageProjectUrl>
     <Description>Microsoft.Extensions.DependencyInjection (IServiceProvider) support for UpbeatUI.</Description>
     <Authors>Michael P. Duda</Authors>
-    <RepositoryUrl>https://github.com/michaelpduda/UpbeatUI.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/pulselyre/UpbeatUI.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <Copyright>© Michael P. Duda 2020</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

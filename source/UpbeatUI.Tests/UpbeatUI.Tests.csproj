@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This file is part of the UpbeatUI project, which is released under MIT License.
      See LICENSE.md or visit:
-     https://github.com/michaelpduda/upbeatui/blob/master/LICENSE.md
+     https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
      -->
 <Project Sdk="Microsoft.NET.Sdk">
 
@@ -10,7 +10,7 @@
     <IsPackable>false</IsPackable>
     <Description>Unit tests for UpbeatUI.</Description>
     <Authors>Michael P. Duda</Authors>
-    <RepositoryUrl>https://github.com/michaelpduda/UpbeatUI.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/pulselyre/UpbeatUI.git</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
     <Copyright>© Michael P. Duda 2020</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
