@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.Hosting;
+using UpbeatUI.Extensions.DependencyInjection;
 
 namespace UpbeatUI.Extensions.Hosting
 {
@@ -26,6 +27,7 @@ namespace UpbeatUI.Extensions.Hosting
                 {
                     Window mainWindow = null;
                     Task baseViewModelOpen = null;
+                    _upbeatStack = new ServiceProvidedUpbeatStack(_serviceProvider ?? throw new ArgumentNullException(nameof(_serviceProvider)));
                     foreach (var registerer in _upbeatHostBuilder.MappingRegisterers ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.MappingRegisterers)} provided."))
                         registerer.Invoke(_upbeatStack);
                     mainWindow = _upbeatHostBuilder.WindowCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.WindowCreator)} provided.");
