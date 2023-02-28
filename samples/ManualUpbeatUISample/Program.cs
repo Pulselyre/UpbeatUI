@@ -60,7 +60,7 @@ public class Program
                 Height = 400,
                 Width = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                BlurColor = new SolidColorBrush(Brushes.OrangeRed.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
+                BlurColor = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
             };
 
             // Override the default Window Closing event to ensure that the UpbeatStack and all of its children ViewModels are properly disposed.

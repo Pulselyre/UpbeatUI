@@ -33,7 +33,7 @@ public class Program
                         Height = 400,
                         Width = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                        BlurColor = new SolidColorBrush(Brushes.OrangeRed.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
+                        BlurColor = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
                     }))
             .Build()
             .Run(); // Upon running, the IHost will start the HostedUpbeatService, which will create an IUpbeatStack and show the UpbeatManWindow (as configured above).
