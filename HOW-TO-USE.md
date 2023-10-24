@@ -38,7 +38,7 @@ An UpbeatUI application can be started manually with automatic Dependency Inject
 
 ### Without Dependency Injection
 
-To start an UpbeatUI application without **IHostBuilder** or an **IServiceProvider**, both the containing window and the [**UpbeatStack**](source/UpbeatUI/ViewModel/UpbeatStack.cs) must be created, configured, and wired together manually. Mappings between ViewModelParameters, ViewModels, and Views will also need to be manually set and factory methods provided. The process is considerably more involved, so please see the comments in the [**Program.cs**](samples/basicsample/BasicUpbeatUISample/Program.cs) file in the (basic sample)(samples/basicsample) for a guidance.
+To start an UpbeatUI application without **IHostBuilder** or an **IServiceProvider**, both the containing window and the [**UpbeatStack**](source/UpbeatUI/ViewModel/UpbeatStack.cs) must be created, configured, and wired together manually. Mappings between ViewModelParameters, ViewModels, and Views will also need to be manually set and factory methods provided. The process is considerably more involved, so please see the comments in the [**Program.cs**](samples/ManualUpbeatUISample/Program.cs) file in the [manual sample](samples/ManualUpbeatUISample) for a guidance.
 
 ### With Dependency Injection
 
@@ -83,4 +83,4 @@ Both *WidthPercent* and *HeightPercent* accept either one or two values. One val
 
 >Note: All four percent properties can accept numbers in percent format ("50%") or decimal format ("0.5").
 
-See the various [.xaml files](samples/basicsample/BasicUpbeatUISample/View/) in the sample projects for examples on how to configure an [**UpbeatControl**](source/UpbeatUI/View/UpbeatControl.cs).
+See the various [.xaml files](samples/ManualUpbeatUISample/View/) in the sample projects for examples on how to configure an [**UpbeatControl**](source/UpbeatUI/View/UpbeatControl.cs).

@@ -1,0 +1,47 @@
+<!-- This file is part of the UpbeatUI project, which is released under MIT License.
+     See LICENSE.md or visit:
+     https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
+     -->
+<!-- The "HeightPercent" and "WidthPercent" properties set how much available space the
+     UpbeatControl should take. It accepts percentages and decimal values (so 1.0 = 100%).
+     It can also accept min/max ranges. This view will take whatever space it needs for
+     its content, but will not exceed 95% of the width or height that is available. -->
+<!-- The "XPositionPercent" and "YPositionPercent" properties are where within the
+     available space the View should be aligned. 0.0 or 0% are the top orfar left,
+     1.0 or 100% are the bottom or far right, and 0.5 or 50% is the center (default).
+     In this case, the values are bound to properites on the ViewModel. Note that the
+     reference point for positioning is the exact center of the content (in this
+     case, the Border). To prevent the content from being partially off-screen, set
+     "KeepInBounds" to True. -->
+<vw:UpbeatControl x:Class="ManualUpbeatUISample.View.ConfirmPopupControl"
+                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:vw="clr-namespace:UpbeatUI.View;assembly=UpbeatUI"
+                  HeightPercent="0.0 0.95"
+                  WidthPercent="0.0 0.95"
+                  KeepInBounds="True"
+                  XPositionPercent="{Binding XPosition}"
+                  YPositionPercent="{Binding YPosition}"
+                  mc:Ignorable="d"
+                  d:DesignHeight="265"
+                  d:DesignWidth="265">
+    <Border BorderBrush="Black"
+            BorderThickness="5"
+            Background="White">
+        <Viewbox Stretch="Uniform"
+                 StretchDirection="DownOnly"
+                 Margin="5">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding Message}"
+                           Margin="5" />
+                <TextBlock Text="{Binding SecondsElapsed}"
+                           TextAlignment="Center"
+                           Margin="5" />
+                <Button Command="{Binding ConfirmCommand}"
+                        Margin="5" >Confirm</Button>
+            </StackPanel>
+        </Viewbox>
+    </Border>
+</vw:UpbeatControl>

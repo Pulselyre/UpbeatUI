@@ -1,6 +1,6 @@
 # UpbeatUI
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/michaelpduda/UpbeatUI/blob/main/LICENSE.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/pulselyre/UpbeatUI/blob/main/LICENSE.md)
 [![Nuget](https://img.shields.io/nuget/v/UpbeatUI)](https://www.nuget.org/packages/UpbeatUI/)
 
 UpbeatUI is an open-source lightweight MVVM framework for quickly developing mobile-style touch based Windows applications using [Windows Presentation Foundation (WPF)](https://github.com/dotnet/wpf). It provides a simple API for stacking Views in the Z-Axis where only the top View is active to the user. The user can close the active view (remove it from the top of the stack) by tapping/clicking the surrounding blurred background area. UpbeatUI also includes versions of several standard MVVM objects and base classes.
@@ -19,7 +19,7 @@ UpbeatUI implementations are available as NuGet packages:
 
 ## Examples
 
-Three samples are included: one showing [manual setup](samples/manualsample) and teardown without dependency injection, one showing manual setup and teardown with [dependency injection](samples/serviceprovidedsample) using an **IServiceProvider**, and one showing [automatic setup and teardown](samples/hostedsample) using an **IHostBuilder**. All samples demonstrate the following capabilities:
+Three samples are included: one showing [manual setup](samples/ManualUpbeatUISample) and teardown without dependency injection, one showing manual setup and teardown with [dependency injection](samples/ServiceProvidedUpbeatUISample) using an **IServiceProvider**, and one showing [automatic setup and teardown](samples/HostedUpbeatUISample) using an **IHostBuilder**. All samples demonstrate the following capabilities:
 
 ![UpbeatUI Sample](https://user-images.githubusercontent.com/20475952/111044956-6c7e1200-8400-11eb-82f3-1befa64c951b.gif)
 
