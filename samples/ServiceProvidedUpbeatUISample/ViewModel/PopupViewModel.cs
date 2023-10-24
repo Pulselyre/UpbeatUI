@@ -4,12 +4,12 @@
  */
 using System;
 using System.Windows;
-using UpbeatUI.ViewModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace ServiceProvidedUpbeatUISample.ViewModel;
 
-// This extends BaseViewModel, which provides pre-written SetProperty and RaisePropertyChanged methods.
-internal class PopupViewModel : BaseViewModel, IDisposable
+// This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
+internal class PopupViewModel : ObservableObject, IDisposable
 {
     private readonly SharedTimer _sharedTimer;
 
@@ -36,7 +36,7 @@ internal class PopupViewModel : BaseViewModel, IDisposable
         _sharedTimer.Ticked -= SharedTimerTicked;
 
     private void SharedTimerTicked(object sender, EventArgs e) =>
-        Application.Current.Dispatcher.Invoke(() => RaisePropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread
+        Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread
 
     // This nested Parameters class (full class name: "PopupViewModel.Parameters") is what other ViewModels will create instances of to tell the IUpbeatStack what type of child ViewModel to add to the stack.
     public class Parameters

@@ -6,12 +6,14 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using UpbeatUI.ViewModel;
 
 namespace ManualUpbeatUISample.ViewModel;
 
-// This extends BaseViewModel, which provides pre-written SetProperty and RaisePropertyChanged methods.
-public class BottomViewModel : BaseViewModel, IDisposable
+// This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
+public class BottomViewModel : ObservableObject, IDisposable
 {
     private readonly IUpbeatService _upbeatService;
     private readonly SharedTimer _sharedTimer;
@@ -28,14 +30,14 @@ public class BottomViewModel : BaseViewModel, IDisposable
 
         _sharedTimer.Ticked += SharedTimerTicked;
 
-        // DelegateCommand is a common convenience ICommand implementation to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
-        OpenMenuCommand = new DelegateCommand(
+        // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. It can be used to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
+        OpenMenuCommand = new RelayCommand(
             () => _upbeatService.OpenViewModel( // Create a Parameters object for a ViewModel and pass it to the IUpbeatStack using OpenViewModel. The IUpbeatStack will use the configured mappings to create the appropriate ViewModel from the Parameters type.
                 new MenuViewModel.Parameters()));
-        OpenSharedListCommand = new DelegateCommand(
+        OpenSharedListCommand = new RelayCommand(
             () => _upbeatService.OpenViewModel(
                 new SharedListViewModel.Parameters()));
-        OpenRandomDataCommand = new DelegateCommand(
+        OpenRandomDataCommand = new RelayCommand(
             () => _upbeatService.OpenViewModel(
                 new RandomDataViewModel.Parameters()));
     }
@@ -64,7 +66,7 @@ public class BottomViewModel : BaseViewModel, IDisposable
     }
 
     private void SharedTimerTicked(object sender, EventArgs e) =>
-        Application.Current.Dispatcher.Invoke(() => RaisePropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread
+        Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread
 
     // This nested Parameters class (full class name: "BottomViewModel.Parameters") is what other ViewModels will create instances of to tell the IUpbeatStack what type of child ViewModel to add to the stack.
     public class Parameters

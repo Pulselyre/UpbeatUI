@@ -7,12 +7,14 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using UpbeatUI.ViewModel;
 
 namespace ServiceProvidedUpbeatUISample.ViewModel;
 
-// This extends BaseViewModel, which provides pre-written SetProperty and RaisePropertyChanged methods.
-public class MenuViewModel : BaseViewModel, IDisposable
+// This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
+public class MenuViewModel : ObservableObject, IDisposable
 {
     private readonly IUpbeatService _upbeatService;
     private readonly SharedTimer _sharedTimer;
@@ -28,13 +30,13 @@ public class MenuViewModel : BaseViewModel, IDisposable
         _sharedTimer = sharedTimer ?? throw new NullReferenceException(nameof(sharedTimer));
 
         _stopwatch.Start();
-        _upbeatService.RegisterUpdateCallback(() => RaisePropertyChanged(nameof(Visibility))); // Registered "UpdateCallbacks" will be called each time the UI thread renders a new frame.
+        _upbeatService.RegisterUpdateCallback(() => OnPropertyChanged(nameof(Visibility))); // Registered "UpdateCallbacks" will be called each time the UI thread renders a new frame.
 
         _sharedTimer.Ticked += SharedTimerTicked;
 
-        // DelegateCommand is a common convenience ICommand implementation to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
-        ExitCommand = new DelegateCommand(closeApplicationCallbackAsync);
-        OpenRandomDataCommand = new DelegateCommand(
+        // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. It can be used to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
+        ExitCommand = new AsyncRelayCommand(closeApplicationCallbackAsync);
+        OpenRandomDataCommand = new RelayCommand(
             () =>
             {
                 // Create a Parameters object for a ViewModel and pass it to the IUpbeatStack using OpenViewModel. The IUpbeatStack will use the configured mappings to create the appropriate ViewModel from the Parameters type.
@@ -42,7 +44,7 @@ public class MenuViewModel : BaseViewModel, IDisposable
                 // Since this is Side Menu, it can close after the requested ViewModel is opened.
                 _upbeatService.Close();
             });
-        OpenSharedListCommand = new DelegateCommand(
+        OpenSharedListCommand = new RelayCommand(
             () =>
             {
                 _upbeatService.OpenViewModel(new SharedListViewModel.Parameters());
@@ -54,13 +56,13 @@ public class MenuViewModel : BaseViewModel, IDisposable
     public ICommand OpenRandomDataCommand { get; }
     public ICommand OpenSharedListCommand { get; }
     public string SecondsElapsed => $"{_sharedTimer.ElapsedSeconds} Seconds";
-    public double Visibility => Math.Abs(1000.0 - _stopwatch.ElapsedMilliseconds % 2000) / 1000.0; // Will be calculated on each "RaisePropertyChanged(nameof(Visibility))" and used in the View to control visibility of an ellipse. Cycles between full and no visibility every two seconds.
+    public double Visibility => Math.Abs(1000.0 - _stopwatch.ElapsedMilliseconds % 2000) / 1000.0; // Will be calculated on each "OnPropertyChanged(nameof(Visibility))" and used in the View to control visibility of an ellipse. Cycles between full and no visibility every two seconds.
 
     public void Dispose() =>
         _sharedTimer.Ticked -= SharedTimerTicked;
 
     private void SharedTimerTicked(object sender, EventArgs e) =>
-        Application.Current.Dispatcher.Invoke(() => RaisePropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread
+        Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread
 
     // This nested Parameters class (full class name: "MenuViewModel.Parameters") is what other ViewModels will create instances of to tell the IUpbeatStack what type of child ViewModel to add to the stack.
     public class Parameters

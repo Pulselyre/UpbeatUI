@@ -7,12 +7,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using UpbeatUI.ViewModel;
 
 namespace ServiceProvidedUpbeatUISample.ViewModel;
 
-// This extends BaseViewModel, which provides pre-written SetProperty and RaisePropertyChanged methods.
-internal class RandomDataViewModel : BaseViewModel, IDisposable
+// This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
+internal class RandomDataViewModel : ObservableObject, IDisposable
 {
     private const int MaxRandomLength = 15;
     private static readonly string RandomFormatString = new('0', MaxRandomLength);
@@ -33,8 +35,8 @@ internal class RandomDataViewModel : BaseViewModel, IDisposable
 
         _sharedTimer.Ticked += SharedTimerTicked;
 
-        // DelegateCommand is a common convenience ICommand implementation to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
-        OpenPositionedPopupCommand = new DelegateCommand<Func<Point>>(
+        // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. It can be used to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
+        OpenPositionedPopupCommand = new RelayCommand<Func<Point>>(
             pointGetter => _upbeatService.OpenViewModel( // Create a Parameters object for a ViewModel and pass it to the IUpbeatStack using OpenViewModel. The IUpbeatStack will use the configured mappings to create the appropriate ViewModel from the Parameters type.
                 new PopupViewModel.Parameters
                 {
@@ -42,7 +44,7 @@ internal class RandomDataViewModel : BaseViewModel, IDisposable
                     // The pointGetter parameter is a Func<Point> created by the View that will return the position within the window of the control that executed this command. See the bindings in View\RandomDataControl.xaml for details on how to bind a pointGetter() as a CommandParameter.
                     Position = pointGetter(),
                 }));
-        RefreshDataCommand = new DelegateCommand(RefreshData);
+        RefreshDataCommand = new RelayCommand(RefreshData);
 
         Data = new ReadOnlyObservableCollection<KeyValuePair<string, string>>(_data);
 
@@ -70,7 +72,7 @@ internal class RandomDataViewModel : BaseViewModel, IDisposable
             $"{(_random.NextDouble() * Math.Pow(10, MaxRandomLength)).ToString(RandomFormatString)}.{(_random.NextDouble() * Math.Pow(10, MaxRandomLength)).ToString(RandomFormatString)}");
 
     private void SharedTimerTicked(object sender, EventArgs e) =>
-        Application.Current.Dispatcher.Invoke(() => RaisePropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread
+        Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread
 
     // This nested Parameters class (full class name: "RandomDataViewModel.Parameters") is what other ViewModels will create instances of to tell the IUpbeatStack what type of child ViewModel to add to the stack.
     public class Parameters
