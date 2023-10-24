@@ -3,6 +3,7 @@
  * https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
  */
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using UpbeatUI.Extensions.Hosting;
@@ -15,6 +16,7 @@ public class MenuViewModel : BaseViewModel, IDisposable
 {
     private readonly IUpbeatService _upbeatService;
     private readonly SharedTimer _sharedTimer;
+    private readonly Stopwatch _stopwatch = new();
 
     public MenuViewModel(
         IUpbeatService upbeatService, // This will be a unique IUpbeatService created and injected by the IUpbeatStack specifically for this ViewModel.
@@ -24,6 +26,9 @@ public class MenuViewModel : BaseViewModel, IDisposable
         _upbeatService = upbeatService ?? throw new NullReferenceException(nameof(upbeatService));
         _ = hostedUpbeatService ?? throw new NullReferenceException(nameof(hostedUpbeatService));
         _sharedTimer = sharedTimer ?? throw new NullReferenceException(nameof(sharedTimer));
+
+        _stopwatch.Start();
+        _upbeatService.RegisterUpdateCallback(() => RaisePropertyChanged(nameof(Visibility))); // Registered "UpdateCallbacks" will be called each time the UI thread renders a new frame.
 
         _sharedTimer.Ticked += SharedTimerTicked;
 
@@ -49,6 +54,7 @@ public class MenuViewModel : BaseViewModel, IDisposable
     public ICommand OpenRandomDataCommand { get; }
     public ICommand OpenSharedListCommand { get; }
     public string SecondsElapsed => $"{_sharedTimer.ElapsedSeconds} Seconds";
+    public double Visibility => Math.Abs(1000.0 - _stopwatch.ElapsedMilliseconds % 2000) / 1000.0; // Will be calculated on each "RaisePropertyChanged(nameof(Visibility))" and used in the View to control visibility of an ellipse. Cycles between full and no visibility every two seconds.
 
     public void Dispose() =>
         _sharedTimer.Ticked -= SharedTimerTicked;

@@ -38,6 +38,15 @@
                 <TextBlock TextAlignment="Center"
                            Margin="5"
                            Text="{Binding SecondsElapsed}" />
+                <Ellipse Margin="5"
+                         HorizontalAlignment="Center"
+                         Height="10"
+                         Width="10">
+                        <Ellipse.Fill>
+                                <SolidColorBrush Color="Red"
+                                                 Opacity="{Binding Visibility}"/>
+                        </Ellipse.Fill>
+                </Ellipse>
             </StackPanel>
             <Button DockPanel.Dock="Bottom"
                     Margin="5"
