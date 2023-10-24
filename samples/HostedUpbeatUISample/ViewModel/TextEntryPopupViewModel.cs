@@ -4,6 +4,7 @@
  */
 using System;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using UpbeatUI.ViewModel;
 
 namespace HostedUpbeatUISample.ViewModel;
@@ -16,8 +17,8 @@ internal class TextEntryPopupViewModel : PopupViewModel
         SharedTimer sharedTimer) // This is a shared singleton service.
         : base(parameters, sharedTimer)
     {
-        // DelegateCommand is a common convenience ICommand implementation to call methods or lambda expressions when the command is executed.
-        ReturnCommand = new DelegateCommand<string>(
+        // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. It can be used to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
+        ReturnCommand = new RelayCommand<string>(
             entryString =>
             {
                 parameters?.ReturnCallback?.Invoke(entryString);

@@ -5,12 +5,14 @@
 using System;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using UpbeatUI.ViewModel;
 
 namespace ManualUpbeatUISample.ViewModel;
 
-// This extends BaseViewModel, which provides pre-written SetProperty and RaisePropertyChanged methods.
-public class SharedListViewModel : BaseViewModel, IDisposable
+// This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
+public class SharedListViewModel : ObservableObject, IDisposable
 {
     private readonly IUpbeatService _upbeatService;
     private readonly SharedTimer _sharedTimer;
@@ -30,7 +32,8 @@ public class SharedListViewModel : BaseViewModel, IDisposable
         _sharedTimer.Ticked += SharedTimerTicked;
         _sharedList.StringAdded += SharedListStringAdded;
 
-        CloseCommand = new DelegateCommand(_upbeatService.Close);
+        // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. It can be used to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
+        CloseCommand = new RelayCommand(_upbeatService.Close);
     }
 
     public ICommand CloseCommand { get; }
@@ -42,10 +45,10 @@ public class SharedListViewModel : BaseViewModel, IDisposable
         _sharedTimer.Ticked -= SharedTimerTicked;
 
     private void SharedListStringAdded(object sender, EventArgs e) =>
-        Application.Current.Dispatcher.Invoke(() => RaisePropertyChanged(nameof(StringsCount))); // Ensure that the PropertyChanged event is raised on the UI thread
+        Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(StringsCount))); // Ensure that the PropertyChanged event is raised on the UI thread
 
     private void SharedTimerTicked(object sender, EventArgs e) =>
-        Application.Current.Dispatcher.Invoke(() => RaisePropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread
+        Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread
 
     // This nested Parameters class (full class name: "BottomViewModel.Parameters") is what other ViewModels will create instances of to tell the IUpbeatStack what type of child ViewModel to add to the stack.
     public class Parameters

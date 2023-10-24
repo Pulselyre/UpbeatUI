@@ -8,12 +8,14 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using UpbeatUI.ViewModel;
 
 namespace ManualUpbeatUISample.ViewModel;
 
-// This extends BaseViewModel, which provides pre-written SetProperty and RaisePropertyChanged methods.
-public class SharedListDataViewModel : BaseViewModel, IDisposable
+// This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
+public class SharedListDataViewModel : ObservableObject, IDisposable
 {
     private readonly IUpbeatService _upbeatService;
     private readonly SharedList _sharedList;
@@ -34,8 +36,8 @@ public class SharedListDataViewModel : BaseViewModel, IDisposable
 
         _sharedList.StringAdded += SharedListStringAdded;
 
-        // DelegateCommand is a common convenience ICommand implementation to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
-        AddStringCommand = new DelegateCommand<Func<Point>>(ExecuteAddStringAsync, pg => _strings.Count < 10);
+        // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. It can be used to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
+        AddStringCommand = new AsyncRelayCommand<Func<Point>>(ExecuteAddStringAsync, pg => _strings.Count < 10);
     }
 
     public INotifyCollectionChanged Strings { get; }

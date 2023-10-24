@@ -17,7 +17,7 @@ namespace UpbeatUI.ViewModel
     /// <summary>
     /// Represents a stack of ViewModels and provides methods and commands for controlling them.
     /// </summary>
-    public partial class UpbeatStack : BaseViewModel, IUpbeatStack, IDisposable
+    public partial class UpbeatStack : IUpbeatStack, IDisposable
     {
         protected delegate object ViewModelInstantiator(IUpbeatService upbeatService, object parameters);
 
@@ -35,7 +35,7 @@ namespace UpbeatUI.ViewModel
         {
             _updateOnRender = updateOnRender;
             ViewModels = new ReadOnlyObservableCollection<object>(_openViewModels);
-            RemoveTopViewModelCommand = new DelegateCommand(
+            RemoveTopViewModelCommand = new RelayCommand(
                 () => TryRemoveViewModelAsync(_openViewModels.Last()),
                 CanRemoveTopViewModel, singleExecution: false);
             if (_updateOnRender)
