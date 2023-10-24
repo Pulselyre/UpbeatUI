@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace UpbeatUI.ViewModel
 {
-    public partial class UpbeatStack : BaseViewModel, IDisposable
+    public partial class UpbeatStack
     {
         private class UpbeatService : IUpbeatService
         {
