@@ -18,8 +18,8 @@ Param(
 )
 
 task RestoreAll RestoreBase, RestoreDependencyInjection, RestoreHosting,
-  RestoreManualSample, RestoreServiceProvidedSample, RestoreHostedSample,
-  RestoreTests
+RestoreManualSample, RestoreServiceProvidedSample, RestoreHostedSample,
+RestoreTests
 task ra RestoreAll
 
 task RestoreBase {
@@ -50,7 +50,7 @@ task RestoreTests {
 }
 task rt RestoreTests
 
-task RestoreManualSample  {
+task RestoreManualSample {
   dotnet restore `
     '.\samples\ManualUpbeatUISample' `
     --verbosity $verbosity
@@ -74,8 +74,8 @@ task RestoreHostedSample {
 task rhs RestoreHostedSample
 
 task BuildAll BuildBase, BuildDependencyInjection, BuildHosting,
-  BuildManualSample, BuildServiceProvidedSample, BuildHostedSample,
-  BuildTests
+BuildManualSample, BuildServiceProvidedSample, BuildHostedSample,
+BuildTests
 task ba BuildAll
 
 task BuildPackages BuildBase, BuildDependencyInjection, BuildHosting
@@ -175,9 +175,44 @@ task PackHosting {
 }
 task ph PackHosting
 
+task PublishAll PublishBase, PublishDependencyInjection, PublishHosting
+task puba PublishAll
+
+task SetPublishApiKey {
+  $apiKey = Read-Host "Enter NuGet API Key" -AsSecureString
+  $script:clearapikey = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($apikey))
+}
+
+task PublishBase SetPublishApiKey, PackBase, {
+  $version = [Version] $([Xml] (Get-Content .\source\UpbeatUI\UpbeatUI.csproj)).Project.PropertyGroup.Version
+  $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
+  if ($Host.UI.PromptForChoice("About to publish UpbeatUI package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
+    dotnet nuget push "source\UpbeatUI\bin\Release\UpbeatUI.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
+  }
+}
+task pubb PublishBase
+
+task PublishDependencyInjection SetPublishApiKey, PackDependencyInjection, {
+  $version = [Version] $([Xml] (Get-Content .\source\UpbeatUI.Extensions.DependencyInjection\UpbeatUI.Extensions.DependencyInjection.csproj)).Project.PropertyGroup.Version
+  $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
+  if ($Host.UI.PromptForChoice("About to publish UpbeatUI.Extensions.DependencyInjection package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
+    dotnet nuget push "source\UpbeatUI.Extensions.DependencyInjection\bin\Release\UpbeatUI.Extensions.DependencyInjection.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
+  }
+}
+task pubdi PublishDependencyInjection
+
+task PublishHosting SetPublishApiKey, PackHosting, {
+  $version = [Version] $([Xml] (Get-Content .\source\UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj)).Project.PropertyGroup.Version
+  $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
+  if ($Host.UI.PromptForChoice("About to publish UpbeatUI.Extensions.Hosting package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
+    dotnet nuget push "source\UpbeatUI.Extensions.Hosting\bin\Release\UpbeatUI.Extensions.Hosting.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
+  }
+}
+task pubh PublishHosting
+
 task CleanAll CleanBase, CleanDependencyInjection, CleanHosting,
-  CleanManualSample, CleanServiceProvidedSample, CleanHostedSample,
-  CleanTests
+CleanManualSample, CleanServiceProvidedSample, CleanHostedSample,
+CleanTests
 task ca CleanAll
 
 task CleanBase {
