@@ -6,25 +6,29 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0-windows;netcoreapp3.1-windows;net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0-windows;netcoreapp3.1-windows;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
     <EnablePackageValidation>true</EnablePackageValidation>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <DebugType>embedded</DebugType>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <DebugType>portable</DebugType>
     <UseWPF>true</UseWPF>
     <PackageProjectUrl>https://github.com/pulselyre/UpbeatUI</PackageProjectUrl>
     <PackageTags>wpf;touch;mvvm</PackageTags>
     <Description>UpbeatUI is an open-source lightweight MVVM framework for quickly developing multi-level touch based Windows applications on top of the WPF framework.</Description>
     <Authors>Michael P. Duda</Authors>
-    <RepositoryUrl>https://github.com/pulselyre/UpbeatUI.git</RepositoryUrl>
-    <RepositoryType>Github</RepositoryType>
-    <RepositoryBranch>main</RepositoryBranch>
-    <Copyright>© Michael P. Duda 2020</Copyright>
+    <Copyright>© Michael P. Duda 2020-2023</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <!-- Update the following properties when publishing a new Nuget version -->
     <Version>4.1.1</Version>
     <PackageValidationBaselineVersion>4.1.0</PackageValidationBaselineVersion>
-    <RepositoryCommit>1c1bd797fe960d1bd7e030a8cea3d9e1fac5dc15</RepositoryCommit>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+  </ItemGroup>
 
   <Target Name="PostClean" AfterTargets="Clean">
     <RemoveDir Directories="$(BaseIntermediateOutputPath)" /><!-- obj -->
