@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace UpbeatUI.ViewModel
 {
+    [Obsolete("'SynchronizableCollection' class is deprecated and will be removed in the next major release; use the 'UpbeatUI.ViewModel.SynchronizeCollection' extension methods for the Collection class instead.}")]
     public class SynchronizableCollection<TSyncable> : ObservableCollection<TSyncable>
     {
         public void Synchronize(params IEnumerable<TSyncable>[] sources)
@@ -69,6 +70,7 @@ namespace UpbeatUI.ViewModel
         }
     }
 
+    [Obsolete("'SynchronizableCollection' class is deprecated and will be removed in the next major release; use the 'UpbeatUI.ViewModel.SynchronizeCollection' extension methods for the Collection class instead.}")]
     public class SynchronizableCollection<TSyncable, TSource> : ObservableCollection<TSyncable>
     {
         private Func<TSyncable> _blankCreator;

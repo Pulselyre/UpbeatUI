@@ -6,7 +6,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net5.0-windows</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <Description>Unit tests for UpbeatUI.</Description>
     <Authors>Michael P. Duda</Authors>

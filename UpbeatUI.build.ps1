@@ -118,6 +118,9 @@ task BuildTests {
 }
 task bt BuildTests
 
+task BuildSamples BuildManualSample, BuildServiceProvidedSample, BuildHostedSample
+task bs BuildSamples
+
 task BuildManualSample {
   dotnet build `
     '.\samples\ManualUpbeatUISample' `
