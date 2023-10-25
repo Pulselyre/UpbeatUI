@@ -26,6 +26,9 @@
     <RepositoryCommit>1c1bd797fe960d1bd7e030a8cea3d9e1fac5dc15</RepositoryCommit>
   </PropertyGroup>
 
-  <PropertyGroup>
-  </PropertyGroup>
+  <Target Name="PostClean" AfterTargets="Clean">
+    <RemoveDir Directories="$(BaseIntermediateOutputPath)" /><!-- obj -->
+    <RemoveDir Directories="$(BaseOutputPath)" /><!-- bin -->
+  </Target>
+
 </Project>

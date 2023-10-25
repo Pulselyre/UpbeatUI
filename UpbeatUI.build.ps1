@@ -82,9 +82,7 @@ task BuildBase {
   dotnet build `
     '.\source\UpbeatUI' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bb BuildBase
 
@@ -92,9 +90,7 @@ task BuildDependencyInjection {
   dotnet build `
     '.\source\UpbeatUI.Extensions.DependencyInjection' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bdi BuildDependencyInjection
 
@@ -102,9 +98,7 @@ task BuildHosting {
   dotnet build `
     '.\source\UpbeatUI.Extensions.Hosting' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bh BuildHosting
 
@@ -112,9 +106,7 @@ task BuildTests {
   dotnet build `
     '.\source\UpbeatUI.Tests' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bt BuildTests
 
@@ -125,9 +117,7 @@ task BuildManualSample {
   dotnet build `
     '.\samples\ManualUpbeatUISample' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bms BuildManualSample
 
@@ -135,9 +125,7 @@ task BuildServiceProvidedSample {
   dotnet build `
     '.\samples\ServiceProvidedUpbeatUISample' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bsps BuildServiceProvidedSample
 
@@ -145,9 +133,7 @@ task BuildHostedSample {
   dotnet build `
     '.\samples\HostedUpbeatUISample' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bhs BuildHostedSample
 
@@ -216,8 +202,7 @@ task RunManualSample {
   dotnet run `
     --project '.\samples\ManualUpbeatUISample' `
     --verbosity $verbosity `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task runms RunManualSample
 
@@ -225,8 +210,7 @@ task RunServiceProvidedSample {
   dotnet run `
     --project '.\samples\ServiceProvidedUpbeatUISample' `
     --verbosity $verbosity `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task runsps RunServiceProvidedSample
 
@@ -234,7 +218,6 @@ task RunHostedSample {
   dotnet run `
     --project '.\samples\HostedUpbeatUISample' `
     --verbosity $verbosity `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task runhs RunHostedSample
