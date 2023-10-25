@@ -17,7 +17,7 @@ namespace UpbeatUI.ViewModel
     /// <summary>
     /// Represents a stack of ViewModels and provides methods and commands for controlling them.
     /// </summary>
-    public partial class UpbeatStack : IUpbeatStack, IDisposable
+    public partial class UpbeatStack : BaseViewModel, IUpbeatStack, IDisposable
     {
         protected delegate object ViewModelInstantiator(IUpbeatService upbeatService, object parameters);
 
