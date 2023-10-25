@@ -8,10 +8,13 @@
 
 Param(
 
-  [Parameter(Mandatory = $false, Position = 2)]
+  [Parameter(Mandatory = $false, Position = 1)]
   [ValidateSet('quiet', 'minimal', 'normal', 'detailed', 'diagnostic')]
   [Alias('v')]
-  [String] $verbosity = 'quiet'
+  [String] $verbosity = 'quiet',
+  [Parameter(Mandatory = $false, Position = 2)]
+  [Alias('gcs')]
+  [Boolean] $generateCompatibilitySuppression = $false
 )
 
 task RestoreAll RestoreBase, RestoreDependencyInjection, RestoreHosting,
@@ -136,6 +139,41 @@ task BuildHostedSample {
     -c Debug
 }
 task bhs BuildHostedSample
+
+task PackAll PackBase, PackDependencyInjection, PackHosting
+task pa PackAll
+
+task PackBase {
+  dotnet pack `
+    '.\source\UpbeatUI' `
+    --verbosity $verbosity `
+    --force `
+    -c Release `
+    /p:ContinuousIntegrationBuild=true `
+    /p:GenerateCompatibilitySuppressionFile=$generateCompatibilitySuppression
+}
+task pb PackBase
+
+task PackDependencyInjection {
+  dotnet pack `
+    '.\source\UpbeatUI.Extensions.DependencyInjection' `
+    --verbosity $verbosity `
+    -c Release `
+    /p:ContinuousIntegrationBuild=true `
+    /p:GenerateCompatibilitySuppressionFile=$generateCompatibilitySuppression
+}
+task pdi PackDependencyInjection
+
+task PackHosting {
+  dotnet pack `
+    '.\source\UpbeatUI.Extensions.Hosting' `
+    --verbosity $verbosity `
+    --force `
+    -c Release `
+    /p:ContinuousIntegrationBuild=true `
+    /p:GenerateCompatibilitySuppressionFile=$generateCompatibilitySuppression
+}
+task ph PackHosting
 
 task CleanAll CleanBase, CleanDependencyInjection, CleanHosting,
   CleanManualSample, CleanServiceProvidedSample, CleanHostedSample,
