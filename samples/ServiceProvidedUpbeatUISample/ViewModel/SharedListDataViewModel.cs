@@ -11,6 +11,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UpbeatUI.ViewModel;
+using UpbeatUI.ViewModel.ListSynchronize;
 
 namespace ServiceProvidedUpbeatUISample.ViewModel;
 
@@ -20,7 +21,7 @@ public class SharedListDataViewModel : ObservableObject, IDisposable
     private readonly IUpbeatService _upbeatService;
     private readonly SharedList _sharedList;
     // Synchronizable collection is an extension of ObservableCollection
-    private readonly SynchronizableCollection<string> _strings = new();
+    private readonly ObservableCollection<string> _strings = new();
 
     public SharedListDataViewModel(
     // This will be a unique IUpbeatService created and injected by the IUpbeatStack specifically for this ViewModel.
