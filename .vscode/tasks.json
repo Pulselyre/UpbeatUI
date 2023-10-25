@@ -1,6 +1,10 @@
 // This file is part of the UpbeatUI project, which is released under MIT License.
 // See LICENSE.md or visit:
 // https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
+
+// This file references tasks defined in 'UpbeatUI.build.ps1', which uses the
+// Invoke-Build tool for PowerShell. To install Invoke-Build, visit their GitHub page:
+// https://github.com/nightroman/Invoke-Build#install-as-module
 {
   "version": "2.0.0",
   "tasks": [
@@ -8,71 +12,54 @@
       "label": "build",
       "command": "powershell",
       "type": "process",
-      "args": [
-        "${workspaceFolder}/build.ps1",
-        "build",
-        "all",
-        "quiet"
-      ],
+      "args": [ "Invoke-Build", "BuildAll" ],
       "problemMatcher": "$msCompile"
     },
     {
       "label": "build_msample",
       "command": "powershell",
       "type": "process",
-      "args": [
-        "${workspaceFolder}/build.ps1",
-        "build",
-        "msample",
-        "quiet"
-      ],
+      "args": [ "Invoke-Build", "BuildManualSample" ],
       "problemMatcher": "$msCompile"
     },
     {
       "label": "build_spsample",
       "command": "powershell",
       "type": "process",
-      "args": [
-        "${workspaceFolder}/build.ps1",
-        "build",
-        "spsample",
-        "quiet"
-      ],
+      "args": [ "Invoke-Build", "BuildServiceProvidedSample" ],
       "problemMatcher": "$msCompile"
     },
     {
       "label": "build_hsample",
       "command": "powershell",
       "type": "process",
-      "args": [
-        "${workspaceFolder}/build.ps1",
-        "build",
-        "hsample",
-        "quiet"
-      ],
+      "args": [ "Invoke-Build", "BuildHostedSample" ],
       "problemMatcher": "$msCompile"
     },
     {
       "label": "clean",
       "command": "powershell",
       "type": "process",
-      "args": [
-        "${workspaceFolder}/build.ps1",
-        "clean"
-      ],
+      "args": [ "Invoke-Build", "CleanAll" ],
       "problemMatcher": "$msCompile"
     },
     {
       "label": "restore",
       "command": "powershell",
       "type": "process",
-      "args": [
-        "${workspaceFolder}/build.ps1",
-        "restore",
-        "all",
-        "quiet"
-      ],
+      "args": [ "Invoke-Build", "RestoreAll" ],
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test",
+      "command": "powershell",
+      "type": "process",
+      "args": [ "Invoke-Build", "RunTests" ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      }
     }
   ]
 }
