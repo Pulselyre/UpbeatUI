@@ -12,6 +12,7 @@ root = true
 indent_style = space
 charset = utf-8
 # (Please don't specify an indent_size here; that has too many unintended consequences.)
+insert_final_newline = true
 
 # Code files
 [*.{cs,csx,vb,vbx}]
@@ -27,7 +28,6 @@ indent_size = 2
 # Powershell files
 [*.ps1]
 indent_size = 2
-insert_final_newline = true
 
 # XAML
 [*.xaml]
@@ -36,7 +36,6 @@ indent_size = 4
 # CSharp code style settings:
 [*.cs]
 indent_size = 4
-insert_final_newline = true
 
 # Sort using and Import directives with System.* appearing first
 dotnet_sort_system_directives_first = true
