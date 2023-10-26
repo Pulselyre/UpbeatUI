@@ -8,15 +8,18 @@
 
 Param(
 
-  [Parameter(Mandatory = $false, Position = 2)]
+  [Parameter(Mandatory = $false, Position = 1)]
   [ValidateSet('quiet', 'minimal', 'normal', 'detailed', 'diagnostic')]
   [Alias('v')]
-  [String] $verbosity = 'quiet'
+  [String] $verbosity = 'quiet',
+  [Parameter(Mandatory = $false, Position = 2)]
+  [Alias('gcs')]
+  [Boolean] $generateCompatibilitySuppression = $false
 )
 
 task RestoreAll RestoreBase, RestoreDependencyInjection, RestoreHosting,
-  RestoreManualSample, RestoreServiceProvidedSample, RestoreHostedSample,
-  RestoreTests
+RestoreManualSample, RestoreServiceProvidedSample, RestoreHostedSample,
+RestoreTests
 task ra RestoreAll
 
 task RestoreBase {
@@ -47,7 +50,7 @@ task RestoreTests {
 }
 task rt RestoreTests
 
-task RestoreManualSample  {
+task RestoreManualSample {
   dotnet restore `
     '.\samples\ManualUpbeatUISample' `
     --verbosity $verbosity
@@ -71,8 +74,8 @@ task RestoreHostedSample {
 task rhs RestoreHostedSample
 
 task BuildAll BuildBase, BuildDependencyInjection, BuildHosting,
-  BuildManualSample, BuildServiceProvidedSample, BuildHostedSample,
-  BuildTests
+BuildManualSample, BuildServiceProvidedSample, BuildHostedSample,
+BuildTests
 task ba BuildAll
 
 task BuildPackages BuildBase, BuildDependencyInjection, BuildHosting
@@ -82,9 +85,7 @@ task BuildBase {
   dotnet build `
     '.\source\UpbeatUI' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bb BuildBase
 
@@ -92,9 +93,7 @@ task BuildDependencyInjection {
   dotnet build `
     '.\source\UpbeatUI.Extensions.DependencyInjection' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bdi BuildDependencyInjection
 
@@ -102,9 +101,7 @@ task BuildHosting {
   dotnet build `
     '.\source\UpbeatUI.Extensions.Hosting' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bh BuildHosting
 
@@ -112,9 +109,7 @@ task BuildTests {
   dotnet build `
     '.\source\UpbeatUI.Tests' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bt BuildTests
 
@@ -125,9 +120,7 @@ task BuildManualSample {
   dotnet build `
     '.\samples\ManualUpbeatUISample' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bms BuildManualSample
 
@@ -135,9 +128,7 @@ task BuildServiceProvidedSample {
   dotnet build `
     '.\samples\ServiceProvidedUpbeatUISample' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bsps BuildServiceProvidedSample
 
@@ -145,15 +136,83 @@ task BuildHostedSample {
   dotnet build `
     '.\samples\HostedUpbeatUISample' `
     --verbosity $verbosity `
-    --no-incremental `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task bhs BuildHostedSample
 
+task PackAll PackBase, PackDependencyInjection, PackHosting
+task pa PackAll
+
+task PackBase {
+  dotnet pack `
+    '.\source\UpbeatUI' `
+    --verbosity $verbosity `
+    --force `
+    -c Release `
+    /p:ContinuousIntegrationBuild=true `
+    /p:GenerateCompatibilitySuppressionFile=$generateCompatibilitySuppression
+}
+task pb PackBase
+
+task PackDependencyInjection {
+  dotnet pack `
+    '.\source\UpbeatUI.Extensions.DependencyInjection' `
+    --verbosity $verbosity `
+    -c Release `
+    /p:ContinuousIntegrationBuild=true `
+    /p:GenerateCompatibilitySuppressionFile=$generateCompatibilitySuppression
+}
+task pdi PackDependencyInjection
+
+task PackHosting {
+  dotnet pack `
+    '.\source\UpbeatUI.Extensions.Hosting' `
+    --verbosity $verbosity `
+    --force `
+    -c Release `
+    /p:ContinuousIntegrationBuild=true `
+    /p:GenerateCompatibilitySuppressionFile=$generateCompatibilitySuppression
+}
+task ph PackHosting
+
+task PublishAll PublishBase, PublishDependencyInjection, PublishHosting
+task puba PublishAll
+
+task SetPublishApiKey {
+  $apiKey = Read-Host "Enter NuGet API Key" -AsSecureString
+  $script:clearapikey = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($apikey))
+}
+
+task PublishBase SetPublishApiKey, PackBase, {
+  $version = [Version] $([Xml] (Get-Content .\source\UpbeatUI\UpbeatUI.csproj)).Project.PropertyGroup.Version
+  $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
+  if ($Host.UI.PromptForChoice("About to publish UpbeatUI package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
+    dotnet nuget push "source\UpbeatUI\bin\Release\UpbeatUI.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
+  }
+}
+task pubb PublishBase
+
+task PublishDependencyInjection SetPublishApiKey, PackDependencyInjection, {
+  $version = [Version] $([Xml] (Get-Content .\source\UpbeatUI.Extensions.DependencyInjection\UpbeatUI.Extensions.DependencyInjection.csproj)).Project.PropertyGroup.Version
+  $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
+  if ($Host.UI.PromptForChoice("About to publish UpbeatUI.Extensions.DependencyInjection package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
+    dotnet nuget push "source\UpbeatUI.Extensions.DependencyInjection\bin\Release\UpbeatUI.Extensions.DependencyInjection.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
+  }
+}
+task pubdi PublishDependencyInjection
+
+task PublishHosting SetPublishApiKey, PackHosting, {
+  $version = [Version] $([Xml] (Get-Content .\source\UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj)).Project.PropertyGroup.Version
+  $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
+  if ($Host.UI.PromptForChoice("About to publish UpbeatUI.Extensions.Hosting package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
+    dotnet nuget push "source\UpbeatUI.Extensions.Hosting\bin\Release\UpbeatUI.Extensions.Hosting.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
+  }
+}
+task pubh PublishHosting
+
 task CleanAll CleanBase, CleanDependencyInjection, CleanHosting,
-  CleanManualSample, CleanServiceProvidedSample, CleanHostedSample,
-  CleanTests
+CleanManualSample, CleanServiceProvidedSample, CleanHostedSample,
+CleanTests
 task ca CleanAll
 
 task CleanBase {
@@ -216,8 +275,7 @@ task RunManualSample {
   dotnet run `
     --project '.\samples\ManualUpbeatUISample' `
     --verbosity $verbosity `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task runms RunManualSample
 
@@ -225,8 +283,7 @@ task RunServiceProvidedSample {
   dotnet run `
     --project '.\samples\ServiceProvidedUpbeatUISample' `
     --verbosity $verbosity `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task runsps RunServiceProvidedSample
 
@@ -234,7 +291,6 @@ task RunHostedSample {
   dotnet run `
     --project '.\samples\HostedUpbeatUISample' `
     --verbosity $verbosity `
-    -c Debug `
-    /p:GenerateFullPaths=true
+    -c Debug
 }
 task runhs RunHostedSample

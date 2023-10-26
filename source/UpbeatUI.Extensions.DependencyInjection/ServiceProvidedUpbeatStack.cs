@@ -4,6 +4,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -15,7 +16,7 @@ namespace UpbeatUI.Extensions.DependencyInjection
     /// <summary>
     /// Represents a stack of ViewModels and provides methods and commands for controlling them. Uses an <see cref="IServiceProvider"/> to automatically resolve dependencies when creating ViewModels.
     /// </summary>
-    public class ServiceProvidedUpbeatStack : UpbeatStack, IServiceProvidedUpbeatStack
+    public class ServiceProvidedUpbeatStack : UpbeatStack, IServiceProvidedUpbeatStack, IDisposable, INotifyPropertyChanged
     {
         private readonly IDictionary<Type, Func<IUpbeatService, object, object>> _childViewModelInstantiators = new Dictionary<Type, Func<IUpbeatService, object, object>>();
         private readonly IServiceProvider _serviceProvider;
