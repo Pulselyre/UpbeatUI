@@ -5,7 +5,7 @@
 
 UpbeatUI is an open-source lightweight MVVM framework for quickly developing mobile-style touch based Windows applications using [Windows Presentation Foundation (WPF)](https://github.com/dotnet/wpf). It provides a simple API for stacking Views in the Z-Axis where only the top View is active to the user. The user can close the active view (remove it from the top of the stack) by tapping/clicking the surrounding blurred background area. UpbeatUI also includes versions of several standard MVVM objects and base classes.
 
-UpbeatUI supports **.NET Core 3.0**, **.NET Core 3.1**, and **.NET 5**.
+UpbeatUI supports **.NET Core 3.0**, **.NET Core 3.1**, **.NET 5**, **.NET 6**, and **.NET 7**.
 
 Please note that UpbeatUI is fairly new and may have unidentified bugs or performance inefficiencies. Please see the [Contributing](#contributing) section for information on how to help make UpbeatUI better.
 
@@ -22,8 +22,6 @@ UpbeatUI implementations are available as NuGet packages:
 Three samples are included: one showing [manual setup](samples/ManualUpbeatUISample) and teardown without dependency injection, one showing manual setup and teardown with [dependency injection](samples/ServiceProvidedUpbeatUISample) using an **IServiceProvider**, and one showing [automatic setup and teardown](samples/HostedUpbeatUISample) using an **IHostBuilder**. All samples demonstrate the following capabilities:
 
 ![UpbeatUI Sample](https://github.com/Pulselyre/UpbeatUI/assets/20475952/968f2465-43cb-4486-a671-c8a0d898022e)
-
->Note: The background in the sample is OrangeRed to demonstrate how the effect can be configured. The default value is Gray.
 
 ## How UpbeatUI Works
 
