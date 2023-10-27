@@ -37,9 +37,4 @@
     <ProjectReference Include="..\UpbeatUI.Extensions.DependencyInjection\UpbeatUI.Extensions.DependencyInjection.csproj" />
   </ItemGroup>
 
-  <Target Name="PostClean" AfterTargets="Clean">
-    <RemoveDir Directories="$(BaseIntermediateOutputPath)" /><!-- obj -->
-    <RemoveDir Directories="$(BaseOutputPath)" /><!-- bin -->
-  </Target>
-
 </Project>

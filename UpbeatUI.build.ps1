@@ -215,54 +215,44 @@ CleanManualSample, CleanServiceProvidedSample, CleanHostedSample,
 CleanTests
 task ca CleanAll
 
+function Remove-Output-Dirs($baseDir) {
+  foreach ($dir in @('obj', 'bin')) { Remove-Item -Path "$baseDir\$dir" -recurse -ErrorAction SilentlyContinue }
+}
+
 task CleanBase {
-  dotnet clean `
-    '.\source\UpbeatUI' `
-    --verbosity $verbosity
+  Remove-Output-Dirs '.\source\UpbeatUI'
 }
 task cb CleanBase
 
 task CleanDependencyInjection {
-  dotnet clean `
-    '.\source\UpbeatUI.Extensions.DependencyInjection' `
-    --verbosity $verbosity
+  Remove-Output-Dirs '.\source\UpbeatUI.Extensions.DependencyInjection'
 }
 task cdi CleanDependencyInjection
 
 task CleanHosting {
-  dotnet clean `
-    '.\source\UpbeatUI.Extensions.Hosting' `
-    --verbosity $verbosity
+  Remove-Output-Dirs '.\source\UpbeatUI.Extensions.Hosting'
 }
 task ch CleanHosting
 
 task CleanTests {
-  dotnet clean `
-    '.\source\UpbeatUI.Tests' `
-    --verbosity $verbosity
+  Remove-Output-Dirs '.\source\UpbeatUI.Tests'
 }
 task ct CleanTests
 
 task CleanManualSample {
-  dotnet clean `
-    '.\samples\ManualUpbeatSample' `
-    --verbosity $verbosity
+  Remove-Output-Dirs '.\samples\ManualUpbeatUISample'
 }
 task cms CleanManualSample
 
 task CleanServiceProvidedSample {
-  dotnet clean `
-    '.\samples\ServiceProvidedUpbeatUISample' `
-    --verbosity $verbosity
+  Remove-Output-Dirs '.\samples\ServiceProvidedUpbeatUISample'
 }
-task csp CleanServiceProvidedSample
+task csps CleanServiceProvidedSample
 
 task CleanHostedSample {
-  dotnet clean `
-    '.\samples\HostedUpbeatUISample' `
-    --verbosity $verbosity
+  Remove-Output-Dirs '.\samples\HostedUpbeatUISample'
 }
-task ch CleanHostedSample
+task chs CleanHostedSample
 
 task RunTests {
   dotnet test `

@@ -7,7 +7,7 @@ UpbeatUI is an open-source lightweight MVVM framework for quickly developing mob
 
 UpbeatUI supports **.NET Core 3.0**, **.NET Core 3.1**, **.NET 5**, **.NET 6**, and **.NET 7**.
 
-Please note that UpbeatUI is fairly new and may have unidentified bugs or performance inefficiencies. Please see the [Contributing](#contributing) section for information on how to help make UpbeatUI better.
+Please note that UpbeatUI is fairly new and may have unidentified bugs or performance inefficiencies. Please see the [Contributing](#contributing) section for information on how to help make UpbeatUI better. See the [To-Do List](#to-do-list) for planned future work.
 
 ## Installation
 
@@ -33,9 +33,21 @@ Opening a new ViewModel is done by passing a ViewModelParameters object to the *
 
 Please see the separate [How To Use](HOW-TO-USE.md) markdown file for a guide to the basic features in UpbeatUI.
 
+## To-Do List
+
+- Publish new major release with deprecated classes and methods fully removed.
+- Deprecate the public [`ActionDeferrer`](source\UpbeatUI\ViewModel\ActionDeferrer.cs) (and move all functionality to ['UpbeatStack.UpbeatServiceDeferrer'](source\UpbeatUI\ViewModel\UpbeatStack.UpbeatServiceDeferrer.cs)).
+- Simplify [`HostedUpbeatBuilder`](source\UpbeatUI.Extensions.Hosting\HostedUpbeatBuilder.cs), [`HostedUpbeatSerivce`](source\UpbeatUI.Extensions.Hosting\HostedUpbeatService.cs), [`UpbeatApplicationService`](source\UpbeatUI.Extensions.Hosting\UpbeatApplicationService.cs), and [`ConfigureUpbeatHost`](source/UpbeatUI.Extensions.Hosting/Extensions.cs#L22) implementations.
+- Write more tests.
+- Execute tests via GitHub Action.
+- Create an icon/logo for NuGet packages.
+- Write and [add README files](https://devblogs.microsoft.com/nuget/add-a-readme-to-your-nuget-package/) for NuGet packages.
+
 ## Contributing
 
 Additions, bug fixes, and performance improvements are welcome. For larger modifications please open an issue to discuss the changes.
+
+>Note: This project [defines tasks](UpbeatUI.build.ps1) for executing builds, tests, and other common actions using the [Invoke-Build](https://github.com/nightroman/Invoke-Build) tool for PowerShell. To install Invoke-Build, visit their GitHub page: [nightroman/Invoke-Build](https://github.com/nightroman/Invoke-Build#install-as-module).
 
 ### Step 1
 

@@ -20,9 +20,4 @@
     <ProjectReference Include="..\..\source\UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj" />
   </ItemGroup>
 
-  <Target Name="PostClean" AfterTargets="Clean">
-    <RemoveDir Directories="$(BaseIntermediateOutputPath)" /><!-- obj -->
-    <RemoveDir Directories="$(BaseOutputPath)" /><!-- bin -->
-  </Target>
-
 </Project>
