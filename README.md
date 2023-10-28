@@ -36,12 +36,13 @@ Please see the separate [How To Use](HOW-TO-USE.md) markdown file for a guide to
 ## To-Do List
 
 - Publish new major release with deprecated classes and methods fully removed.
-- Deprecate the public [`ActionDeferrer`](source\UpbeatUI\ViewModel\ActionDeferrer.cs) (and move all functionality to ['UpbeatStack.UpbeatServiceDeferrer'](source\UpbeatUI\ViewModel\UpbeatStack.UpbeatServiceDeferrer.cs)).
+- Deprecate the public [`ActionDeferrer`](source\UpbeatUI\ViewModel\ActionDeferrer.cs) (and move all functionality to [`UpbeatStack.UpbeatServiceDeferrer`](source\UpbeatUI\ViewModel\UpbeatStack.UpbeatServiceDeferrer.cs)).
 - Simplify [`HostedUpbeatBuilder`](source\UpbeatUI.Extensions.Hosting\HostedUpbeatBuilder.cs), [`HostedUpbeatSerivce`](source\UpbeatUI.Extensions.Hosting\HostedUpbeatService.cs), [`UpbeatApplicationService`](source\UpbeatUI.Extensions.Hosting\UpbeatApplicationService.cs), and [`ConfigureUpbeatHost`](source/UpbeatUI.Extensions.Hosting/Extensions.cs#L22) implementations.
 - Write more tests.
 - Execute tests via GitHub Action.
 - Create an icon/logo for NuGet packages.
 - Write and [add README files](https://devblogs.microsoft.com/nuget/add-a-readme-to-your-nuget-package/) for NuGet packages.
+- Add [MAUI](https://github.com/dotnet/maui) support.
 
 ## Contributing
 
