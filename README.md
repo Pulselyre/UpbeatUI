@@ -43,6 +43,8 @@ Please see the separate [How To Use](HOW-TO-USE.md) markdown file for a guide to
 - Create an icon/logo for NuGet packages.
 - Write and [add README files](https://devblogs.microsoft.com/nuget/add-a-readme-to-your-nuget-package/) for NuGet packages.
 - Add [MAUI](https://github.com/dotnet/maui) support.
+- Cleanup/improve [`.gitignore` file](.gitignore) (too many unnecessary items listed).
+- Cleanup/improve [`.editorconfig` file](.editorconfig) and format all source files.
 
 ## Contributing
 

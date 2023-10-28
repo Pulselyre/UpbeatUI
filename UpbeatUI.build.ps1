@@ -7,19 +7,18 @@
 # https://github.com/nightroman/Invoke-Build#install-as-module
 
 Param(
-
   [Parameter(Mandatory = $false, Position = 1)]
   [ValidateSet('quiet', 'minimal', 'normal', 'detailed', 'diagnostic')]
   [Alias('v')]
   [String] $verbosity = 'quiet',
   [Parameter(Mandatory = $false, Position = 2)]
   [Alias('gcs')]
-  [Boolean] $generateCompatibilitySuppression = $false
+    [Boolean] $generateCompatibilitySuppression = $false
 )
 
-task RestoreAll RestoreBase, RestoreDependencyInjection, RestoreHosting,
-RestoreManualSample, RestoreServiceProvidedSample, RestoreHostedSample,
-RestoreTests
+task RestoreAll RestoreBase, RestoreDependencyInjection, RestoreHosting, `
+  RestoreManualSample, RestoreServiceProvidedSample, RestoreHostedSample, `
+  RestoreTests
 task ra RestoreAll
 
 task RestoreBase {
@@ -73,9 +72,9 @@ task RestoreHostedSample {
 }
 task rhs RestoreHostedSample
 
-task BuildAll BuildBase, BuildDependencyInjection, BuildHosting,
-BuildManualSample, BuildServiceProvidedSample, BuildHostedSample,
-BuildTests
+task BuildAll BuildBase, BuildDependencyInjection, BuildHosting, `
+  BuildManualSample, BuildServiceProvidedSample, BuildHostedSample, `
+  BuildTests
 task ba BuildAll
 
 task BuildPackages BuildBase, BuildDependencyInjection, BuildHosting
@@ -210,9 +209,9 @@ task PublishHosting SetPublishApiKey, PackHosting, {
 }
 task pubh PublishHosting
 
-task CleanAll CleanBase, CleanDependencyInjection, CleanHosting,
-CleanManualSample, CleanServiceProvidedSample, CleanHostedSample,
-CleanTests
+task CleanAll CleanBase, CleanDependencyInjection, CleanHosting, `
+  CleanManualSample, CleanServiceProvidedSample, CleanHostedSample, `
+  CleanTests
 task ca CleanAll
 
 function Remove-Output-Dirs($baseDir) {
