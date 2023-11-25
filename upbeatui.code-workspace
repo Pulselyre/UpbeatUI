@@ -1,0 +1,143 @@
+// This file is part of the UpbeatUI project, which is released under MIT License.
+// See LICENSE.md or visit:
+// https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.rulers": [120],
+    "diffEditor.ignoreTrimWhitespace": false,
+    "dotnet-test-explorer.testProjectPath": "source/UpbeatUI.Tests/UpbeatUI.Tests.csproj",
+    "files.associations": {
+      "*.xaml": "xml"
+    },
+    "files.trimTrailingWhitespace": true,
+    "xml.format.joinContentLines": true,
+    "xml.format.maxLineWidth": 120,
+    "xml.format.preservedNewlines": 2,
+    "xml.format.splitAttributes": true,
+    "xml.format.splitAttributesIndentSize": 1,
+    "[csharp]": {
+      "editor.defaultFormatter": "ms-dotnettools.csharp"
+    },
+    "[powershell]": {
+      "editor.defaultFormatter": "ms-vscode.powershell"
+    },
+    "[xml]": {
+      "editor.defaultFormatter": "redhat.vscode-xml"
+    }
+  },
+  // These configurations reference tasks defined in 'UpbeatUI.build.ps1', which uses the
+  // Invoke-Build tool for PowerShell. To install Invoke-Build, visit their GitHub page:
+  // https://github.com/nightroman/Invoke-Build#install-as-module
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build",
+        "command": "powershell",
+        "type": "process",
+        "args": ["Invoke-Build", "BuildAll"],
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "build_msample",
+        "command": "powershell",
+        "type": "process",
+        "args": ["Invoke-Build", "BuildManualSample"],
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "build_spsample",
+        "command": "powershell",
+        "type": "process",
+        "args": ["Invoke-Build", "BuildServiceProvidedSample"],
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "build_hsample",
+        "command": "powershell",
+        "type": "process",
+        "args": ["Invoke-Build", "BuildHostedSample"],
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "clean",
+        "command": "powershell",
+        "type": "process",
+        "args": ["Invoke-Build", "CleanAll"],
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "restore",
+        "command": "powershell",
+        "type": "process",
+        "args": ["Invoke-Build", "RestoreAll"],
+        "problemMatcher": "$msCompile"
+      },
+      {
+        "label": "test",
+        "command": "powershell",
+        "type": "process",
+        "args": ["Invoke-Build", "RunTests"],
+        "problemMatcher": "$msCompile",
+        "group": {
+          "kind": "test",
+          "isDefault": true
+        }
+      }
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Launch Manual Sample",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build_msample",
+        "program": "${workspaceFolder}/samples/ManualUpbeatUISample/bin/Debug/net7.0-windows/ManualUpbeatUISample.exe",
+        "args": [],
+        "cwd": "${workspaceFolder}",
+        "stopAtEntry": false,
+        "console": "internalConsole"
+      },
+      {
+        "name": "Launch Service Provided Sample",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build_spsample",
+        "program": "${workspaceFolder}/samples/ServiceProvidedUpbeatUISample/bin/Debug/net7.0-windows/ServiceProvidedUpbeatUISample.exe",
+        "args": [],
+        "cwd": "${workspaceFolder}",
+        "stopAtEntry": false,
+        "console": "internalConsole"
+      },
+      {
+        "name": "Launch Hosted Sample",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build_hsample",
+        "program": "${workspaceFolder}/samples/HostedUpbeatUISample/bin/Debug/net7.0-windows/HostedUpbeatUISample.exe",
+        "args": [],
+        "cwd": "${workspaceFolder}",
+        "stopAtEntry": false,
+        "console": "internalConsole"
+      }
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "EditorConfig.EditorConfig",
+      "esbenp.prettier-vscode",
+      "formulahendry.dotnet-test-explorer",
+      "ms-dotnettools.csharp",
+      "ms-vscode.PowerShell",
+      "redhat.vscode-xml"
+    ]
+  }
+}
