@@ -17,13 +17,16 @@ namespace UpbeatUI.View.Converters
             var control = value as FrameworkElement;
             return new Func<Point>(() =>
             {
-                var container = (FrameworkElement)VisualTreeHelper.GetParent(control);
+                var container = VisualTreeHelper.GetParent(control);
                 while (container is UpbeatStackControl == false)
-                    container = (FrameworkElement)VisualTreeHelper.GetParent(container);
-                var rawPoint = control.TranslatePoint(new Point(0, 0), container);
+                {
+                    container = VisualTreeHelper.GetParent(container);
+                }
+                var upbeatStackControl = container as UpbeatStackControl;
+                var rawPoint = control.TranslatePoint(new Point(0, 0), upbeatStackControl);
                 return new Point(
-                    (rawPoint.X + control.ActualWidth / 2.0) / container.ActualWidth,
-                    (rawPoint.Y + control.ActualHeight / 2.0) / container.ActualHeight);
+                    (rawPoint.X + control.ActualWidth / 2.0) / upbeatStackControl.ActualWidth,
+                    (rawPoint.Y + control.ActualHeight / 2.0) / upbeatStackControl.ActualHeight);
             });
         }
 
