@@ -10,7 +10,7 @@
 
 UpbeatUI is an open-source lightweight MVVM framework for quickly developing mobile-style touch based Windows applications using [Windows Presentation Foundation (WPF)](https://github.com/dotnet/wpf). It provides a simple API for stacking Views in the Z-Axis where only the top View is active to the user. The user can close the active view (remove it from the top of the stack) by tapping/clicking the surrounding blurred background area. UpbeatUI also includes versions of several standard MVVM objects and base classes.
 
-UpbeatUI supports `.NET Core 3.0`, `.NET Core 3.1`, `.NET 5`, `.NET 6`, and `.NET 7`.
+UpbeatUI supports `.NET Core 3.0`, `.NET Core 3.1`, `.NET 5`, `.NET 6`, `.NET 7`, and `.NET 8`.
 
 Please note that UpbeatUI is fairly new and may have unidentified bugs or performance inefficiencies. Please see the [Contributing](#contributing) section for information on how to help make UpbeatUI better. See the [To-Do List](#to-do-list) for planned future work.
 
@@ -41,6 +41,7 @@ Please see the separate [How To Use](HOW-TO-USE.md) markdown file for a guide to
 ## To-Do List
 
 - Publish new major release with deprecated classes and methods fully removed.
+- Remove the [`UpbeatControl`](source\UpbeatUI\View\UpbeatControl.cs) entirely, and rely on [`<DataTemplate DataType="{x:Type ...}">`](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/data-templating-overview#the-datatype-property) instead to match _ViewModel_ instances on the [`UpbeatStack`](source\UpbeatUI\ViewModel\UpbeatStack.cs) with _Views_. Also, re-implement the percentage size and position behavior as a [WPF Decorator](https://learn.microsoft.com/en-us/dotnet/api/system.windows.controls.decorator).
 - Deprecate the public [`ActionDeferrer`](source\UpbeatUI\ViewModel\ActionDeferrer.cs) (and move all functionality to [`UpbeatStack.UpbeatServiceDeferrer`](source\UpbeatUI\ViewModel\UpbeatStack.UpbeatServiceDeferrer.cs)).
 - Simplify [`HostedUpbeatBuilder`](source\UpbeatUI.Extensions.Hosting\HostedUpbeatBuilder.cs), [`HostedUpbeatSerivce`](source\UpbeatUI.Extensions.Hosting\HostedUpbeatService.cs), [`UpbeatApplicationService`](source\UpbeatUI.Extensions.Hosting\UpbeatApplicationService.cs), and [`ConfigureUpbeatHost`](source/UpbeatUI.Extensions.Hosting/Extensions.cs#L22) implementations.
 - Write more tests.
@@ -48,8 +49,8 @@ Please see the separate [How To Use](HOW-TO-USE.md) markdown file for a guide to
 - [Create an icon/logo for NuGet packages](https://github.com/NuGet/Home/wiki/Packaging-Icon-within-the-nupkg).
 - Write and [add README files](https://devblogs.microsoft.com/nuget/add-a-readme-to-your-nuget-package/) for NuGet packages.
 - Add [MAUI](https://github.com/dotnet/maui), [UWP](https://learn.microsoft.com/en-us/windows/uwp/), and/or [WinUI 3](https://learn.microsoft.com/en-us/windows/apps/winui/winui3/) support.
-<!-- - Cleanup/improve [`.gitignore` file](.gitignore) (too many unnecessary items listed). -->
 - Cleanup/improve [`.editorconfig` file](.editorconfig) and format all source files.
+<!-- - Cleanup/improve [`.gitignore` file](.gitignore) (too many unnecessary items listed). -->
 
 ## Contributing
 
