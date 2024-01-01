@@ -116,6 +116,17 @@ namespace UpbeatUI.View
                     _button.Arrange(new Rect(0, 0, arrangeBounds.Width, arrangeBounds.Height));
                 }
                 Children[i].Arrange(new Rect(0, 0, arrangeBounds.Width, arrangeBounds.Height));
+                if (i < Children.Count - 1)
+                {
+                    FocusManager.SetIsFocusScope(Children[i], false);
+                    KeyboardNavigation.SetTabNavigation(Children[i], KeyboardNavigationMode.None);
+                }
+                else
+                {
+                    FocusManager.SetIsFocusScope(Children[i], true);
+                    FocusManager.SetFocusedElement(Children[i], Children[i]);
+                    KeyboardNavigation.SetTabNavigation(Children[i], KeyboardNavigationMode.Local);
+                }
             }
             return arrangeBounds;
         }
@@ -180,10 +191,12 @@ namespace UpbeatUI.View
                  {
                      Background = BlurColor,
                      BorderBrush = BlurColor,
+                     Focusable = false,
                  };
                 _button = new Button()
                 {
                     Opacity = 0.0,
+                    Focusable = false,
                 };
                 BindingOperations.SetBinding(
                     _button, ButtonBase.CommandProperty, new Binding()

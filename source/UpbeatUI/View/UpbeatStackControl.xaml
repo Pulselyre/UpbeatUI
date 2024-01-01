@@ -11,7 +11,8 @@
     <UserControl.Resources>
         <uvc:UpbeatViewSelector x:Key="UpbeatViewSelector" />
     </UserControl.Resources>
-    <ItemsControl ItemsSource="{Binding ViewModels}">
+    <ItemsControl ItemsSource="{Binding ViewModels}"
+                  Focusable="False">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
                 <uv:BlurredZPanel ClosePopupCommand="{Binding RemoveTopViewModelCommand}"
@@ -22,8 +23,8 @@
         <ItemsControl.ItemTemplate>
             <ItemContainerTemplate>
                 <ContentControl ContentTemplateSelector="{StaticResource UpbeatViewSelector}"
-                                Content="{Binding .}">
-                </ContentControl>
+                                Content="{Binding .}"
+                                Focusable="False" />
             </ItemContainerTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>
