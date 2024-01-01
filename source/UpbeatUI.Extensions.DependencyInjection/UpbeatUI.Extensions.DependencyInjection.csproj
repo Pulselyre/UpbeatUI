@@ -6,7 +6,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0-windows;netcoreapp3.1-windows;net5.0-windows;net6.0-windows;net7.0-windows</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0-windows;netcoreapp3.1-windows;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -21,8 +21,8 @@
     <Copyright>© Michael P. Duda 2020-2023</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <!-- Update the following properties when publishing a new Nuget version -->
-    <Version>1.1.2</Version>
-    <PackageValidationBaselineVersion>1.1.1</PackageValidationBaselineVersion>
+    <Version>1.1.3</Version>
+    <PackageValidationBaselineVersion>1.1.2</PackageValidationBaselineVersion>
   </PropertyGroup>
 
   <ItemGroup>
