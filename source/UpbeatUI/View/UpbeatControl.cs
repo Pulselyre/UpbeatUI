@@ -63,10 +63,15 @@ namespace UpbeatUI.View
                 typeof(UpbeatControl),
                 new PropertyMetadata(0.5));
 
-        static UpbeatControl() =>
+        static UpbeatControl()
+        {
             DefaultStyleKeyProperty.OverrideMetadata(
                 typeof(UpbeatControl),
                 new FrameworkPropertyMetadata(typeof(UpbeatControl)));
+            FocusableProperty.OverrideMetadata(
+                typeof(UpbeatControl),
+                new FrameworkPropertyMetadata(false));
+        }
 
         /// <summary>
         /// Gets or sets the percentage of available height that the content should fill. Can provide one or two values (minimum and maximum). Values can be in percent format (e.g, '50%') or as decimals between 0.0 and 1.0.
