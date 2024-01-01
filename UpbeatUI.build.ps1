@@ -13,7 +13,7 @@ Param(
   [String] $verbosity = 'quiet',
   [Parameter(Mandatory = $false, Position = 2)]
   [Alias('gcs')]
-    [Boolean] $generateCompatibilitySuppression = $false
+  [Boolean] $generateCompatibilitySuppression = $false
 )
 
 task RestoreAll RestoreBase, RestoreDependencyInjection, RestoreHosting, `
@@ -25,6 +25,7 @@ task RestoreBase {
   dotnet restore `
     '.\source\UpbeatUI' `
     --verbosity $verbosity
+  equals $LASTEXITCODE 0
 }
 task rb RestoreBase
 
@@ -32,6 +33,7 @@ task RestoreDependencyInjection {
   dotnet restore `
     '.\source\UpbeatUI.Extensions.DependencyInjection' `
     --verbosity $verbosity
+  equals $LASTEXITCODE 0
 }
 task rdi RestoreDependencyInjection
 
@@ -39,6 +41,7 @@ task RestoreHosting {
   dotnet restore `
     '.\source\UpbeatUI.Extensions.Hosting' `
     --verbosity $verbosity
+  equals $LASTEXITCODE 0
 }
 task rh RestoreHosting
 
@@ -46,6 +49,7 @@ task RestoreTests {
   dotnet restore `
     '.\source\UpbeatUI.Tests' `
     --verbosity $verbosity
+  equals $LASTEXITCODE 0
 }
 task rt RestoreTests
 
@@ -53,6 +57,7 @@ task RestoreManualSample {
   dotnet restore `
     '.\samples\ManualUpbeatUISample' `
     --verbosity $verbosity
+  equals $LASTEXITCODE 0
 }
 task rms RestoreManualSample
 
@@ -61,6 +66,7 @@ task RestoreServiceProvidedSample {
     '.\samples\ServiceProvidedUpbeatUISample' `
     --no-dependencies `
     --verbosity $verbosity
+  equals $LASTEXITCODE 0
 }
 task rsps RestoreServiceProvidedSample
 
@@ -69,6 +75,7 @@ task RestoreHostedSample {
     '.\samples\HostedUpbeatUISample' `
     --no-dependencies `
     --verbosity $verbosity
+  equals $LASTEXITCODE 0
 }
 task rhs RestoreHostedSample
 
@@ -85,6 +92,7 @@ task BuildBase {
     '.\source\UpbeatUI' `
     --verbosity $verbosity `
     -c Debug
+  equals $LASTEXITCODE 0
 }
 task bb BuildBase
 
@@ -93,6 +101,7 @@ task BuildDependencyInjection {
     '.\source\UpbeatUI.Extensions.DependencyInjection' `
     --verbosity $verbosity `
     -c Debug
+  equals $LASTEXITCODE 0
 }
 task bdi BuildDependencyInjection
 
@@ -101,6 +110,7 @@ task BuildHosting {
     '.\source\UpbeatUI.Extensions.Hosting' `
     --verbosity $verbosity `
     -c Debug
+  equals $LASTEXITCODE 0
 }
 task bh BuildHosting
 
@@ -109,6 +119,7 @@ task BuildTests {
     '.\source\UpbeatUI.Tests' `
     --verbosity $verbosity `
     -c Debug
+  equals $LASTEXITCODE 0
 }
 task bt BuildTests
 
@@ -120,6 +131,7 @@ task BuildManualSample {
     '.\samples\ManualUpbeatUISample' `
     --verbosity $verbosity `
     -c Debug
+  equals $LASTEXITCODE 0
 }
 task bms BuildManualSample
 
@@ -128,6 +140,7 @@ task BuildServiceProvidedSample {
     '.\samples\ServiceProvidedUpbeatUISample' `
     --verbosity $verbosity `
     -c Debug
+  equals $LASTEXITCODE 0
 }
 task bsps BuildServiceProvidedSample
 
@@ -136,6 +149,7 @@ task BuildHostedSample {
     '.\samples\HostedUpbeatUISample' `
     --verbosity $verbosity `
     -c Debug
+  equals $LASTEXITCODE 0
 }
 task bhs BuildHostedSample
 
@@ -150,6 +164,7 @@ task PackBase {
     -c Release `
     /p:ContinuousIntegrationBuild=true `
     /p:GenerateCompatibilitySuppressionFile=$generateCompatibilitySuppression
+  equals $LASTEXITCODE 0
 }
 task pb PackBase
 
@@ -160,6 +175,7 @@ task PackDependencyInjection {
     -c Release `
     /p:ContinuousIntegrationBuild=true `
     /p:GenerateCompatibilitySuppressionFile=$generateCompatibilitySuppression
+  equals $LASTEXITCODE 0
 }
 task pdi PackDependencyInjection
 
@@ -171,6 +187,7 @@ task PackHosting {
     -c Release `
     /p:ContinuousIntegrationBuild=true `
     /p:GenerateCompatibilitySuppressionFile=$generateCompatibilitySuppression
+  equals $LASTEXITCODE 0
 }
 task ph PackHosting
 
@@ -187,6 +204,10 @@ task PublishBase SetPublishApiKey, PackBase, {
   $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
   if ($Host.UI.PromptForChoice("About to publish UpbeatUI package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
     dotnet nuget push "source\UpbeatUI\bin\Release\UpbeatUI.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
+    equals $LASTEXITCODE 0
+  }
+  else {
+    throw "Canceled"
   }
 }
 task pubb PublishBase
@@ -196,6 +217,10 @@ task PublishDependencyInjection SetPublishApiKey, PackDependencyInjection, {
   $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
   if ($Host.UI.PromptForChoice("About to publish UpbeatUI.Extensions.DependencyInjection package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
     dotnet nuget push "source\UpbeatUI.Extensions.DependencyInjection\bin\Release\UpbeatUI.Extensions.DependencyInjection.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
+    equals $LASTEXITCODE 0
+  }
+  else {
+    throw "Canceled"
   }
 }
 task pubdi PublishDependencyInjection
@@ -205,6 +230,10 @@ task PublishHosting SetPublishApiKey, PackHosting, {
   $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
   if ($Host.UI.PromptForChoice("About to publish UpbeatUI.Extensions.Hosting package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
     dotnet nuget push "source\UpbeatUI.Extensions.Hosting\bin\Release\UpbeatUI.Extensions.Hosting.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
+    equals $LASTEXITCODE 0
+  }
+  else {
+    throw "Canceled"
   }
 }
 task pubh PublishHosting
@@ -257,6 +286,7 @@ task RunTests {
   dotnet test `
     '.\source\UpbeatUI.Tests' `
     --verbosity $verbosity
+  equals $LASTEXITCODE 0
 }
 task runt RunTests
 
@@ -265,6 +295,7 @@ task RunManualSample {
     --project '.\samples\ManualUpbeatUISample' `
     --verbosity $verbosity `
     -c Debug
+  equals $LASTEXITCODE 0
 }
 task runms RunManualSample
 
@@ -273,6 +304,7 @@ task RunServiceProvidedSample {
     --project '.\samples\ServiceProvidedUpbeatUISample' `
     --verbosity $verbosity `
     -c Debug
+  equals $LASTEXITCODE 0
 }
 task runsps RunServiceProvidedSample
 
@@ -281,5 +313,6 @@ task RunHostedSample {
     --project '.\samples\HostedUpbeatUISample' `
     --verbosity $verbosity `
     -c Debug
+  equals $LASTEXITCODE 0
 }
 task runhs RunHostedSample
