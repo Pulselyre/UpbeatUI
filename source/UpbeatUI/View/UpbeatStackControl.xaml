@@ -20,6 +20,12 @@
                                   BlurRadius="{Binding ElementName=Control, Path=BlurRadius}" />
             </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemContainerStyle>
+            <Style TargetType="ContentPresenter">
+                <Setter Property="Focusable"
+                        Value="False" />
+            </Style>
+        </ItemsControl.ItemContainerStyle>
         <ItemsControl.ItemTemplate>
             <ItemContainerTemplate>
                 <ContentControl ContentTemplateSelector="{StaticResource UpbeatViewSelector}"
