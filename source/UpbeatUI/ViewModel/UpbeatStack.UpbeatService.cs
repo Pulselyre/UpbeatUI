@@ -67,15 +67,15 @@ namespace UpbeatUI.ViewModel
             public void RegisterUpdateCallback(Action updateCallback) =>
                 _updateCallbacks.Add(updateCallback);
 
-            [Obsolete("Method has been renamed to 'RegisterCloseCallback' which better describes how the UpbeatStack handles multiple okToCloseCallback. The 'SetCloseCallback' method will be removed in UpbeatUI 5.0.0.")]
+            [Obsolete("Method has been renamed to 'RegisterCloseCallback' which better describes how the UpbeatStack handles multiple okToCloseCallback. The 'SetCloseCallback' method will be removed in the next major release.")]
             public void SetCloseCallback(Func<bool> okToCloseCallback) =>
                 RegisterCloseCallback(okToCloseCallback);
 
-            [Obsolete("Method has been renamed to 'RegisterCloseCallback' which better describes how the UpbeatStack handles multiple asyncOkToCloseCallback. The 'SetCloseCallback' method will be removed in UpbeatUI 5.0.0.")]
+            [Obsolete("Method has been renamed to 'RegisterCloseCallback' which better describes how the UpbeatStack handles multiple asyncOkToCloseCallback. The 'SetCloseCallback' method will be removed in the next major release.")]
             public void SetCloseCallback(Func<Task<bool>> asyncOkToCloseCallback) =>
                 RegisterCloseCallback(asyncOkToCloseCallback);
 
-            [Obsolete("Method has been renamed to 'RegisterUpdateCallback' which better describes how the UpbeatStack handles multiple updateCallbacks. The 'SetUpdateCallback' method will be removed in UpbeatUI 5.0.0.")]
+            [Obsolete("Method has been renamed to 'RegisterUpdateCallback' which better describes how the UpbeatStack handles multiple updateCallbacks. The 'SetUpdateCallback' method will be removed in the next major release.")]
             public void SetUpdateCallback(Action updateCallback) =>
                 RegisterUpdateCallback(updateCallback);
 

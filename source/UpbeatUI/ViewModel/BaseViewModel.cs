@@ -14,7 +14,7 @@ namespace UpbeatUI.ViewModel
     /// <summary>
     /// Provides a base class with convenience methods for ViewModels.
     /// </summary>
-    [Obsolete("'BaseViewModel' abstract class is deprecated and will be removed in the next major release; consider using the 'CommunityToolkit.Mvvm' NuGet package and 'ObservableObject' class instead.}")]
+    [Obsolete("'BaseViewModel' abstract class is deprecated and will be removed in the next major release; consider using the 'CommunityToolkit.Mvvm' NuGet package and 'ObservableObject' class instead.")]
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
         private static readonly Dictionary<string, PropertyChangedEventArgs> _eventArgCache = new Dictionary<string, PropertyChangedEventArgs>();

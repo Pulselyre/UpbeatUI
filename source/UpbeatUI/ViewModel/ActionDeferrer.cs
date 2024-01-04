@@ -10,6 +10,7 @@ namespace UpbeatUI.ViewModel
     /// <summary>
     /// Provides functionality to queue up <see cref="Action"/>s and execute them upon disposal.
     /// </summary>
+    [Obsolete("'ActionDeferrer' class is deprecated and will be removed in the next major release.")]
     public class ActionDeferrer : IDisposable
     {
         private Queue<Action> _queue = new Queue<Action>();
