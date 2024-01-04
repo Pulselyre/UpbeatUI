@@ -11,7 +11,7 @@ namespace UpbeatUI.ViewModel
     /// <summary>
     /// Provides a convenient means of creating an <see cref="ICommand"/> using delegates provided by the parent class.
     /// </summary>
-    [Obsolete("'DelegateCommand' class is deprecated and will be removed in the next major release; consider using the 'CommunityToolkit.Mvvm' NuGet package and 'RelayCommand' class instead.}")]
+    [Obsolete("'DelegateCommand' class is deprecated and will be removed in the next major release; consider using the 'CommunityToolkit.Mvvm' NuGet package and 'RelayCommand' class instead.")]
     public sealed class DelegateCommand : ICommand
     {
         private readonly Action _execute;
@@ -108,7 +108,7 @@ namespace UpbeatUI.ViewModel
     /// Provides a convenient means of creating an <see cref="ICommand"/> with a parameter using delegates provided by the parent class.
     /// </summary>
     /// <typeparam name="T">The type of the command's parameter.</typeparam>
-    [Obsolete("'DelegateCommand<T>' class is deprecated and will be removed in the next major release; consider using the 'CommunityToolkit.Mvvm' NuGet package and 'RelayCommand<T>' class instead.}")]
+    [Obsolete("'DelegateCommand<T>' class is deprecated and will be removed in the next major release; consider using the 'CommunityToolkit.Mvvm' NuGet package and 'RelayCommand<T>' class instead.")]
     public sealed class DelegateCommand<T> : ICommand
     {
         private readonly Action<T> _execute;
