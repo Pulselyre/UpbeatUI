@@ -1,0 +1,100 @@
+﻿/* This file is part of the UpbeatUI project, which is released under MIT License.
+ * See LICENSE.md or visit:
+ * https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
+ */
+using System;
+using System.Windows;
+using System.Windows.Media;
+using ManualUpbeatUISample.ViewModel;
+using ManualUpbeatUISample.View;
+using UpbeatUI.ViewModel;
+using UpbeatUI.View;
+using System.ComponentModel;
+using System.Threading.Tasks;
+
+namespace ManualUpbeatUISample;
+
+public partial class App : Application
+{
+    // This app would like to provide a way for the user to cancel exiting. To do so, we create a shared task that can be triggered and reset..
+    private TaskCompletionSource _closeRequestedTask = new();
+
+    private async void HandleApplicationStartup(object sender, StartupEventArgs e)
+    {
+        using var sharedTimer = new SharedTimer();
+
+        // The UpbeatStack is the central data structure for an UpbeatUI app. One must be created for the life of the application and should be disposed at the end.
+        using var upbeatStack = new UpbeatStack();
+
+        // The UpbeatStack depends on mappings of parameter types to ViewModels and controls to determine which ViewModel to create and which View to show. Without an IServiceProvider, you must manually map each Parameters, ViewModel, and View type, along with a constructur the IUpbeatStack can call to create a ViewModel.
+        upbeatStack.MapViewModel<BottomViewModel.Parameters, BottomViewModel, BottomControl>(
+            (service, parameters) => new BottomViewModel(service, sharedTimer));
+        upbeatStack.MapViewModel<ConfirmPopupViewModel.Parameters, ConfirmPopupViewModel, ConfirmPopupControl>(
+            (upbeatService, parameters) => new ConfirmPopupViewModel(upbeatService, parameters, sharedTimer));
+
+        // The MenuViewModel's constructor requires an async delegate that it can use to start closing the application. The IUpbeatStack includes an appropriate method: TryCloseAllViewModelsAsync.
+        upbeatStack.MapViewModel<MenuViewModel.Parameters, MenuViewModel, MenuControl>(
+            (upbeatService, parameters) => new MenuViewModel(upbeatService, () => _closeRequestedTask.TrySetResult(), sharedTimer));
+        upbeatStack.MapViewModel<PopupViewModel.Parameters, PopupViewModel, PopupControl>(
+            (upbeatService, parameters) => new PopupViewModel(parameters, sharedTimer));
+        upbeatStack.MapViewModel<RandomDataViewModel.Parameters, RandomDataViewModel, RandomDataControl>(
+            (upbeatService, parameters) => new RandomDataViewModel(upbeatService, new Random(), sharedTimer));
+        upbeatStack.MapViewModel<SharedListViewModel.Parameters, SharedListViewModel, SharedListControl>(
+            (upbeatService, parameters) =>
+            {
+                // The SharedListViewModel shares an IUpbeatService and scoped SharedList service with its child ViewModel, the SharedListDataViewModel. The scoped service can be manually created and provided to both.
+                var sharedList = new SharedList();
+                return new SharedListViewModel(upbeatService, sharedList, sharedTimer,
+                    new SharedListDataViewModel(upbeatService, sharedList));
+            });
+        upbeatStack.MapViewModel<TextEntryPopupViewModel.Parameters, TextEntryPopupViewModel, TextEntryPopupControl>(
+            (upbeatService, parameters) => new TextEntryPopupViewModel(upbeatService, parameters, sharedTimer));
+
+        // The included UpdateMainWindow class already provides the necessary controls to display Views for IUpbeatViewModels in a UpbeatStack set as the DataContext.
+        var mainWindow = new UpbeatMainWindow()
+        {
+            // You must set the DataContext to the IUpbeatStack for the ViewModels to be used.
+            DataContext = upbeatStack,
+            Title = "UpbeatUI Sample Application",
+            MinHeight = 275,
+            MinWidth = 275,
+            Height = 400,
+            Width = 400,
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            BlurColor = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
+        };
+
+        // Override the default Window Closing event to request a close instead of closing itself.
+        void HandleMainWindowClosing(object sender, CancelEventArgs e)
+        {
+            e.Cancel = true;
+            _ = _closeRequestedTask.TrySetResult();
+        }
+        mainWindow.Closing += HandleMainWindowClosing;
+        // When the UpbeatStack has no more view models, the 'ViewModelsEmpited' event will be triggered, so we can count that as a request to close the application.
+        void HandleUpbeatStackEmpied(object sender, EventArgs e) => _closeRequestedTask.TrySetResult();
+        upbeatStack.ViewModelsEmptied += HandleUpbeatStackEmpied;
+
+        // Add a base BottomViewModel to the UpbeatStack and wait for it to be closed.
+        upbeatStack.OpenViewModel(new BottomViewModel.Parameters());
+
+        // We are now ready to show the main window.
+        mainWindow.Show();
+
+        // We set up an infinite loop to await the shared close requested task, then attempt to close all ViewModels. If successful, we can exit the application. If not, reset the shared task and await again.
+        while (true)
+        {
+            await _closeRequestedTask.Task.ConfigureAwait(true);
+            if (await upbeatStack.TryCloseAllViewModelsAsync().ConfigureAwait(true))
+            {
+                break;
+            }
+            _closeRequestedTask = new TaskCompletionSource();
+        }
+
+        upbeatStack.ViewModelsEmptied -= HandleUpbeatStackEmpied;
+        mainWindow.Closing -= HandleMainWindowClosing;
+        mainWindow.Close();
+    }
+}
+

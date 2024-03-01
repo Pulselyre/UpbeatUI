@@ -1,0 +1,12 @@
+<!-- This file is part of the UpbeatUI project, which is released under MIT License.
+     See LICENSE.md or visit:
+     https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
+     -->
+<Application
+    x:Class="ManualUpbeatUISample.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:ManualUpbeatUISample"
+    Startup="HandleApplicationStartup">
+    <Application.Resources> </Application.Resources>
+</Application>

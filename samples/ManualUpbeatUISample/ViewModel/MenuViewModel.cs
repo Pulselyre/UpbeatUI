@@ -4,7 +4,6 @@
  */
 using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -22,11 +21,11 @@ public class MenuViewModel : ObservableObject, IDisposable
 
     public MenuViewModel(
         IUpbeatService upbeatService, // This will be a unique IUpbeatService created and injected by the IUpbeatStack specifically for this ViewModel.
-        Func<Task> closeApplicationCallbackAsync, // This ViewModel requires an async delegate to be provided, so it can start closing the application.
+        Action closeApplicationCallback, // This ViewModel requires an async delegate to be provided, so it can start closing the application.
         SharedTimer sharedTimer) // This is a shared singleton service.
     {
         _upbeatService = upbeatService ?? throw new NullReferenceException(nameof(upbeatService));
-        _ = closeApplicationCallbackAsync ?? throw new NullReferenceException(nameof(closeApplicationCallbackAsync));
+        _ = closeApplicationCallback ?? throw new NullReferenceException(nameof(closeApplicationCallback));
         _sharedTimer = sharedTimer ?? throw new NullReferenceException(nameof(sharedTimer));
 
         _stopwatch.Start();
@@ -35,7 +34,7 @@ public class MenuViewModel : ObservableObject, IDisposable
         _sharedTimer.Ticked += SharedTimerTicked;
 
         // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. It can be used to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
-        ExitCommand = new AsyncRelayCommand(closeApplicationCallbackAsync);
+        ExitCommand = new RelayCommand(closeApplicationCallback);
         OpenRandomDataCommand = new RelayCommand(
             () =>
             {
