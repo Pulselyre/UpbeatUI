@@ -77,10 +77,13 @@
                                Margin="5" />
                 </StackPanel>
             </Viewbox>
-            <DataGrid Grid.Row="2"
-                      ItemsSource="{Binding Data}"
-                      VerticalScrollBarVisibility="Visible"
-                      Margin="5" />
+            <Canvas Grid.Row="2"
+                    Margin="5">
+                <DataGrid Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Canvas}},Path=ActualWidth}"
+                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Canvas}},Path=ActualHeight}"
+                          ItemsSource="{Binding Data}"
+                          VerticalScrollBarVisibility="Visible" />
+            </Canvas>
             <Button Grid.Row="3"
                     Command="{Binding RefreshDataCommand}"
                     Margin="5">Refresh Random Data</Button>

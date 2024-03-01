@@ -13,7 +13,7 @@ using UpbeatUI.ViewModel;
 namespace ServiceProvidedUpbeatUISample.ViewModel;
 
 // This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
-public class BottomViewModel : ObservableObject, IDisposable
+public sealed class BottomViewModel : ObservableObject, IDisposable
 {
     private readonly IUpbeatService _upbeatService;
     private readonly SharedTimer _sharedTimer;
@@ -22,8 +22,8 @@ public class BottomViewModel : ObservableObject, IDisposable
         IUpbeatService upbeatService, // This will be a unique IUpbeatService created and injected by the IUpbeatStack specifically for this ViewModel.
         SharedTimer sharedTimer) // This is a shared singleton service.
     {
-        _upbeatService = upbeatService ?? throw new NullReferenceException(nameof(upbeatService));
-        _sharedTimer = sharedTimer ?? throw new NullReferenceException(nameof(sharedTimer));
+        _upbeatService = upbeatService ?? throw new ArgumentNullException(nameof(upbeatService));
+        _sharedTimer = sharedTimer ?? throw new ArgumentNullException(nameof(sharedTimer));
 
         // Registering a CloseCallback allows the ViewModel to prevent itself from closing. For example: if there is unsaved work. This can also completely prevent the application from shutting down. CloseCallbacks can be either async or non-async methods/lambdas.
         _upbeatService.RegisterCloseCallback(AskBeforeClosingAsync);
@@ -61,7 +61,7 @@ public class BottomViewModel : ObservableObject, IDisposable
                 Message = "The application is trying to exit.\nClick Confirm to exit or off this popup to cancel.",
                 // The ConfirmPopupViewModel will execute this callback (set the okToClose bool to true) if the user confirms that closing. If the popup closes without the user confirming, okToClose remains false, and the application will remain running.
                 ConfirmCallback = () => okToClose = true,
-            });
+            }).ConfigureAwait(true);
         return okToClose;
     }
 

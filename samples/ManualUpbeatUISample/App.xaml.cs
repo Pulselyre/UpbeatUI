@@ -11,6 +11,7 @@ using UpbeatUI.ViewModel;
 using UpbeatUI.View;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace ManualUpbeatUISample;
 
@@ -38,7 +39,7 @@ public partial class App : Application
         upbeatStack.MapViewModel<PopupViewModel.Parameters, PopupViewModel, PopupControl>(
             (upbeatService, parameters) => new PopupViewModel(parameters, sharedTimer));
         upbeatStack.MapViewModel<RandomDataViewModel.Parameters, RandomDataViewModel, RandomDataControl>(
-            (upbeatService, parameters) => new RandomDataViewModel(upbeatService, new Random(), sharedTimer));
+            (upbeatService, parameters) => new RandomDataViewModel(upbeatService, RandomNumberGenerator.Create(), sharedTimer));
         upbeatStack.MapViewModel<SharedListViewModel.Parameters, SharedListViewModel, SharedListControl>(
             (upbeatService, parameters) =>
             {

@@ -12,6 +12,7 @@ using UpbeatUI.View;
 using UpbeatUI.Extensions.DependencyInjection;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace ServiceProvidedUpbeatUISample;
 
@@ -24,7 +25,7 @@ public partial class App : Application
     {
         // Use a ServiceProvider (built from a ServiceCollection) to set up dependencies that the ServiceProvidedUpbeatStack will inject into ViewModels. Scoped services are supported, and each ViewModel within the stack is a separate scope.
         using var serviceProvider = new ServiceCollection()
-            .AddTransient<Random>()
+            .AddTransient(sp => RandomNumberGenerator.Create())
             .AddSingleton<SharedTimer>()
             .AddScoped<SharedList>()
             .BuildServiceProvider();

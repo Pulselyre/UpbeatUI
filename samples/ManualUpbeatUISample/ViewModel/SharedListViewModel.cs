@@ -12,7 +12,7 @@ using UpbeatUI.ViewModel;
 namespace ManualUpbeatUISample.ViewModel;
 
 // This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
-public class SharedListViewModel : ObservableObject, IDisposable
+public sealed class SharedListViewModel : ObservableObject, IDisposable
 {
     private readonly IUpbeatService _upbeatService;
     private readonly SharedTimer _sharedTimer;
@@ -24,8 +24,8 @@ public class SharedListViewModel : ObservableObject, IDisposable
         SharedTimer sharedTimer, // This is a shared singleton service.
         SharedListDataViewModel sharedListDataViewModel) // This is a child ViewModel, which can help with separating concerns and keep ViewModels from being too complicated. Child ViewModels share an IUpbeatService and any scoped services with their parents.
     {
-        _upbeatService = upbeatService ?? throw new NullReferenceException(nameof(upbeatService));
-        _sharedTimer = sharedTimer ?? throw new NullReferenceException(nameof(sharedTimer));
+        _upbeatService = upbeatService ?? throw new ArgumentNullException(nameof(upbeatService));
+        _sharedTimer = sharedTimer ?? throw new ArgumentNullException(nameof(sharedTimer));
         _sharedList = sharedList ?? throw new ArgumentNullException(nameof(sharedList));
         SharedListDataViewModel = sharedListDataViewModel ?? throw new ArgumentNullException(nameof(sharedListDataViewModel));
 

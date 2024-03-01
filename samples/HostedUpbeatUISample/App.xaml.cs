@@ -3,6 +3,7 @@
  * https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
  */
 using System;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Media;
 using HostedUpbeatUISample.ViewModel;
@@ -18,7 +19,7 @@ public partial class App : Application
     private async void HandleApplicationStartup(object sender, StartupEventArgs e) =>
         await Host.CreateDefaultBuilder(e?.Args ?? Array.Empty<string>()) // Use the .NET IHostBuilder to manage the HostedUpbeatService
             .ConfigureServices((hostContext, serviceCollection) => serviceCollection // Services can be configured, just as in other Hosted projects like ASP.NET Core applications. The IUpbeatStack will inject them into ViewModels when appropriate. Scoped services are supported, and each ViewModel within the stack is a separate scope.
-                .AddTransient<Random>()
+                .AddTransient(sp => RandomNumberGenerator.Create())
                 .AddSingleton<SharedTimer>()
                 .AddScoped<SharedList>())
             .ConfigureUpbeatHost( // Use this extension method to add UpbeatUI to the IHostBuilder

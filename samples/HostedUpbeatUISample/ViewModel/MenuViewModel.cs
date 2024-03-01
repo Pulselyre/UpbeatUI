@@ -14,7 +14,7 @@ using UpbeatUI.ViewModel;
 namespace HostedUpbeatUISample.ViewModel;
 
 // This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
-public class MenuViewModel : ObservableObject, IDisposable
+public sealed class MenuViewModel : ObservableObject, IDisposable
 {
     private readonly IUpbeatService _upbeatService;
     private readonly SharedTimer _sharedTimer;
@@ -25,9 +25,9 @@ public class MenuViewModel : ObservableObject, IDisposable
         IUpbeatApplicationService hostedUpbeatService, // IUpbeatApplicationService provides a method allowing ViewModels to start application shutdown.
         SharedTimer sharedTimer) // This is a shared singleton service.
     {
-        _upbeatService = upbeatService ?? throw new NullReferenceException(nameof(upbeatService));
-        _ = hostedUpbeatService ?? throw new NullReferenceException(nameof(hostedUpbeatService));
-        _sharedTimer = sharedTimer ?? throw new NullReferenceException(nameof(sharedTimer));
+        _upbeatService = upbeatService ?? throw new ArgumentNullException(nameof(upbeatService));
+        _ = hostedUpbeatService ?? throw new ArgumentNullException(nameof(hostedUpbeatService));
+        _sharedTimer = sharedTimer ?? throw new ArgumentNullException(nameof(sharedTimer));
 
         _stopwatch.Start();
         _upbeatService.RegisterUpdateCallback(() => OnPropertyChanged(nameof(Visibility))); // Registered "UpdateCallbacks" will be called each time the UI thread renders a new frame.

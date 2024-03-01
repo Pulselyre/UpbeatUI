@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -14,19 +15,18 @@ using UpbeatUI.ViewModel;
 namespace ServiceProvidedUpbeatUISample.ViewModel;
 
 // This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
-internal class RandomDataViewModel : ObservableObject, IDisposable
+internal sealed class RandomDataViewModel : ObservableObject, IDisposable
 {
-    private const int MaxRandomLength = 15;
-    private static readonly string RandomFormatString = new('0', MaxRandomLength);
+    private const int MaxRandomLength = 14;
 
     private readonly IUpbeatService _upbeatService;
-    private readonly Random _random;
+    private readonly RandomNumberGenerator _random;
     private readonly SharedTimer _sharedTimer;
-    private readonly ObservableCollection<KeyValuePair<string, string>> _data = new ObservableCollection<KeyValuePair<string, string>>();
+    private readonly ObservableCollection<KeyValuePair<string, string>> _data = new();
 
     public RandomDataViewModel(
         IUpbeatService upbeatService, // This will be a unique IUpbeatService created and injected by the IUpbeatStack specifically for this ViewModel.
-        Random random, // This will be an injected transient instance of a Random service.
+        RandomNumberGenerator random, // This will be an injected transient instance of a Random service.
         SharedTimer sharedTimer) // This is a shared singleton service.
     {
         _upbeatService = upbeatService ?? throw new ArgumentNullException(nameof(upbeatService));
@@ -49,13 +49,17 @@ internal class RandomDataViewModel : ObservableObject, IDisposable
         Data = new ReadOnlyObservableCollection<KeyValuePair<string, string>>(_data);
 
         for (var i = 0; i < 100; i++)
+        {
             _data.Add(CreateRandomKeyValuePair());
+        }
     }
 
     private void RefreshData()
     {
         for (var i = 0; i < 100; i++)
+        {
             _data[i] = CreateRandomKeyValuePair();
+        }
     }
 
     public ICommand OpenPositionedPopupCommand { get; }
@@ -66,15 +70,20 @@ internal class RandomDataViewModel : ObservableObject, IDisposable
     public void Dispose() =>
         _sharedTimer.Ticked -= SharedTimerTicked;
 
+    private string RandomString()
+    {
+        var bytes = new byte[MaxRandomLength];
+        _random.GetNonZeroBytes(bytes);
+        return BitConverter.ToString(bytes).Replace("-", "", StringComparison.Ordinal);
+    }
+
     private KeyValuePair<string, string> CreateRandomKeyValuePair() =>
-        new(
-            $"{(_random.NextDouble() * Math.Pow(10, MaxRandomLength)).ToString(RandomFormatString)}.{(_random.NextDouble() * Math.Pow(10, MaxRandomLength)).ToString(RandomFormatString)}",
-            $"{(_random.NextDouble() * Math.Pow(10, MaxRandomLength)).ToString(RandomFormatString)}.{(_random.NextDouble() * Math.Pow(10, MaxRandomLength)).ToString(RandomFormatString)}");
+        new(RandomString(), RandomString());
 
     private void SharedTimerTicked(object sender, EventArgs e) =>
         Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread
 
     // This nested Parameters class (full class name: "RandomDataViewModel.Parameters") is what other ViewModels will create instances of to tell the IUpbeatStack what type of child ViewModel to add to the stack.
-    public class Parameters
+    public sealed class Parameters
     { }
 }
