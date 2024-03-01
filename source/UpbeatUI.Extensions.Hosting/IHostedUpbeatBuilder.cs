@@ -14,16 +14,10 @@ namespace UpbeatUI.Extensions.Hosting
     public interface IHostedUpbeatBuilder
     {
         /// <summary>
-        /// Builds an <see cref="IHostedUpbeatService"/> which hosts an UpbeatUI application.
-        /// </summary>
-        /// <returns>A configured <see cref="IHostedUpbeatService"/> ready to be started.</returns> 
-        IHostedUpbeatService Build();
-
-        /// <summary>
         /// Sets a delegate for building the main <see cref="Window"/> that will house the UpbeatUI aplication. The <see cref="Window"/>'s DataContext will be set by the service.
         /// </summary>
         /// <param name="windowCreator">The delegate for creating the main <see cref="Window"/>.</param>
-        /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns> 
+        /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
         IHostedUpbeatBuilder ConfigureWindow(Func<Window> windowCreator);
 
         /// <summary>
@@ -90,9 +84,10 @@ namespace UpbeatUI.Extensions.Hosting
         /// <para>Note: each <see cref="string"/> representation is a <see cref="Type.AssemblyQualifiedName"/></para></param>
         /// <param name="allowUnresolvedDependencies">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
         /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
-        IHostedUpbeatBuilder SetViewModelLocators(Func<string, string> parameterToViewModelLocator,
-                                                  Func<string, string> parameterToViewLocator,
-                                                  bool allowUnresolvedDependencies = false);
+        IHostedUpbeatBuilder SetViewModelLocators(
+            Func<string, string> parameterToViewModelLocator,
+            Func<string, string> parameterToViewLocator,
+            bool allowUnresolvedDependencies = false);
 
         /// <summary>
         /// Sets delegates the <see cref="UpbeatStack"/> can use to automatically map a Parameters <see cref="Type"/> to a ViewModel <see cref="Type"/> and a View <see cref="Type"/>.
@@ -102,8 +97,9 @@ namespace UpbeatUI.Extensions.Hosting
         /// <para>Note: The input <see cref="Type"/> represents the Parameters in the mapping, not the ViewModel.</para></param>
         /// <param name="allowUnresolvedDependencies">If false, the <see cref="UpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
         /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
-        IHostedUpbeatBuilder SetViewModelLocators(Func<Type, Type> parameterToViewModelLocator,
-                                                  Func<Type, Type> parameterToViewLocator,
-                                                  bool allowUnresolvedDependencies = false);
+        IHostedUpbeatBuilder SetViewModelLocators(
+            Func<Type, Type> parameterToViewModelLocator,
+            Func<Type, Type> parameterToViewLocator,
+            bool allowUnresolvedDependencies = false);
     }
 }

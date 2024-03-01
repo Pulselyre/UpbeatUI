@@ -1,4 +1,4 @@
-/* This file is part of the UpbeatUI project, which is released under MIT License.
+﻿/* This file is part of the UpbeatUI project, which is released under MIT License.
  * See LICENSE.md or visit:
  * https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
  */
@@ -13,10 +13,10 @@ using UpbeatUI.View;
 
 namespace HostedUpbeatUISample;
 
-public class Program
+public partial class App : Application
 {
-    private static void Main(string[] args) =>
-        Host.CreateDefaultBuilder(args) // Use the .NET IHostBuilder to manage the HostedUpbeatService
+    private async void HandleApplicationStartup(object sender, StartupEventArgs e) =>
+        await Host.CreateDefaultBuilder(e?.Args ?? Array.Empty<string>()) // Use the .NET IHostBuilder to manage the HostedUpbeatService
             .ConfigureServices((hostContext, serviceCollection) => serviceCollection // Services can be configured, just as in other Hosted projects like ASP.NET Core applications. The IUpbeatStack will inject them into ViewModels when appropriate. Scoped services are supported, and each ViewModel within the stack is a separate scope.
                 .AddTransient<Random>()
                 .AddSingleton<SharedTimer>()
@@ -36,5 +36,6 @@ public class Program
                         BlurColor = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
                     }))
             .Build()
-            .Run(); // Upon running, the IHost will start the HostedUpbeatService, which will create an IUpbeatStack and show the UpbeatManWindow (as configured above).
+            .RunAsync().ConfigureAwait(true);
 }
+

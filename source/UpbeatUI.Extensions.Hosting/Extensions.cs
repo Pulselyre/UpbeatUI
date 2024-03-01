@@ -22,19 +22,21 @@ namespace UpbeatUI.Extensions.Hosting
         public static IHostBuilder ConfigureUpbeatHost(
             this IHostBuilder hostBuilder, Func<object> baseViewModelParametersCreator,
             Action<IHostedUpbeatBuilder> configure = null) =>
-            hostBuilder.ConfigureServices(
+            hostBuilder?.ConfigureServices(
                 (hostBuilderContext, serviceCollection) => serviceCollection
-                    .AddSingleton<IHostedUpbeatBuilder, HostedUpbeatBuilder>()
-                    .AddSingleton(
+                    .AddSingleton<IUpbeatApplicationService, UpbeatApplicationService>()
+                    .AddHostedService(
                         sp =>
                         {
-                            var upbeatHostBuilder = sp.GetRequiredService<IHostedUpbeatBuilder>();
-                            upbeatHostBuilder.ConfigureBaseViewModelParameters(baseViewModelParametersCreator);
-                            upbeatHostBuilder.SetDefaultViewModelLocators();
+                            var upbeatHostBuilder = new HostedUpbeatBuilder();
+                            _ = upbeatHostBuilder.ConfigureBaseViewModelParameters(baseViewModelParametersCreator)
+                                .SetDefaultViewModelLocators();
                             configure?.Invoke(upbeatHostBuilder);
-                            return upbeatHostBuilder.Build();
-                        })
-                    .AddSingleton<IUpbeatApplicationService>(sp => sp.GetRequiredService<IHostedUpbeatService>())
-                    .AddHostedService(sp => sp.GetRequiredService<IHostedUpbeatService>()));
+                            return new HostedUpbeatService(
+                                upbeatHostBuilder,
+                                sp,
+                                sp.GetRequiredService<IHostApplicationLifetime>(),
+                                sp.GetRequiredService<IUpbeatApplicationService>() as UpbeatApplicationService);
+                        })) ?? throw new ArgumentNullException(nameof(hostBuilder));
     }
 }

@@ -16,6 +16,11 @@ namespace UpbeatUI.ViewModel
     public interface IUpbeatStack : IOpensViewModels
     {
         /// <summary>
+        /// <see cref="EventHandler"/> that the <see cref="UpbeatStack"/> will fire when it is empty of ViewModels.
+        /// </summary>
+        event EventHandler ViewModelsEmptied;
+
+        /// <summary>
         /// Gets the count of the <see cref="UpbeatStack"/>'s current ViewModels.
         /// </summary>
         int Count { get; }
@@ -27,10 +32,6 @@ namespace UpbeatUI.ViewModel
         /// Gets the <see cref="UpbeatStack"/>'s current ViewModels.
         /// </summary>
         INotifyCollectionChanged ViewModels { get; }
-        /// <summary>
-        /// Gets or sets an <see cref="Action"/> callback that the <see cref="UpbeatStack"/> will execute when it is empty of ViewModels.
-        /// </summary>
-        Action ViewModelsEmptyCallback { get; set; }
 
         /// <summary>
         /// Gets a View <see cref="Type"/> that is mapped to the <paramref name="viewModelType"/> <see cref="Type"/>.

@@ -12,60 +12,88 @@ using UpbeatUI.Extensions.DependencyInjection;
 
 namespace UpbeatUI.Extensions.Hosting
 {
-    internal class HostedUpbeatService : UpbeatApplicationService, IHostedUpbeatService
+    internal sealed class HostedUpbeatService : IHostedService
     {
-        internal HostedUpbeatService(HostedUpbeatBuilder upbeatHostBuilder, IServiceProvider serviceProvider, IHostApplicationLifetime hostApplicationLifetime)
-            : base(upbeatHostBuilder, serviceProvider, hostApplicationLifetime)
-        { }
+
+        private readonly HostedUpbeatBuilder _upbeatHostBuilder;
+        private readonly IHostApplicationLifetime _hostApplicationLifetime;
+        private readonly UpbeatApplicationService _upbeatApplicationService;
+        private readonly IServiceProvider _serviceProvider;
+        private Task _executeTask;
+        private TaskCompletionSource<bool> _closeRequestedTask = new TaskCompletionSource<bool>();
+        private Window _mainWindow;
+
+        internal HostedUpbeatService(
+            HostedUpbeatBuilder upbeatHostBuilder,
+            IServiceProvider serviceProvider,
+            IHostApplicationLifetime hostApplicationLifetime,
+            UpbeatApplicationService upbeatApplicationService)
+        {
+            _upbeatHostBuilder = upbeatHostBuilder ?? throw new ArgumentNullException(nameof(upbeatHostBuilder));
+            _hostApplicationLifetime = hostApplicationLifetime ?? throw new ArgumentNullException(nameof(hostApplicationLifetime));
+            _upbeatApplicationService = upbeatApplicationService ?? throw new ArgumentNullException(nameof(upbeatApplicationService));
+            _serviceProvider = serviceProvider;
+        }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            var thread = new Thread(() =>
-            {
-                var app = new Application();
-                app.Startup += async (sender, e) =>
-                {
-                    Window mainWindow = null;
-                    Task baseViewModelOpen = null;
-                    _upbeatStack = new ServiceProvidedUpbeatStack(_serviceProvider ?? throw new ArgumentNullException(nameof(_serviceProvider)));
-                    foreach (var registerer in _upbeatHostBuilder.MappingRegisterers ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.MappingRegisterers)} provided."))
-                        registerer.Invoke(_upbeatStack);
-                    mainWindow = _upbeatHostBuilder.WindowCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.WindowCreator)} provided.");
-                    mainWindow.DataContext = _upbeatStack;
-                    mainWindow.Closing += MainWindowClosingRequested;
-                    _upbeatStack.ViewModelsEmptyCallback = () => _forcedClosedTaskSource.SetResult(true);
-                    baseViewModelOpen = _upbeatStack.OpenViewModelAsync(_upbeatHostBuilder.BaseViewModelParametersCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.BaseViewModelParametersCreator)} provided."));
-                    mainWindow.Show();
-                    await Task.WhenAny(baseViewModelOpen ?? Task.CompletedTask, _forcedClosedTaskSource.Task);
-                    mainWindow.Closing -= MainWindowClosingRequested;
-                    mainWindow.Close();
-                    if (_forcedClosedTaskSource.Task.IsFaulted)
-                        throw _forcedClosedTaskSource.Task.Exception.InnerException;
-                    _upbeatStack.ViewModelsEmptyCallback = null;
-                };
-                try
-                {
-                    app.Run();
-                    _applicationTaskSource.SetResult(true);
-                }
-                catch (Exception ex)
-                {
-                    _applicationTaskSource.SetException(ex.InnerException ?? ex);
-                }
-                 _hostApplicationLifetime.StopApplication();
-            });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            return _applicationTaskSource.Task;
+            _executeTask = ExecuteAsync();
+            return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken) =>
-            _applicationTaskSource.Task;
-
-        private void MainWindowClosingRequested(object sender, CancelEventArgs e)
+        public Task StopAsync(CancellationToken cancellationToken)
         {
-            e.Cancel = true;
-            CloseUpbeatApplication();
+            _ = _closeRequestedTask.TrySetResult(true);
+            return _executeTask;
         }
+
+        private async Task ExecuteAsync()
+        {
+            try
+            {
+                using var upbeatStack = new ServiceProvidedUpbeatStack(_serviceProvider);
+                _upbeatApplicationService.CloseRequested += HandleUpbeatApplicationServiceCloseRequested;
+                foreach (var registerer in _upbeatHostBuilder.MappingRegisterers ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.MappingRegisterers)} provided."))
+                {
+                    registerer.Invoke(upbeatStack);
+                }
+                _mainWindow = _upbeatHostBuilder.WindowCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.WindowCreator)} provided.");
+                _mainWindow.DataContext = upbeatStack;
+                _mainWindow.Closing += HandleMainWindowClosing;
+                upbeatStack.ViewModelsEmptied += HandleUpbeatStackViewModelsEmptied;
+                upbeatStack.OpenViewModel(_upbeatHostBuilder.BaseViewModelParametersCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.BaseViewModelParametersCreator)} provided."));
+                _mainWindow.Show();
+                while (true)
+                {
+                    _ = await _closeRequestedTask.Task.ConfigureAwait(true);
+                    if (await upbeatStack.TryCloseAllViewModelsAsync().ConfigureAwait(true))
+                    {
+                        break;
+                    }
+                    _closeRequestedTask = new TaskCompletionSource<bool>();
+                }
+                upbeatStack.ViewModelsEmptied -= HandleUpbeatStackViewModelsEmptied;
+                _mainWindow.Closing -= HandleMainWindowClosing;
+                _mainWindow.Close();
+                _upbeatApplicationService.CloseRequested -= HandleUpbeatApplicationServiceCloseRequested;
+            }
+            finally
+            {
+                _hostApplicationLifetime.StopApplication();
+            }
+        }
+
+        private void HandleMainWindowClosing(object sender, CancelEventArgs e)
+        {
+            _ = e ?? throw new ArgumentNullException(nameof(e));
+            e.Cancel = true;
+            _ = _closeRequestedTask.TrySetResult(true);
+        }
+
+        private void HandleUpbeatApplicationServiceCloseRequested(object sender, EventArgs e) =>
+            _ = _closeRequestedTask.TrySetResult(true);
+
+        private void HandleUpbeatStackViewModelsEmptied(object sender, EventArgs e) =>
+            _ = _closeRequestedTask.TrySetResult(true);
     }
 }

@@ -42,10 +42,11 @@ namespace UpbeatUI.ViewModel
                 CompositionTarget.Rendering += UpdateViewModelProperties;
         }
 
+        public event EventHandler ViewModelsEmptied;
+
         public int Count { get { return _openViewModels.Count; } }
         public ICommand RemoveTopViewModelCommand { get; }
         public INotifyCollectionChanged ViewModels { get; }
-        public Action ViewModelsEmptyCallback { get; set; }
 
         public void Dispose()
         {
@@ -124,7 +125,7 @@ namespace UpbeatUI.ViewModel
             _openViewModelServices.Remove(viewModel);
             closedCallback?.Invoke();
             if (_openViewModels.Count == 0)
-                ViewModelsEmptyCallback?.Invoke();
+                ViewModelsEmptied?.Invoke(this, EventArgs.Empty);
         }
 
         private async Task<bool> TryRemoveViewModelAsync(object viewModel)
