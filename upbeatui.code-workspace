@@ -42,7 +42,7 @@
         "label": "build",
         "command": "powershell",
         "type": "process",
-        "args": ["Invoke-Build", "BuildAll"],
+        "args": ["Invoke-Build", "BuildActive", "-filename", "${file}"],
         "problemMatcher": "$msCompile"
       },
       {
