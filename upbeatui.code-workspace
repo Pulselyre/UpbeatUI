@@ -101,33 +101,33 @@
         "type": "coreclr",
         "request": "launch",
         "preLaunchTask": "build_msample",
-        "program": "${workspaceFolder}/samples/ManualUpbeatUISample/bin/Debug/net7.0-windows/ManualUpbeatUISample.exe",
+        "program": "${workspaceFolder}/samples/ManualUpbeatUISample/bin/Debug/net7.0-windows/ManualUpbeatUISample.dll",
         "args": [],
         "cwd": "${workspaceFolder}",
         "stopAtEntry": false,
-        "console": "internalConsole"
+        "console": "integratedTerminal"
       },
       {
         "name": "Launch Service Provided Sample",
         "type": "coreclr",
         "request": "launch",
         "preLaunchTask": "build_spsample",
-        "program": "${workspaceFolder}/samples/ServiceProvidedUpbeatUISample/bin/Debug/net7.0-windows/ServiceProvidedUpbeatUISample.exe",
+        "program": "${workspaceFolder}/samples/ServiceProvidedUpbeatUISample/bin/Debug/net7.0-windows/ServiceProvidedUpbeatUISample.dll",
         "args": [],
         "cwd": "${workspaceFolder}",
         "stopAtEntry": false,
-        "console": "internalConsole"
+        "console": "integratedTerminal"
       },
       {
         "name": "Launch Hosted Sample",
         "type": "coreclr",
         "request": "launch",
         "preLaunchTask": "build_hsample",
-        "program": "${workspaceFolder}/samples/HostedUpbeatUISample/bin/Debug/net7.0-windows/HostedUpbeatUISample.exe",
+        "program": "${workspaceFolder}/samples/HostedUpbeatUISample/bin/Debug/net7.0-windows/HostedUpbeatUISample.dll",
         "args": [],
         "cwd": "${workspaceFolder}",
         "stopAtEntry": false,
-        "console": "internalConsole"
+        "console": "integratedTerminal"
       }
     ]
   },
