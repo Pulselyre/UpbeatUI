@@ -10,7 +10,7 @@ using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.Extensions.Hosting
 {
-    public static class Extensions
+    public static class ExtensionMethods
     {
         /// <summary>
         /// Configures an <see cref="IHostBuilder"/> to create and start a <see cref="IHostedUpbeatService"/> to manage the <see cref="UpbeatStack"/> and main <see cref="Window"/>.

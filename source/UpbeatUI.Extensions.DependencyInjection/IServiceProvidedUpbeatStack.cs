@@ -50,9 +50,10 @@ namespace UpbeatUI.Extensions.DependencyInjection
         /// <para>Note: The input <see cref="Type"/> is for the Parameters in the mapping, not the ViewModel.</para>
         /// <para>Note: each <see cref="string"/> representation is a <see cref="Type.AssemblyQualifiedName"/></para></param>
         /// <param name="allowUnresolvedDependencies">If false, the <see cref="IServiceProvidedUpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
-        public void SetViewModelLocators(Func<string, string> parameterToViewModelLocator,
-                                         Func<string, string> parameterToViewLocator,
-                                         bool allowUnresolvedDependencies = false);
+        public void SetViewModelLocators(
+            Func<string, string> parameterToViewModelLocator,
+            Func<string, string> parameterToViewLocator,
+            bool allowUnresolvedDependencies = false);
 
         /// <summary>
         /// Sets delegates the <see cref="IServiceProvidedUpbeatStack"/> can use to automatically map a Parameters <see cref="Type"/> to a ViewModel <see cref="Type"/> and a View <see cref="Type"/>.
@@ -61,8 +62,9 @@ namespace UpbeatUI.Extensions.DependencyInjection
         /// <param name="parameterToViewLocator">A delegate to locate a View <see cref="Type"/> from a Parameters <see cref="Type"/>.
         /// <para>Note: The input <see cref="Type"/> represents the Parameters in the mapping, not the ViewModel.</para></param>
         /// <param name="allowUnresolvedDependencies">If false, the <see cref="IServiceProvidedUpbeatStack"/> will throw an exception instead of providing a null service to the ViewModel.</param>
-        public void SetViewModelLocators(Func<Type, Type> parameterToViewModelLocator,
-                                         Func<Type, Type> parameterToViewLocator,
-                                         bool allowUnresolvedDependencies = false);
+        public void SetViewModelLocators(
+            Func<Type, Type> parameterToViewModelLocator,
+            Func<Type, Type> parameterToViewLocator,
+            bool allowUnresolvedDependencies = false);
     }
 }

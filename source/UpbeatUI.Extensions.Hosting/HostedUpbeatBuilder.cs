@@ -3,7 +3,7 @@
  * https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
  */
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using UpbeatUI.Extensions.DependencyInjection;
 using UpbeatUI.View;
@@ -11,10 +11,10 @@ using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.Extensions.Hosting
 {
-    internal class HostedUpbeatBuilder : IHostedUpbeatBuilder
+    internal sealed class HostedUpbeatBuilder : IHostedUpbeatBuilder
     {
         internal Func<object> BaseViewModelParametersCreator { get; private set; }
-        internal IList<Action<ServiceProvidedUpbeatStack>> MappingRegisterers { get; } = new List<Action<ServiceProvidedUpbeatStack>>();
+        internal Collection<Action<ServiceProvidedUpbeatStack>> MappingRegisterers { get; } = new Collection<Action<ServiceProvidedUpbeatStack>>();
         internal Func<Window> WindowCreator { get; private set; } = () => new UpbeatMainWindow();
 
         public IHostedUpbeatBuilder ConfigureWindow(Func<Window> windowCreator)

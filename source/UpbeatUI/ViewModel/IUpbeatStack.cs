@@ -47,7 +47,8 @@ namespace UpbeatUI.ViewModel
         /// <typeparam name="TViewModel">The type of the ViewModel created from a <typeparamref name="TParameters"/>.</typeparam>
         /// <typeparam name="TView">The Type of the <see cref="UIElement"/>.</typeparam>
         /// <param name="viewModelCreator">The delegate that will executed to create the ViewModel from an <see cref="IUpbeatService"/> and <typeparamref name="TParameters"/>.</param>
-        void MapViewModel<TParameters, TViewModel, TView>(Func<IUpbeatService, TParameters, TViewModel> viewModelCreator) where TView : UIElement;
+        void MapViewModel<TParameters, TViewModel, TView>(Func<IUpbeatService, TParameters, TViewModel> viewModelCreator)
+            where TView : UIElement;
 
         /// <summary>
         /// Tries to close and dispose all open ViewModels from the <see cref="UpbeatStack"/>.
