@@ -101,10 +101,8 @@ namespace UpbeatUI.View
             get => (ICommand)GetValue(ClosePopupCommandProperty);
             set => SetValue(ClosePopupCommandProperty, value);
         }
-        protected override int VisualChildrenCount
-        {
-            get => base.VisualChildrenCount + (_rectangle == null ? 0 : 1) + (_button == null ? 0 : 1);
-        }
+        protected override int VisualChildrenCount =>
+            base.VisualChildrenCount + (_rectangle == null ? 0 : 1) + (_button == null ? 0 : 1);
 
         protected override Size ArrangeOverride(Size finalSize)
         {
@@ -160,7 +158,10 @@ namespace UpbeatUI.View
         {
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
             if (_blockingVisualChange)
+            {
                 return;
+            }
+
             if (_rectangle != null)
             {
                 _blockingVisualChange = true;
@@ -176,29 +177,37 @@ namespace UpbeatUI.View
                 KernelType = KernelType.Gaussian,
             };
             for (var i = 0; i < Children.Count; i++)
+            {
                 if (Children[i] != null)
+                {
                     Children[i].Effect = blurEffect;
+                }
+            }
+
             for (var i = Children.Count - 1; i >= 0; i--)
+            {
                 if (Children[i] != null)
                 {
                     Children[i].Effect = null;
                     i = -1;
                 }
+            }
+
             if ((visualAdded != null && Children.Count > 1)
                 || (visualRemoved != null && Children.Count > 2))
             {
-                 _rectangle = new Border()
-                 {
-                     Background = BlurColor,
-                     BorderBrush = BlurColor,
-                     Focusable = false,
-                 };
+                _rectangle = new Border()
+                {
+                    Background = BlurColor,
+                    BorderBrush = BlurColor,
+                    Focusable = false,
+                };
                 _button = new Button()
                 {
                     Opacity = 0.0,
                     Focusable = false,
                 };
-                BindingOperations.SetBinding(
+                _ = BindingOperations.SetBinding(
                     _button, ButtonBase.CommandProperty, new Binding()
                     {
                         Source = ClosePopupCommand,
@@ -213,9 +222,13 @@ namespace UpbeatUI.View
         private void CloseMouseUp(object sender, RoutedEventArgs e)
         {
             if (ClosePopupCommand?.CanExecute(null) ?? false)
-                    ClosePopupCommand.Execute(null);
+            {
+                ClosePopupCommand.Execute(null);
+            }
             else
+            {
                 RaiseEvent(new RoutedEventArgs(RequestPopupCloseEvent));
+            }
         }
 
         private void CloseTouchUp(object sender, TouchEventArgs e)
