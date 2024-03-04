@@ -5,36 +5,44 @@
      -->
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0-windows;netcoreapp3.1-windows;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
-    <EnablePackageValidation>true</EnablePackageValidation>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <DebugType>portable</DebugType>
-    <PackageProjectUrl>https://github.com/pulselyre/UpbeatUI</PackageProjectUrl>
-    <PackageTags>wpf;touch;mvvm;hostbuilder</PackageTags>
-    <Description>Microsoft.Extensions.Hosting (IHostBuilder) support for UpbeatUI. UpbeatUI is an open-source lightweight MVVM framework for quickly developing multi-level touch based Windows applications on top of the WPF framework.</Description>
-    <Authors>Michael P. Duda</Authors>
-    <Copyright>© Michael P. Duda 2020-2024</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <!-- Update the following properties when publishing a new Nuget version -->
-    <Version>3.1.5</Version>
-    <PackageValidationBaselineVersion>3.1.4</PackageValidationBaselineVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>
+            netcoreapp3.0-windows;netcoreapp3.1-windows;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+        <EnablePackageValidation>true</EnablePackageValidation>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <DebugType>portable</DebugType>
+        <PackageProjectUrl>https://github.com/pulselyre/UpbeatUI</PackageProjectUrl>
+        <PackageTags>wpf;touch;mvvm;hostbuilder</PackageTags>
+        <Description>Microsoft.Extensions.Hosting (IHostBuilder) support for UpbeatUI. UpbeatUI is an open-source
+            lightweight MVVM framework for quickly developing multi-level touch based Windows applications on top of the
+            WPF framework.</Description>
+        <Authors>Michael P. Duda</Authors>
+        <Copyright>© Michael P. Duda 2020-2024</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <!-- Update the following properties when publishing a new Nuget version -->
+        <Version>3.1.5</Version>
+        <PackageValidationBaselineVersion>3.1.4</PackageValidationBaselineVersion>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference
+            Include="Microsoft.SourceLink.GitHub"
+            Version="1.1.1"
+            PrivateAssets="All" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference
+            Include="Microsoft.Extensions.Hosting.Abstractions"
+            Version="5.0.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\UpbeatUI.Extensions.DependencyInjection\UpbeatUI.Extensions.DependencyInjection.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\UpbeatUI.Extensions.DependencyInjection\UpbeatUI.Extensions.DependencyInjection.csproj" />
+    </ItemGroup>
 
 </Project>

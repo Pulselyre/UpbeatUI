@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
 using UpbeatUI.ViewModel.ListSynchronize;
@@ -70,9 +71,9 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
         {
             var observableCollection = new ObservableCollection<TestObjectWithDefaultConstructor>()
                 {
-                    new TestObjectWithDefaultConstructor { Value = "11" },
-                    new TestObjectWithDefaultConstructor { Value = "12" },
-                    new TestObjectWithDefaultConstructor { Value = "13" }
+                    new() { Value = "11" },
+                    new() { Value = "12" },
+                    new() { Value = "13" }
                 };
             var newValues = Enumerable.Range(0, 5).ToList();
             ExecuteAndTestSync(observableCollection, newValues);
@@ -83,9 +84,9 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
         {
             var observableCollection = new ObservableCollection<TestObjectWithDefaultConstructor>()
                 {
-                    new TestObjectWithDefaultConstructor { Value = "11" },
-                    new TestObjectWithDefaultConstructor { Value = "12" },
-                    new TestObjectWithDefaultConstructor { Value = "13" }
+                    new() { Value = "11" },
+                    new() { Value = "12" },
+                    new() { Value = "13" }
                 };
             var newValues = new List<int>();
             ExecuteAndTestSync(observableCollection, newValues);
@@ -100,14 +101,14 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
             var changedCount = 0;
             observableCollection.CollectionChanged += (o, e) => changedCount++;
             observableCollection.Synchronize(
-                (i, to) => to.Value = i.ToString(),
+                (i, to) => to.Value = i.ToString(CultureInfo.InvariantCulture),
                 newValues
                 );
             Assert.AreEqual(newValues.Count, observableCollection.Count);
             Assert.AreEqual(Math.Abs(originalSize - newValues.Count), changedCount);
             for (var i = 0; i < newValues.Count; i++)
             {
-                Assert.AreEqual(newValues[i].ToString(), observableCollection[i].Value);
+                Assert.AreEqual(newValues[i].ToString(CultureInfo.InvariantCulture), observableCollection[i].Value);
             }
         }
     }
@@ -127,9 +128,9 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
         {
             var observableCollection = new ObservableCollection<TestObjectWithoutDefaultConstructor>()
                 {
-                    new TestObjectWithoutDefaultConstructor("11"),
-                    new TestObjectWithoutDefaultConstructor("12"),
-                    new TestObjectWithoutDefaultConstructor("13")
+                    new("11"),
+                    new("12"),
+                    new("13")
                 };
             var newValues = Enumerable.Range(0, 5).ToList();
             ExecuteAndTestSync(observableCollection, newValues);
@@ -140,9 +141,9 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
         {
             var observableCollection = new ObservableCollection<TestObjectWithoutDefaultConstructor>()
                 {
-                    new TestObjectWithoutDefaultConstructor("11"),
-                    new TestObjectWithoutDefaultConstructor("12"),
-                    new TestObjectWithoutDefaultConstructor("13")
+                    new("11"),
+                    new("12"),
+                    new("13")
                 };
             var newValues = new List<int>();
             ExecuteAndTestSync(observableCollection, newValues);
@@ -158,14 +159,14 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
             observableCollection.CollectionChanged += (o, e) => changedCount++;
             observableCollection.Synchronize(
                 () => new TestObjectWithoutDefaultConstructor(null),
-                (i, to) => to.Value = i.ToString(),
+                (i, to) => to.Value = i.ToString(CultureInfo.InvariantCulture),
                 newValues
                 );
             Assert.AreEqual(newValues.Count, observableCollection.Count);
             Assert.AreEqual(Math.Abs(originalSize - newValues.Count), changedCount);
             for (var i = 0; i < newValues.Count; i++)
             {
-                Assert.AreEqual(newValues[i].ToString(), observableCollection[i].Value);
+                Assert.AreEqual(newValues[i].ToString(CultureInfo.InvariantCulture), observableCollection[i].Value);
             }
         }
     }
@@ -177,10 +178,7 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
 
     public class TestObjectWithoutDefaultConstructor
     {
-        public TestObjectWithoutDefaultConstructor(string value)
-        {
-            Value = value;
-        }
+        public TestObjectWithoutDefaultConstructor(string value) => Value = value;
 
         public string Value { get; set; }
     }

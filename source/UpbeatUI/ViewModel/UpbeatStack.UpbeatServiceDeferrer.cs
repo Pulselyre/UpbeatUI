@@ -9,7 +9,7 @@ namespace UpbeatUI.ViewModel
 {
     public partial class UpbeatStack
     {
-        private class UpbeatServiceDeferrer : IDisposable
+        private sealed class UpbeatServiceDeferrer : IDisposable
         {
             private readonly Queue<Action> _queue = new Queue<Action>();
             private readonly Action _unlocker;
@@ -17,7 +17,10 @@ namespace UpbeatUI.ViewModel
             public UpbeatServiceDeferrer(UpbeatService configurationService)
             {
                 if (configurationService == null)
-                    throw new ArgumentNullException("unlocker action must be provided.");
+                {
+                    throw new ArgumentNullException(nameof(configurationService));
+                }
+
                 _unlocker = configurationService.Unlock;
                 configurationService.Lock(Defer);
             }
@@ -25,7 +28,10 @@ namespace UpbeatUI.ViewModel
             public void Dispose()
             {
                 while (_queue.Count > 0)
+                {
                     _queue.Dequeue()();
+                }
+
                 _unlocker();
             }
 

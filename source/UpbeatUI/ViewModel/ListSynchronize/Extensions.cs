@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace UpbeatUI.ViewModel.ListSynchronize
 {
-    public static class Extensions
+    public static class ExtensionMethods
     {
         public static void Synchronize<TSyncable>(
             this IList<TSyncable> items,
@@ -16,17 +16,21 @@ namespace UpbeatUI.ViewModel.ListSynchronize
         )
         {
             var list = sources.SelectMany(a => a).ToList();
-            int count = items.Count;
-            for (int i = 0; i < Math.Max(list.Count, count); i++)
+            var count = items?.Count ?? throw new ArgumentNullException(nameof(items));
+            for (var i = 0; i < Math.Max(list.Count, count); i++)
             {
                 if (i >= count)
                 {
                     items.Add(list[i]);
                 }
                 else if (i >= list.Count)
+                {
                     items.RemoveAt(items.Count - 1);
+                }
                 else
+                {
                     items[i] = list[i];
+                }
             }
         }
 
@@ -34,30 +38,24 @@ namespace UpbeatUI.ViewModel.ListSynchronize
             this IList<TSyncable> items,
             Action<TSource, TSyncable> synchronizer,
             params IEnumerable<TSource>[] sources
-        ) where TSyncable : class, new()
-        {
-            items.Synchronize(
+        ) where TSyncable : class, new() => items.Synchronize(
                 () => new TSyncable(),
                 synchronizer,
                 sources
             );
-        }
 
         public static void Synchronize<TSource, TSyncable>(
             this IList<TSyncable> items,
             Func<TSyncable> blankCreator,
             Action<TSource, TSyncable> synchronizer,
             params IEnumerable<TSource>[] sources
-        ) where TSyncable : class
-        {
-            items.Synchronize(
+        ) where TSyncable : class => items.Synchronize(
                 s =>
                 {
                     var p = blankCreator();
                     synchronizer(s, p);
                     return p;
                 }, synchronizer, sources);
-        }
 
         public static void Synchronize<TSource, TSyncable>(
             this IList<TSyncable> items,
@@ -66,67 +64,25 @@ namespace UpbeatUI.ViewModel.ListSynchronize
             params IEnumerable<TSource>[] sources
         ) where TSyncable : class
         {
+            _ = creator ?? throw new ArgumentNullException(nameof(creator));
+            _ = synchronizer ?? throw new ArgumentNullException(nameof(synchronizer));
             var list = sources.SelectMany(a => a).ToList();
-            int count = items.Count;
-            for (int i = 0; i < Math.Max(list.Count, count); i++)
+            var count = items?.Count ?? throw new ArgumentNullException(nameof(items));
+            for (var i = 0; i < Math.Max(list.Count, count); i++)
             {
                 if (i >= count)
                 {
                     items.Add(creator(list[i]));
                 }
                 else if (i >= list.Count)
+                {
                     items.RemoveAt(items.Count - 1);
+                }
                 else
+                {
                     synchronizer(list[i], items[i]);
+                }
             }
         }
     }
-
-    // public class SynchronizableCollection<TSyncable, TSource> : ObservableCollection<TSyncable>
-    // {
-    //     private Func<TSyncable> _blankCreator;
-    //     private Func<TSource, TSyncable> _initializedCreator;
-    //     private Action<TSource, TSyncable> _synchronizer;
-
-    //     public SynchronizableCollection(Action<TSource, TSyncable> synchronizer)
-    //     {
-    //         if (typeof(TSyncable).GetConstructor(Type.EmptyTypes) == null)
-    //             throw new Exception("Type of " + typeof(TSyncable).FullName + " does not provide a default constructor.");
-    //         _synchronizer = synchronizer;
-    //     }
-
-    //     public SynchronizableCollection(Func<TSyncable> blankCreator, Action<TSource, TSyncable> synchronizer)
-    //     {
-    //         _blankCreator = blankCreator;
-    //         _synchronizer = synchronizer;
-    //     }
-
-    //     public SynchronizableCollection(Func<TSource, TSyncable> initializedCreator, Action<TSource, TSyncable> synchronizer)
-    //     {
-    //         _synchronizer = synchronizer;
-    //         _initializedCreator = initializedCreator;
-    //     }
-
-    //     public void Synchronize(params IEnumerable<TSource>[] sources)
-    //     {
-    //         var list = sources.SelectMany(a => a).ToList();
-    //         int count = Count;
-    //         for (int i = 0; i < Math.Max(list.Count, count); i++)
-    //         {
-    //             if (i >= count)
-    //             {
-    //                 Add(
-    //                     _blankCreator != null ? _blankCreator()
-    //                     : _initializedCreator != null ? _initializedCreator(list[i])
-    //                     : (TSyncable)typeof(TSyncable).GetConstructor(Type.EmptyTypes).Invoke(null));
-    //                 if (_initializedCreator == null)
-    //                     _synchronizer(list[i], this[i]);
-    //             }
-    //             else if (i >= list.Count)
-    //                 RemoveAt(Count - 1);
-    //             else
-    //                 _synchronizer(list[i], this[i]);
-    //         }
-    //     }
-    // }
 }
