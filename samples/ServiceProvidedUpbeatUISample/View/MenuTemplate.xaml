@@ -1,0 +1,72 @@
+<!-- This file is part of the UpbeatUI project, which is released under MIT License.
+     See LICENSE.md or visit:
+     https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
+     -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:uv="clr-namespace:UpbeatUI.View;assembly=UpbeatUI"
+    xmlns:svm="clr-namespace:ServiceProvidedUpbeatUISample.ViewModel">
+    <!-- Note that "DataType" for this DataTemplate refers to a specific ViewModel class. When an instance of that
+         ViewModel class is added to the stack, this DataTemplate will be used to display content. The VieWModel
+         instance will be the "DataContext". -->
+    <DataTemplate DataType="{x:Type svm:MenuViewModel}">
+        <!-- The "HeightPercent" and "WidthPercent" properties, which must be set on the root element within the
+             DataTemplate, control how much available space the content should take. It accepts percentages and decimal
+             values (so 1.0 = 100%). It can also accept min/max ranges. This view will take exactly 60% of available
+             horizontal space, always, and whatever its content needs vertically up to 95%. -->
+        <!-- The "XPositionPercent" and "YPositionPercent" properties, which must be set on the root element within the
+             DataTemplate, control where within the available space the content should be aligned. 0.0 or 0% are the top
+             or far left, 1.0 or 100% are the bottom or far right, and 0.5 or 50% is the center (default). In this case,
+             the values are bound to properites on the ViewModel. Note that the reference point for positioning is the
+             exact center of the content. To prevent the content from being partially off-screen, set "KeepInBounds" to
+             True. -->
+        <Border
+            uv:PercentPlace.HeightPercent="100%"
+            uv:PercentPlace.KeepInBounds="True"
+            uv:PercentPlace.XPositionPercent="0%"
+            Background="White"
+            BorderBrush="Black"
+            BorderThickness="0 0 5 0"
+            Width="150">
+            <DockPanel Margin="5">
+                <StackPanel
+                    DockPanel.Dock="Top"
+                    Orientation="Vertical">
+                    <TextBlock
+                        TextWrapping="Wrap"
+                        Margin="5">This "Side Menu" is just a regular View that is configured to take 40% of available
+                        width, and align against the left side of the window.</TextBlock>
+                    <Button
+                        Command="{Binding OpenRandomDataCommand}"
+                        Margin="5">Random Data</Button>
+                    <Button
+                        Command="{Binding OpenSharedListCommand}"
+                        Margin="5">Shared List</Button>
+                    <TextBlock
+                        TextAlignment="Center"
+                        Margin="5"
+                        Text="{Binding SecondsElapsed}" />
+                    <Ellipse
+                        Margin="5"
+                        HorizontalAlignment="Center"
+                        Height="10"
+                        Width="10">
+                        <Ellipse.Fill>
+                            <SolidColorBrush
+                                Color="Red"
+                                Opacity="{Binding Visibility}" />
+                        </Ellipse.Fill>
+                    </Ellipse>
+                </StackPanel>
+                <Button
+                    DockPanel.Dock="Bottom"
+                    Margin="5"
+                    Command="{Binding ExitCommand}">Exit</Button>
+                <StackPanel />
+            </DockPanel>
+        </Border>
+    </DataTemplate>
+</ResourceDictionary>

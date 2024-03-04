@@ -29,27 +29,26 @@ namespace UpbeatUI.Extensions.Hosting
             return this;
         }
 
-        public IHostedUpbeatBuilder MapViewModel<TParameters, TUpbeatViewModel, TView>(bool allowUnresolvedDependencies = false)
-            where TView : UIElement
+        public IHostedUpbeatBuilder MapViewModel<TParameters, TUpbeatViewModel>(bool allowUnresolvedDependencies = false)
         {
             MappingRegisterers.Add(
-                upbeatStack => upbeatStack.MapViewModel<TParameters, TUpbeatViewModel, TView>(allowUnresolvedDependencies));
+                upbeatStack => upbeatStack.MapViewModel<TParameters, TUpbeatViewModel>(allowUnresolvedDependencies));
             return this;
         }
 
-        public IHostedUpbeatBuilder MapViewModel<TParameters, TViewModel, TView>(Func<IUpbeatService, TParameters, TViewModel> viewModelCreator)
-            where TView : UIElement
+        public IHostedUpbeatBuilder MapViewModel<TParameters, TViewModel>(
+            Func<IUpbeatService, TParameters, TViewModel> viewModelCreator)
         {
             MappingRegisterers.Add(
-                upbeatStack => upbeatStack.MapViewModel<TParameters, TViewModel, TView>(viewModelCreator));
+                upbeatStack => upbeatStack.MapViewModel(viewModelCreator));
             return this;
         }
 
-        public IHostedUpbeatBuilder MapViewModel<TParameters, TViewModel, TView>(Func<IUpbeatService, TParameters, IServiceProvider, TViewModel> viewModelCreator)
-            where TView : UIElement
+        public IHostedUpbeatBuilder MapViewModel<TParameters, TViewModel>(
+            Func<IUpbeatService, TParameters, IServiceProvider, TViewModel> viewModelCreator)
         {
             MappingRegisterers.Add(
-                upbeatStack => upbeatStack.MapViewModel<TParameters, TViewModel, TView>(viewModelCreator));
+                upbeatStack => upbeatStack.MapViewModel(viewModelCreator));
             return this;
         }
 
@@ -62,26 +61,22 @@ namespace UpbeatUI.Extensions.Hosting
 
         public IHostedUpbeatBuilder SetViewModelLocators(
             Func<string, string> parameterToViewModelLocator,
-            Func<string, string> parameterToViewLocator,
             bool allowUnresolvedDependencies = false)
         {
             MappingRegisterers.Add(upbeatStack =>
                 upbeatStack.SetViewModelLocators(
                     parameterToViewModelLocator,
-                    parameterToViewLocator,
                     allowUnresolvedDependencies));
             return this;
         }
 
         public IHostedUpbeatBuilder SetViewModelLocators(
             Func<Type, Type> parameterToViewModelLocator,
-            Func<Type, Type> parameterToViewLocator,
             bool allowUnresolvedDependencies = false)
         {
             MappingRegisterers.Add(upbeatStack =>
                 upbeatStack.SetViewModelLocators(
                     parameterToViewModelLocator,
-                    parameterToViewLocator,
                     allowUnresolvedDependencies));
             return this;
         }

@@ -8,6 +8,7 @@ using System.Windows.Data;
 
 namespace UpbeatUI.View.Converters
 {
+    [Obsolete("'" + nameof(PercentOfToSizeConverter) + "' method is deprecated and will be removed in the next major release; consider using the '" + nameof(PercentPlaceContentControl) + "' class to position elements instead.")]
     public class PercentOfToSizeConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

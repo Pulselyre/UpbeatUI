@@ -49,6 +49,7 @@ Please see the separate [How To Use](HOW-TO-USE.md) markdown file for a guide to
 - Add [MAUI](https://github.com/dotnet/maui), [UWP](https://learn.microsoft.com/en-us/windows/uwp/), and/or [WinUI 3](https://learn.microsoft.com/en-us/windows/apps/winui/winui3/) support.
 - Cleanup/improve [`.editorconfig` file](.editorconfig) and format all source files.
 <!--
+- Remove the [`UpbeatControl`](source\UpbeatUI\View\UpbeatControl.cs) entirely, and rely on [`<DataTemplate DataType="{x:Type ...}">`](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/data-templating-overview#the-datatype-property) instead to match _ViewModel_ instances on the [`UpbeatStack`](source\UpbeatUI\ViewModel\UpbeatStack.cs) with _Views_. Also, re-implement the percentage size and position behavior as a [WPF Decorator](https://learn.microsoft.com/en-us/dotnet/api/system.windows.controls.decorator).
 - Cleanup/improve [`.gitignore` file](.gitignore) (too many unnecessary items listed).
 - Deprecate the public [`ActionDeferrer`](source\UpbeatUI\ViewModel\ActionDeferrer.cs) (and move all functionality to [`UpbeatStack.UpbeatServiceDeferrer`](source\UpbeatUI\ViewModel\UpbeatStack.UpbeatServiceDeferrer.cs)).
 - Simplify [`HostedUpbeatBuilder`](source\UpbeatUI.Extensions.Hosting\HostedUpbeatBuilder.cs), [`HostedUpbeatSerivce`](source\UpbeatUI.Extensions.Hosting\HostedUpbeatService.cs), [`UpbeatApplicationService`](source\UpbeatUI.Extensions.Hosting\UpbeatApplicationService.cs), and [`ConfigureUpbeatHost`](source/UpbeatUI.Extensions.Hosting/Extensions.cs#L22) implementations.

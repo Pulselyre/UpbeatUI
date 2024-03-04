@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using UpbeatUI.ViewModel;
 
@@ -32,13 +31,11 @@ namespace UpbeatUI.Extensions.DependencyInjection
             : base(updateOnRender) =>
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
-        public void MapViewModel<TParameters, TViewModel, TView>(bool allowUnresolvedDependencies)
-            where TView : UIElement =>
-            MapServiceProvidedViewModel<TParameters, TViewModel, TView>(allowUnresolvedDependencies);
+        public void MapViewModel<TParameters, TViewModel>(bool allowUnresolvedDependencies) =>
+            MapServiceProvidedViewModel<TParameters, TViewModel>(allowUnresolvedDependencies);
 
-        public void MapViewModel<TParameters, TViewModel, TView>(Func<IUpbeatService, TParameters, IServiceProvider, TViewModel> viewModelCreator)
-            where TView : UIElement =>
-            MapViewModel<TParameters, TViewModel, TView>((upbeatService, parameters) =>
+        public void MapViewModel<TParameters, TViewModel>(Func<IUpbeatService, TParameters, IServiceProvider, TViewModel> viewModelCreator) =>
+            MapViewModel<TParameters, TViewModel>((upbeatService, parameters) =>
                 viewModelCreator(
                     upbeatService,
                     parameters,
@@ -67,34 +64,25 @@ namespace UpbeatUI.Extensions.DependencyInjection
             SetViewModelLocators(
                 (string parametersTypeString) => parametersTypeString
                     .Replace("+Parameters", "", StringComparison.Ordinal),
-                (string parametersTypeString) => parametersTypeString
-                    .Replace("ViewModel+Parameters", "Control", StringComparison.Ordinal)
-                    .Replace(".ViewModel.", ".View.",
-                    StringComparison.Ordinal),
                 allowUnresolvedDependencies);
 
         public void SetViewModelLocators(
             Func<string, string> parameterToViewModelLocator,
-            Func<string, string> parameterToViewLocator,
             bool allowUnresolvedDependencies = false) =>
             SetViewModelLocators(
                 (Type parametersType) => Type.GetType(parameterToViewModelLocator(parametersType.AssemblyQualifiedName)),
-                (Type parametersType) => Type.GetType(parameterToViewLocator(parametersType.AssemblyQualifiedName)),
                 allowUnresolvedDependencies);
 
         public void SetViewModelLocators(
             Func<Type, Type> parameterToViewModelLocator,
-            Func<Type, Type> parameterToViewLocator,
             bool allowUnresolvedDependencies = false)
         {
             _ = parameterToViewModelLocator ?? throw new ArgumentNullException(nameof(parameterToViewModelLocator));
-            _ = parameterToViewLocator ?? throw new ArgumentNullException(nameof(parameterToViewLocator));
             _autoMapper = parametersType =>
             {
                 var viewModelType = parameterToViewModelLocator(parametersType) ?? throw new InvalidOperationException($"Unable to locate ViewModel Type from Parameters Type: {parametersType.GetType().FullName}");
-                var viewType = parameterToViewLocator(parametersType) ?? throw new InvalidOperationException($"Unable to locate View Type from Parameters Type: {parametersType.GetType().FullName}");
                 var m = GetType().GetMethod(nameof(MapServiceProvidedViewModel), BindingFlags.NonPublic | BindingFlags.Instance);
-                var n = m.MakeGenericMethod(parametersType, viewModelType, viewType);
+                var n = m.MakeGenericMethod(parametersType, viewModelType);
                 _ = n.Invoke(this, new object[] { allowUnresolvedDependencies });
             };
         }
@@ -137,8 +125,7 @@ namespace UpbeatUI.Extensions.DependencyInjection
                 targetType,
                 CultureInfo.InvariantCulture));
 
-        private void MapServiceProvidedViewModel<TParameters, TViewModel, TView>(bool allowUnresolvedDependencies)
-            where TView : UIElement
+        private void MapServiceProvidedViewModel<TParameters, TViewModel>(bool allowUnresolvedDependencies)
         {
             var viewModelType = typeof(TViewModel);
             var constructors = viewModelType.GetConstructors().ToList();
@@ -149,7 +136,7 @@ namespace UpbeatUI.Extensions.DependencyInjection
 
             var constructor = constructors[0];
             var instantiator = CreateInstantiator(constructor, viewModelType, allowUnresolvedDependencies);
-            MapViewModel<TParameters, TViewModel, TView>(
+            MapViewModel<TParameters, TViewModel>(
                 (upbeatService, parameters) => (TViewModel)instantiator(upbeatService, parameters));
         }
 

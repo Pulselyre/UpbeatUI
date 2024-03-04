@@ -8,10 +8,21 @@ using System.Windows.Media;
 namespace UpbeatUI.View
 {
     /// <summary>
-    /// Defines a window with a pre-embedded UpbeatStackControl. The DataContext should be set to an UpbeatStack object.
+    /// Defines a window with a pre-embedded BlurredZPanel based stack. The DataContext should be set to an UpbeatStack object.
     /// </summary>
     public partial class UpbeatMainWindow : Window
     {
+        /// <summary>
+        /// Identifies the UpbeatUI.View.UpbeatMainWindow.BlurColor dependency property.
+        /// </summary>
+        public readonly static DependencyProperty BlurColorProperty =
+            BlurredZPanel.BlurColorProperty.AddOwner(typeof(UpbeatMainWindow));
+        /// <summary>
+        /// Identifies the UpbeatUI.View.UpbeatMainWindow.BlurRadius dependency property.
+        /// </summary>
+        public readonly static DependencyProperty BlurRadiusProperty =
+            BlurredZPanel.BlurRadiusProperty.AddOwner(typeof(UpbeatMainWindow));
+
         /// <summary>
         /// Initializes a new UpbeatMainWindow.
         /// </summary>
@@ -23,8 +34,8 @@ namespace UpbeatUI.View
         /// </summary>
         public Brush BlurColor
         {
-            get => (Brush)UpbeatStack.GetValue(UpbeatStackControl.BlurColorProperty);
-            set => UpbeatStack.SetValue(UpbeatStackControl.BlurColorProperty, value);
+            get => (Brush)GetValue(BlurColorProperty);
+            set => SetValue(BlurColorProperty, value);
         }
 
         /// <summary>
@@ -32,8 +43,8 @@ namespace UpbeatUI.View
         /// </summary>
         public double BlurRadius
         {
-            get => (double)UpbeatStack.GetValue(UpbeatStackControl.BlurRadiusProperty);
-            set => UpbeatStack.SetValue(UpbeatStackControl.BlurRadiusProperty, value);
+            get => (double)GetValue(BlurRadiusProperty);
+            set => SetValue(BlurRadiusProperty, value);
         }
     }
 }

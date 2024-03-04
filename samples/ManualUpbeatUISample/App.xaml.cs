@@ -6,7 +6,6 @@ using System;
 using System.Windows;
 using System.Windows.Media;
 using ManualUpbeatUISample.ViewModel;
-using ManualUpbeatUISample.View;
 using UpbeatUI.ViewModel;
 using UpbeatUI.View;
 using System.ComponentModel;
@@ -28,19 +27,19 @@ public partial class App : Application
         using var upbeatStack = new UpbeatStack();
 
         // The UpbeatStack depends on mappings of parameter types to ViewModels and controls to determine which ViewModel to create and which View to show. Without an IServiceProvider, you must manually map each Parameters, ViewModel, and View type, along with a constructur the IUpbeatStack can call to create a ViewModel.
-        upbeatStack.MapViewModel<BottomViewModel.Parameters, BottomViewModel, BottomControl>(
+        upbeatStack.MapViewModel<BottomViewModel.Parameters, BottomViewModel>(
             (service, parameters) => new BottomViewModel(service, sharedTimer));
-        upbeatStack.MapViewModel<ConfirmPopupViewModel.Parameters, ConfirmPopupViewModel, ConfirmPopupControl>(
+        upbeatStack.MapViewModel<ConfirmPopupViewModel.Parameters, ConfirmPopupViewModel>(
             (upbeatService, parameters) => new ConfirmPopupViewModel(upbeatService, parameters, sharedTimer));
 
         // The MenuViewModel's constructor requires an async delegate that it can use to start closing the application. The IUpbeatStack includes an appropriate method: TryCloseAllViewModelsAsync.
-        upbeatStack.MapViewModel<MenuViewModel.Parameters, MenuViewModel, MenuControl>(
+        upbeatStack.MapViewModel<MenuViewModel.Parameters, MenuViewModel>(
             (upbeatService, parameters) => new MenuViewModel(upbeatService, () => _closeRequestedTask.TrySetResult(), sharedTimer));
-        upbeatStack.MapViewModel<PopupViewModel.Parameters, PopupViewModel, PopupControl>(
+        upbeatStack.MapViewModel<PopupViewModel.Parameters, PopupViewModel>(
             (upbeatService, parameters) => new PopupViewModel(parameters, sharedTimer));
-        upbeatStack.MapViewModel<RandomDataViewModel.Parameters, RandomDataViewModel, RandomDataControl>(
+        upbeatStack.MapViewModel<RandomDataViewModel.Parameters, RandomDataViewModel>(
             (upbeatService, parameters) => new RandomDataViewModel(upbeatService, RandomNumberGenerator.Create(), sharedTimer));
-        upbeatStack.MapViewModel<SharedListViewModel.Parameters, SharedListViewModel, SharedListControl>(
+        upbeatStack.MapViewModel<SharedListViewModel.Parameters, SharedListViewModel>(
             (upbeatService, parameters) =>
             {
                 // The SharedListViewModel shares an IUpbeatService and scoped SharedList service with its child ViewModel, the SharedListDataViewModel. The scoped service can be manually created and provided to both.
@@ -48,7 +47,7 @@ public partial class App : Application
                 return new SharedListViewModel(upbeatService, sharedList, sharedTimer,
                     new SharedListDataViewModel(upbeatService, sharedList));
             });
-        upbeatStack.MapViewModel<TextEntryPopupViewModel.Parameters, TextEntryPopupViewModel, TextEntryPopupControl>(
+        upbeatStack.MapViewModel<TextEntryPopupViewModel.Parameters, TextEntryPopupViewModel>(
             (upbeatService, parameters) => new TextEntryPopupViewModel(upbeatService, parameters, sharedTimer));
 
         // The included UpdateMainWindow class already provides the necessary controls to display Views for IUpbeatViewModels in a UpbeatStack set as the DataContext.

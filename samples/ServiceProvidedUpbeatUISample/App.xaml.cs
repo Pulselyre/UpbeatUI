@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Media;
 using Microsoft.Extensions.DependencyInjection;
 using ServiceProvidedUpbeatUISample.ViewModel;
-using ServiceProvidedUpbeatUISample.View;
 using UpbeatUI.View;
 using UpbeatUI.Extensions.DependencyInjection;
 using System.ComponentModel;
@@ -37,7 +36,7 @@ public partial class App : Application
         upbeatStack.SetDefaultViewModelLocators();
 
         // The MenuViewModel requires a manual mapping, as its constructor requires an Action that it can use to request closing the application. We can use the shared TaskCompletionSource '_closeRequested', but that cannot be resolved by the IServiceProvider without creating additional service classes.
-        upbeatStack.MapViewModel<MenuViewModel.Parameters, MenuViewModel, MenuControl>(
+        upbeatStack.MapViewModel<MenuViewModel.Parameters, MenuViewModel>(
             (upbeatService, parameters, serviceProvider) => new MenuViewModel(
                     upbeatService,
                     () => _closeRequestedTask.TrySetResult(),

@@ -8,7 +8,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -48,7 +47,6 @@ namespace UpbeatUI.ViewModel
         public int Count => _openViewModels.Count;
         public ICommand RemoveTopViewModelCommand { get; }
         public INotifyCollectionChanged ViewModels { get; }
-        protected Dictionary<Type, Type> ViewModelControlMappings { get; } = new Dictionary<Type, Type>();
         protected Dictionary<Type, ViewModelInstantiator> ViewModelInstantiators { get; } = new Dictionary<Type, ViewModelInstantiator>();
 
         protected virtual void Dispose(bool disposing)
@@ -79,19 +77,16 @@ namespace UpbeatUI.ViewModel
             GC.SuppressFinalize(this);
         }
 
-        public Type GetViewTypeFromViewModelType(Type viewModelType) =>
-            ViewModelControlMappings.TryGetValue(viewModelType, out var viewType) ? viewType : null;
-
-        public void MapViewModel<TParameters, TViewModel, TView>(
+        public void MapViewModel<TParameters, TViewModel>(
             Func<IUpbeatService, TParameters, TViewModel> viewModelCreator)
-            where TView : UIElement
         {
             if (viewModelCreator == null)
             {
                 throw new ArgumentNullException(nameof(viewModelCreator));
             }
 
-            MapViewModel(typeof(TParameters), typeof(TViewModel), typeof(TView),
+            MapViewModel(
+                typeof(TParameters),
                 (service, parameters) => viewModelCreator(service, (TParameters)parameters));
         }
 
@@ -144,13 +139,8 @@ namespace UpbeatUI.ViewModel
 
         private void MapViewModel(
             Type parametersType,
-            Type viewModelType,
-            Type viewType,
-            ViewModelInstantiator viewModelCreator)
-        {
+            ViewModelInstantiator viewModelCreator) =>
             ViewModelInstantiators[parametersType] = viewModelCreator;
-            ViewModelControlMappings[viewModelType] = viewType;
-        }
 
         private void RemoveViewModel(object viewModel)
         {

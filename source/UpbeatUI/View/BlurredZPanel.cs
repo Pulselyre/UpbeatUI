@@ -106,16 +106,16 @@ namespace UpbeatUI.View
             get => base.VisualChildrenCount + (_rectangle == null ? 0 : 1) + (_button == null ? 0 : 1);
         }
 
-        protected override Size ArrangeOverride(Size arrangeBounds)
+        protected override Size ArrangeOverride(Size finalSize)
         {
             for (var i = 0; i < Children.Count; i++)
             {
                 if (_rectangle != null && i == Children.Count - 1)
                 {
-                    _rectangle.Arrange(new Rect(0, 0, arrangeBounds.Width, arrangeBounds.Height));
-                    _button.Arrange(new Rect(0, 0, arrangeBounds.Width, arrangeBounds.Height));
+                    _rectangle.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
+                    _button.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
                 }
-                Children[i].Arrange(new Rect(0, 0, arrangeBounds.Width, arrangeBounds.Height));
+                Children[i].PercentArrange(finalSize, null, null, null, null, false);
                 if (i < Children.Count - 1)
                 {
                     FocusManager.SetIsFocusScope(Children[i], false);
@@ -128,7 +128,7 @@ namespace UpbeatUI.View
                     KeyboardNavigation.SetTabNavigation(Children[i], KeyboardNavigationMode.Local);
                 }
             }
-            return arrangeBounds;
+            return finalSize;
         }
 
         protected override Visual GetVisualChild(int index)
@@ -142,7 +142,7 @@ namespace UpbeatUI.View
             var desiredSize = new Size(0, 0);
             foreach (var child in Children.OfType<UIElement>())
             {
-                child.Measure(availableSize);
+                child.PercentMeasure(availableSize, null, null);
                 desiredSize.Width = Math.Max(desiredSize.Width, child.DesiredSize.Width);
                 desiredSize.Height = Math.Max(desiredSize.Height, child.DesiredSize.Height);
             }
