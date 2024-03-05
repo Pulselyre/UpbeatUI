@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography;
 using System.Windows;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UpbeatUI.ViewModel;
@@ -15,7 +14,7 @@ using UpbeatUI.ViewModel;
 namespace ServiceProvidedUpbeatUISample.ViewModel;
 
 // This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
-internal sealed class RandomDataViewModel : ObservableObject, IDisposable
+internal sealed partial class RandomDataViewModel : ObservableObject, IDisposable
 {
     private const int MaxRandomLength = 14;
 
@@ -35,17 +34,6 @@ internal sealed class RandomDataViewModel : ObservableObject, IDisposable
 
         _sharedTimer.Ticked += SharedTimerTicked;
 
-        // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. It can be used to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
-        OpenPositionedPopupCommand = new RelayCommand<Func<Point>>(
-            pointGetter => _upbeatService.OpenViewModel( // Create a Parameters object for a ViewModel and pass it to the IUpbeatStack using OpenViewModel. The IUpbeatStack will use the configured mappings to create the appropriate ViewModel from the Parameters type.
-                new PopupViewModel.Parameters
-                {
-                    Message = "This popup appears on top of\nthe button that opened it.",
-                    // The pointGetter parameter is a Func<Point> created by the View that will return the position within the window of the control that executed this command. See the bindings in View\RandomDataControl.xaml for details on how to bind a pointGetter() as a CommandParameter.
-                    Position = pointGetter(),
-                }));
-        RefreshDataCommand = new RelayCommand(RefreshData);
-
         Data = new ReadOnlyObservableCollection<KeyValuePair<string, string>>(_data);
 
         for (var i = 0; i < 100; i++)
@@ -54,6 +42,21 @@ internal sealed class RandomDataViewModel : ObservableObject, IDisposable
         }
     }
 
+    public ReadOnlyObservableCollection<KeyValuePair<string, string>> Data { get; }
+    public string SecondsElapsed => $"{_sharedTimer.ElapsedSeconds} Seconds";
+
+    // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. As an attribute, it can be used to automatically wrap methods within ICommand properties. It supports both async and non-async methods/lambdas.
+    [RelayCommand]
+    private void OpenPositionedPopup(Func<Point> pointGetter) =>
+        _upbeatService.OpenViewModel( // Create a Parameters object for a ViewModel and pass it to the IUpbeatStack using OpenViewModel. The IUpbeatStack will use the configured mappings to create the appropriate ViewModel from the Parameters type.
+        new PopupViewModel.Parameters
+        {
+            Message = "This popup appears on top of\nthe button that opened it.",
+            // The pointGetter parameter is a Func<Point> created by the View that will return the position within the window of the control that executed this command. See the bindings in View\RandomDataControl.xaml for details on how to bind a pointGetter() as a CommandParameter.
+            Position = pointGetter?.Invoke() ?? new Point(0.5, 0.5),
+        });
+
+    [RelayCommand]
     private void RefreshData()
     {
         for (var i = 0; i < 100; i++)
@@ -61,11 +64,6 @@ internal sealed class RandomDataViewModel : ObservableObject, IDisposable
             _data[i] = CreateRandomKeyValuePair();
         }
     }
-
-    public ICommand OpenPositionedPopupCommand { get; }
-    public ICommand RefreshDataCommand { get; }
-    public ReadOnlyObservableCollection<KeyValuePair<string, string>> Data { get; }
-    public string SecondsElapsed => $"{_sharedTimer.ElapsedSeconds} Seconds";
 
     public void Dispose() =>
         _sharedTimer.Ticked -= SharedTimerTicked;
