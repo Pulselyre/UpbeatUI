@@ -8,6 +8,7 @@ using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.View
 {
+    [Obsolete("'AttachedSizeAndPosition' class is deprecated and will be removed in the next major release; consider using the 'PercentPositionWithinUpbeatStackConverter' converter and CommandParameter binding approach to receive to position information instead.")]
     public class AttachedSizeAndPosition
     {
         public static readonly DependencyProperty ContainerProperty =
