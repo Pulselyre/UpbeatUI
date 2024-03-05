@@ -24,8 +24,8 @@
         <Copyright>© Michael P. Duda 2020-2024</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <!-- Update the following properties when publishing a new Nuget version -->
-        <Version>1.1.5</Version>
-        <PackageValidationBaselineVersion>1.1.4</PackageValidationBaselineVersion>
+        <Version>2.0.0-rc1</Version>
+        <!-- <PackageValidationBaselineVersion>1.1.5</PackageValidationBaselineVersion> -->
     </PropertyGroup>
 
     <ItemGroup>
