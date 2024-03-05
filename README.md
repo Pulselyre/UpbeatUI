@@ -30,9 +30,9 @@ Three samples are included: one showing [manual setup](samples/ManualUpbeatUISam
 
 ## How UpbeatUI Works
 
-There are two central components of UpbeatUI: The first is the [`UpbeatStack`](source/UpbeatUI/ViewModel/UpbeatStack.cs) class. It is responsible for managing the stack of open _ViewModels_ and also maintaining mappings between _ViewModelParameters_, _ViewModels_, and _Views_. The second is the [`IUpbeatService`](source/UpbeatUI/ViewModel/IUpbeatService.cs) interface which provides _ViewModels_ with methods and properties for interacting with their parent `UpbeatStack`. For example, the [`IUpbeatService`](source/UpbeatUI/ViewModel/IUpbeatService.cs) has methods for opening a new _ViewModel_ on top of the stack. The [`UpbeatStack`](source/UpbeatUI/ViewModel/UpbeatStack.cs) provides a unique [`IUpbeatService`](source/UpbeatUI/ViewModel/IUpbeatService.cs) to each _ViewModel_.
+There are two central components of UpbeatUI: The first is the [`UpbeatStack`](source/UpbeatUI/ViewModel/UpbeatStack.cs) class. It is responsible for managing the stack of open _ViewModels_ and also maintaining mappings between _ViewModelParameters_ and _ViewModels_. The second is the [`IUpbeatService`](source/UpbeatUI/ViewModel/IUpbeatService.cs) interface which provides _ViewModels_ with methods and properties for interacting with their parent `UpbeatStack`. For example, the [`IUpbeatService`](source/UpbeatUI/ViewModel/IUpbeatService.cs) has methods for opening a new _ViewModel_ on top of the stack. The [`UpbeatStack`](source/UpbeatUI/ViewModel/UpbeatStack.cs) provides a unique [`IUpbeatService`](source/UpbeatUI/ViewModel/IUpbeatService.cs) to each _ViewModel_.
 
-Opening a new _ViewModel_ is done by passing a _ViewModelParameters_ object to the `OpenViewModel` or `OpeanViewModelAsync` method on the [`UpbeatStack`](source/UpbeatUI/ViewModel/UpbeatStack.cs) or [`IUpbeatService`](source/UpbeatUI/ViewModel/IUpbeatService.cs). A _ViewModelParameters_ object contains initialization data for a _ViewModel_. There must be a unique _ViewModelParameters_ class for each _ViewModel_ class, as the [`UpbeatStack`](source/UpbeatUI/ViewModel/UpbeatStack.cs) relies on mappings between Types to create _ViewModels_ and display _Views_.
+Opening a new _ViewModel_ is done by passing a _ViewModelParameters_ object to the `OpenViewModel` or `OpenViewModelAsync` method on the [`UpbeatStack`](source/UpbeatUI/ViewModel/UpbeatStack.cs) or [`IUpbeatService`](source/UpbeatUI/ViewModel/IUpbeatService.cs). A _ViewModelParameters_ object contains initialization data for a _ViewModel_. There must be a unique _ViewModelParameters_ class for each _ViewModel_ class, as the [`UpbeatStack`](source/UpbeatUI/ViewModel/UpbeatStack.cs) relies on mappings between Types to create _ViewModels_ and thus display _Views_.
 
 ## How to use UpbeatUI
 
@@ -41,7 +41,6 @@ Please see the separate [How To Use](HOW-TO-USE.md) markdown file for a guide to
 ## To-Do List
 
 - Publish new major release with deprecated classes and methods fully removed.
-- Remove the [`UpbeatControl`](source\UpbeatUI\View\UpbeatControl.cs) entirely, and rely on [`<DataTemplate DataType="{x:Type ...}">`](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/data-templating-overview#the-datatype-property) instead to match _ViewModel_ instances on the [`UpbeatStack`](source\UpbeatUI\ViewModel\UpbeatStack.cs) with _Views_. Also, re-implement the percentage size and position behavior as a [WPF Decorator](https://learn.microsoft.com/en-us/dotnet/api/system.windows.controls.decorator).
 - Write more tests.
 - Execute tests via GitHub Actions.
 - [Create an icon/logo for NuGet packages](https://github.com/NuGet/Home/wiki/Packaging-Icon-within-the-nupkg).
