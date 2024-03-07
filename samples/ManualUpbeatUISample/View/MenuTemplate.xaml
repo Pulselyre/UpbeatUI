@@ -37,8 +37,7 @@
                     Orientation="Vertical">
                     <TextBlock
                         TextWrapping="Wrap"
-                        Margin="5">This "Side Menu" is just a regular View that is configured to take 40% of available
-                        width, and align against the left side of the window.</TextBlock>
+                        Margin="5">This "Side Menu" is just a regular View that is configured to take 40% of available width, and align against the left side of the window.</TextBlock>
                     <Button
                         Command="{Binding OpenRandomDataCommand}"
                         Margin="5">Random Data</Button>

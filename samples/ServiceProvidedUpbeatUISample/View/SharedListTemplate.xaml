@@ -47,8 +47,7 @@
                             TextAlignment="Center"
                             HorizontalAlignment="Center"
                             MaxWidth="250"
-                            Margin="5"> This View is configured to take exactly 75% of available width and height,
-                            regardless of the size of its content and what is available. </TextBlock>
+                            Margin="5"> This View is configured to take exactly 75% of available width and height, regardless of the size of its content and what is available. </TextBlock>
                         <TextBlock
                             TextAlignment="Center"
                             Margin="5"

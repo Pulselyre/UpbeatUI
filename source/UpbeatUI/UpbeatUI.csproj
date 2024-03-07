@@ -6,8 +6,7 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
     <PropertyGroup>
-        <TargetFrameworks>
-            netcoreapp3.0-windows;netcoreapp3.1-windows;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+        <TargetFrameworks>netcoreapp3.0-windows;netcoreapp3.1-windows;net5.0-windows;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
         <EnablePackageValidation>true</EnablePackageValidation>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -18,8 +17,7 @@
         <UseWPF>true</UseWPF>
         <PackageProjectUrl>https://github.com/pulselyre/UpbeatUI</PackageProjectUrl>
         <PackageTags>wpf;touch;mvvm</PackageTags>
-        <Description>UpbeatUI is an open-source lightweight MVVM framework for quickly developing multi-level touch
-            based Windows applications on top of the WPF framework.</Description>
+        <Description>UpbeatUI is an open-source lightweight MVVM framework for quickly developing multi-level touch based Windows applications on top of the WPF framework.</Description>
         <Authors>Michael P. Duda</Authors>
         <Copyright>© Michael P. Duda 2020-2024</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>

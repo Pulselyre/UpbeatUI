@@ -31,8 +31,7 @@
                     <TextBlock
                         TextAlignment="Center"
                         TextWrapping="Wrap"
-                        Margin="5">This "Main Area" is a View that<LineBreak />is opened at the bottom of the<LineBreak />IUpbeatStack
-                        and is configured to fill<LineBreak />the entire available space.</TextBlock>
+                        Margin="5">This "Main Area" is a View that<LineBreak />is opened at the bottom of the<LineBreak />IUpbeatStack and is configured to fill<LineBreak />the entire available space.</TextBlock>
                     <TextBlock
                         TextAlignment="Center"
                         VerticalAlignment="Center"

@@ -18,7 +18,7 @@
     },
     "files.trimTrailingWhitespace": true,
     "xml.format.joinContentLines": true,
-    "xml.format.maxLineWidth": 120,
+    "xml.format.maxLineWidth": 0,
     "xml.format.preservedNewlines": 2,
     "xml.format.splitAttributes": true,
     "xml.format.splitAttributesIndentSize": 1,

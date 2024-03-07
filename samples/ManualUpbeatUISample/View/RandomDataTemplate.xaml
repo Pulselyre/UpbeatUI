@@ -80,8 +80,7 @@
                             TextAlignment="Center"
                             HorizontalAlignment="Center"
                             MaxWidth="250"
-                            Margin="5"> This View is configured to take between 60% and 80% of available width and
-                            height, depending on what is needed to display its children and the total space available. </TextBlock>
+                            Margin="5"> This View is configured to take between 60% and 80% of available width and height, depending on what is needed to display its children and the total space available. </TextBlock>
                         <TextBlock
                             Text="{Binding SecondsElapsed}"
                             TextAlignment="Center"
