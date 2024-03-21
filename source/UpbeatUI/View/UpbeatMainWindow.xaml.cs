@@ -4,47 +4,50 @@
  */
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 
 namespace UpbeatUI.View
 {
     /// <summary>
-    /// Defines a window with a pre-embedded BlurredZPanel based stack. The DataContext should be set to an UpbeatStack object.
+    /// Defines a window with a pre-embedded <see cref="ModalPanel"> to stack Views. The <see cref="DataContext"> should be set to an <see cref="UpbeatStack"> instance.
     /// </summary>
     public partial class UpbeatMainWindow : Window
     {
         /// <summary>
-        /// Identifies the UpbeatUI.View.UpbeatMainWindow.BlurColor dependency property.
+        /// Identifies the <see cref="ModalBlurEffect"/> <see cref="DependencyProperty">.
         /// </summary>
-        public readonly static DependencyProperty BlurColorProperty =
-            BlurredZPanel.BlurColorProperty.AddOwner(typeof(UpbeatMainWindow));
-        /// <summary>
-        /// Identifies the UpbeatUI.View.UpbeatMainWindow.BlurRadius dependency property.
-        /// </summary>
-        public readonly static DependencyProperty BlurRadiusProperty =
-            BlurredZPanel.BlurRadiusProperty.AddOwner(typeof(UpbeatMainWindow));
+        public readonly static DependencyProperty ModalBackgroundProperty =
+            ModalPanel.ModalBackgroundProperty.AddOwner(typeof(UpbeatMainWindow));
+
+        public readonly static DependencyProperty ModalBlurEffectProprety =
+            DependencyProperty.Register(
+                "ModalBlurEffect",
+                typeof(BlurEffect),
+                typeof(UpbeatMainWindow),
+                new FrameworkPropertyMetadata(null));
 
         /// <summary>
-        /// Initializes a new UpbeatMainWindow.
+        /// Initializes a new <see cref="UpbeatMainWindow">.
         /// </summary>
         public UpbeatMainWindow() =>
             InitializeComponent();
 
         /// <summary>
-        /// Gets or sets a brush that the UpbeatStackControl will show underneath the top (active) Control.
+        /// Gets or sets a <see cref="Brush"> that the <see cref="ModalPanel"> will show underneath the top (active) Element.
         /// </summary>
-        public Brush BlurColor
+        public Brush ModalBackground
         {
-            get => (Brush)GetValue(BlurColorProperty);
-            set => SetValue(BlurColorProperty, value);
+            get => (Brush)GetValue(ModalBackgroundProperty);
+            set => SetValue(ModalBackgroundProperty, value);
         }
 
         /// <summary>
-        /// Gets or sets the amount of blurring effect to show underneath the top (active) control.
+        /// Gets or sets a <see cref="BlurEffect"/> that the <see cref="ModalPanel"/> will apply to underneath (non-active) Elements.
         /// </summary>
-        public double BlurRadius
+        public BlurEffect ModalBlurEffect
         {
-            get => (double)GetValue(BlurRadiusProperty);
-            set => SetValue(BlurRadiusProperty, value);
+            get => (BlurEffect)GetValue(ModalBlurEffectProprety);
+            set => SetValue(ModalBlurEffectProprety, value);
         }
     }
 }

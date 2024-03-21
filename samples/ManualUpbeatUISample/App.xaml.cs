@@ -11,6 +11,7 @@ using UpbeatUI.View;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Windows.Media.Effects;
 
 namespace ManualUpbeatUISample;
 
@@ -61,7 +62,8 @@ public partial class App : Application
             Height = 400,
             Width = 400,
             WindowStartupLocation = WindowStartupLocation.CenterScreen,
-            BlurColor = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
+            ModalBackground = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
+            ModalBlurEffect = new BlurEffect() { Radius = 10.0, KernelType = KernelType.Gaussian }, // The blur effect to apply to Views that are not on top. This is optional, as blur effects can significantly impact performance.
         };
 
         // Override the default Window Closing event to request a close instead of closing itself.

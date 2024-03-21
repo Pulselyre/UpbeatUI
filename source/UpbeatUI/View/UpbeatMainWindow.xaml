@@ -44,10 +44,9 @@
             Focusable="False">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <uv:BlurredZPanel
+                    <uv:ModalPanel
                         ClosePopupCommand="{Binding RemoveTopViewModelCommand}"
-                        BlurColor="{Binding ElementName=_upbeatMainWindow, Path=BlurColor}"
-                        BlurRadius="{Binding ElementName=_upbeatMainWindow, Path=BlurRadius}" />
+                        ModalBackground="{Binding ModalBackground, ElementName=_upbeatMainWindow}" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemContainerStyle>
@@ -55,6 +54,15 @@
                     <Setter
                         Property="Focusable"
                         Value="False" />
+                    <Style.Triggers>
+                        <Trigger
+                            Property="uv:ModalPanel.IsOnTop"
+                            Value="false">
+                            <Setter
+                                Property="Effect"
+                                Value="{Binding ModalBlurEffect, ElementName=_upbeatMainWindow}" />
+                        </Trigger>
+                    </Style.Triggers>
                 </Style>
             </ItemsControl.ItemContainerStyle>
         </ItemsControl>

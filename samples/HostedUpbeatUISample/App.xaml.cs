@@ -6,6 +6,7 @@ using System;
 using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using HostedUpbeatUISample.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,7 +35,8 @@ public partial class App : Application
                         Height = 400,
                         Width = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                        BlurColor = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
+                        ModalBackground = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
+                        ModalBlurEffect = new BlurEffect() { Radius = 10.0, KernelType = KernelType.Gaussian }, // The blur effect to apply to Views that are not on top. This is optional, as blur effects can significantly impact performance.
                     }))
             .Build()
             .RunAsync().ConfigureAwait(true);
