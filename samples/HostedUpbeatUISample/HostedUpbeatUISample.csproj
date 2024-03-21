@@ -5,19 +5,23 @@
      -->
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.*" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.9" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference
+            Include="CommunityToolkit.Mvvm"
+            Version="8.2.*" />
+        <PackageReference
+            Include="Microsoft.Extensions.Hosting"
+            Version="3.1.9" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\source\UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\source\UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj" />
+    </ItemGroup>
 
 </Project>

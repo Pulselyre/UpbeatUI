@@ -8,10 +8,12 @@ using System.Windows.Data;
 
 namespace UpbeatUI.View.Converters
 {
+    [Obsolete("'" + nameof(PercentPositionPlacementConverter) + "' method is deprecated and will be removed in the next major release; consider using the '" + nameof(PercentPlaceContentControl) + "' class to position elements instead.")]
     public class PercentPositionPlacementConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            _ = values ?? throw new ArgumentNullException(nameof(values));
             var percentPosition = values[0] switch
             {
                 string s => s.ParsePercent(),
@@ -22,13 +24,13 @@ namespace UpbeatUI.View.Converters
             var controlSize = (values[2] as double?).GetValueOrDefault();
             var invert = values[3] switch { bool v => v, string v => bool.Parse(v), _ => false };
             var keepInBounds = values[4] switch { bool v => v, string v => bool.Parse(v), _ => false };
-            if (keepInBounds)
-                return Math.Max(
+            return keepInBounds
+                ? Math.Max(
                     0,
                     Math.Min(
                         (invert ? 1.0 - percentPosition : percentPosition) * containerSize - (controlSize / 2.0),
-                        containerSize - controlSize));
-            return (invert ? 1.0 - percentPosition : percentPosition) * containerSize - (controlSize / 2.0);
+                        containerSize - controlSize))
+                : (object)((invert ? 1.0 - percentPosition : percentPosition) * containerSize - (controlSize / 2.0));
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>

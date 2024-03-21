@@ -5,18 +5,20 @@
      -->
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.*" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference
+            Include="CommunityToolkit.Mvvm"
+            Version="8.2.*" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\source\UpbeatUI\UpbeatUI.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\source\UpbeatUI\UpbeatUI.csproj" />
+    </ItemGroup>
 
 </Project>

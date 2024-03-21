@@ -2,37 +2,69 @@
      See LICENSE.md or visit:
      https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
      -->
-<Window x:Class="UpbeatUI.View.UpbeatMainWindow"
-        x:Name="_upbeatMainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:uv="clr-namespace:UpbeatUI.View"
-        mc:Ignorable="d"
-        d:DesignHeight="500"
-        d:DesignWidth="500">
+<Window
+    x:Class="UpbeatUI.View.UpbeatMainWindow"
+    x:Name="_upbeatMainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uv="clr-namespace:UpbeatUI.View"
+    mc:Ignorable="d"
+    d:DesignHeight="500"
+    d:DesignWidth="500">
     <Grid>
         <Grid.Style>
             <Style TargetType="Grid">
-                <Setter Property="Margin"
-                        Value="0" />
+                <Setter
+                    Property="Margin"
+                    Value="0" />
                 <Style.Triggers>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding ElementName=_upbeatMainWindow, Path=ResizeMode}"
-                                       Value="NoResize" />
-                            <Condition Binding="{Binding ElementName=_upbeatMainWindow, Path=WindowState}"
-                                       Value="Maximized" />
-                            <Condition Binding="{Binding ElementName=_upbeatMainWindow, Path=WindowStyle}"
-                                       Value="None" />
+                            <Condition
+                                Binding="{Binding ElementName=_upbeatMainWindow, Path=ResizeMode}"
+                                Value="NoResize" />
+                            <Condition
+                                Binding="{Binding ElementName=_upbeatMainWindow, Path=WindowState}"
+                                Value="Maximized" />
+                            <Condition
+                                Binding="{Binding ElementName=_upbeatMainWindow, Path=WindowStyle}"
+                                Value="None" />
                         </MultiDataTrigger.Conditions>
-                        <Setter Property="Margin"
-                                Value="8" />
+                        <Setter
+                            Property="Margin"
+                            Value="8" />
                     </MultiDataTrigger>
                 </Style.Triggers>
             </Style>
         </Grid.Style>
-        <uv:UpbeatStackControl x:Name="UpbeatStack" />
+        <ItemsControl
+            ItemsSource="{Binding ViewModels}"
+            Focusable="False">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <uv:ModalPanel
+                        ClosePopupCommand="{Binding RemoveTopViewModelCommand}"
+                        ModalBackground="{Binding ModalBackground, ElementName=_upbeatMainWindow}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter
+                        Property="Focusable"
+                        Value="False" />
+                    <Style.Triggers>
+                        <Trigger
+                            Property="uv:ModalPanel.IsOnTop"
+                            Value="false">
+                            <Setter
+                                Property="Effect"
+                                Value="{Binding ModalBlurEffect, ElementName=_upbeatMainWindow}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
     </Grid>
 </Window>

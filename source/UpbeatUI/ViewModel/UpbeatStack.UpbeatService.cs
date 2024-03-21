@@ -3,21 +3,21 @@
  * https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
  */
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace UpbeatUI.ViewModel
 {
     public partial class UpbeatStack
     {
-        private class UpbeatService : IUpbeatService
+        private sealed class UpbeatService : IUpbeatService
         {
+            private readonly Collection<Func<Task<bool>>> _asyncOkToCloseCallbacks = new Collection<Func<Task<bool>>>();
             private readonly Action<object, Action> _childViewModelOpener;
-            private List<Func<Task<bool>>> _asyncOkToCloseCallbacks = new List<Func<Task<bool>>>();
+            private readonly Collection<Action> _updateCallbacks = new Collection<Action>();
             private Action _closer;
             private Action<Action> _deferrer;
             private Func<bool> _isActiveViewModel;
-            private List<Action> _updateCallbacks = new List<Action>();
 
             internal UpbeatService(bool updatesOnRender, Action<object, Action> childViewModelOpener, Action closedCallback = null)
             {
@@ -33,9 +33,13 @@ namespace UpbeatUI.ViewModel
             public void Close()
             {
                 if (_deferrer == null)
+                {
                     _closer();
+                }
                 else
+                {
                     _deferrer(() => _closer());
+                }
             }
 
             public void OpenViewModel<TParameters>(TParameters parameters) =>
@@ -44,9 +48,13 @@ namespace UpbeatUI.ViewModel
             public void OpenViewModel<TParameters>(TParameters parameters, Action closedCallback)
             {
                 if (_deferrer == null)
+                {
                     _childViewModelOpener(parameters, closedCallback);
+                }
                 else
+                {
                     _deferrer(() => _childViewModelOpener(parameters, closedCallback));
+                }
             }
 
             public Task OpenViewModelAsync<TParameters>(TParameters parameters)
@@ -67,21 +75,9 @@ namespace UpbeatUI.ViewModel
             public void RegisterUpdateCallback(Action updateCallback) =>
                 _updateCallbacks.Add(updateCallback);
 
-            [Obsolete("Method has been renamed to 'RegisterCloseCallback' which better describes how the UpbeatStack handles multiple okToCloseCallback. The 'SetCloseCallback' method will be removed in the next major release.")]
-            public void SetCloseCallback(Func<bool> okToCloseCallback) =>
-                RegisterCloseCallback(okToCloseCallback);
-
-            [Obsolete("Method has been renamed to 'RegisterCloseCallback' which better describes how the UpbeatStack handles multiple asyncOkToCloseCallback. The 'SetCloseCallback' method will be removed in the next major release.")]
-            public void SetCloseCallback(Func<Task<bool>> asyncOkToCloseCallback) =>
-                RegisterCloseCallback(asyncOkToCloseCallback);
-
-            [Obsolete("Method has been renamed to 'RegisterUpdateCallback' which better describes how the UpbeatStack handles multiple updateCallbacks. The 'SetUpdateCallback' method will be removed in the next major release.")]
-            public void SetUpdateCallback(Action updateCallback) =>
-                RegisterUpdateCallback(updateCallback);
-
             internal object Activate(Func<IUpbeatService, object> viewModelCreator, Func<object, bool> isActiveViewModel, Action<object> closer)
             {
-                var viewModel = viewModelCreator(this);
+                var viewModel = viewModelCreator?.Invoke(this) ?? throw new ArgumentNullException(nameof(viewModelCreator));
                 _isActiveViewModel = () => isActiveViewModel(viewModel);
                 _closer = () => closer(viewModel);
                 return viewModel;
@@ -93,8 +89,13 @@ namespace UpbeatUI.ViewModel
             internal async Task<bool> OkToCloseAsync()
             {
                 foreach (var asyncOkToCloseCallback in _asyncOkToCloseCallbacks)
-                    if (!await asyncOkToCloseCallback())
+                {
+                    if (!await asyncOkToCloseCallback().ConfigureAwait(true))
+                    {
                         return false;
+                    }
+                }
+
                 return true;
             }
 
@@ -104,7 +105,9 @@ namespace UpbeatUI.ViewModel
             internal void Update()
             {
                 foreach (var updateCallback in _updateCallbacks)
+                {
                     updateCallback.Invoke();
+                }
             }
         }
     }

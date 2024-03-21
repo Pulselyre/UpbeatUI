@@ -8,33 +8,38 @@ using System.Windows.Data;
 
 namespace UpbeatUI.View.Converters
 {
+    [Obsolete("'" + nameof(PercentOfToSizeConverter) + "' method is deprecated and will be removed in the next major release; consider using the '" + nameof(PercentPlaceContentControl) + "' class to position elements instead.")]
     public class PercentOfToSizeConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
+            _ = values ?? throw new ArgumentNullException(nameof(values));
             var sizes = (values[0] as string)?.Split(' ');
             if (sizes == null)
-                return (parameter as string)?.ToLower() switch
+            {
+                return (parameter as string)?.ToUpperInvariant() switch
                 {
-                    "min" => 0,
-                    "size" => double.NaN,
-                    "max" => double.PositiveInfinity,
+                    "MIN" => 0,
+                    "SIZE" => double.NaN,
+                    "MAX" => double.PositiveInfinity,
                     _ => throw new ArgumentException("Invalid size string"),
                 };
+            }
+
             var containerSize = (values[1] as double?).GetValueOrDefault();
-            return (parameter as string)?.ToLower() switch
+            return (parameter as string)?.ToUpperInvariant() switch
             {
-                "min" => sizes.Length switch
+                "MIN" => sizes.Length switch
                 {
                     2 => sizes[0].ParsePercent() * containerSize,
                     _ => 0,
                 },
-                "size" => sizes.Length switch
+                "SIZE" => sizes.Length switch
                 {
                     1 => sizes[0].ParsePercent() * containerSize,
                     _ => double.NaN,
                 },
-                "max" => sizes.Length switch
+                "MAX" => sizes.Length switch
                 {
                     2 => sizes[1].ParsePercent() * containerSize,
                     _ => double.PositiveInfinity,

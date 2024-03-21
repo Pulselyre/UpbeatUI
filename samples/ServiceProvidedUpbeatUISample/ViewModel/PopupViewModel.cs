@@ -12,12 +12,13 @@ namespace ServiceProvidedUpbeatUISample.ViewModel;
 internal class PopupViewModel : ObservableObject, IDisposable
 {
     private readonly SharedTimer _sharedTimer;
+    private bool _disposed;
 
     public PopupViewModel(
         Parameters parameters, // These are the parameters the parent used when opening this ViewModel. The IUpbeatService can inject the Parameters object into this constructor to pass initialization data or callbacks.
         SharedTimer sharedTimer) // This is a shared singleton service.
     {
-        _ = parameters ?? throw new NullReferenceException(nameof(parameters));
+        _ = parameters ?? throw new ArgumentNullException(nameof(parameters));
         _sharedTimer = sharedTimer ?? throw new ArgumentNullException(nameof(sharedTimer));
 
         Message = parameters.Message;
@@ -32,8 +33,22 @@ internal class PopupViewModel : ObservableObject, IDisposable
     public double XPosition { get; }
     public double YPosition { get; }
 
-    public void Dispose() =>
-        _sharedTimer.Ticked -= SharedTimerTicked;
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            _sharedTimer.Ticked -= SharedTimerTicked;
+        }
+        _disposed = true;
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    ~PopupViewModel() => Dispose(false);
 
     private void SharedTimerTicked(object sender, EventArgs e) =>
         Application.Current.Dispatcher.Invoke(() => OnPropertyChanged(nameof(SecondsElapsed))); // Ensure that the PropertyChanged event is raised on the UI thread

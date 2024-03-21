@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UpbeatUI.ViewModel;
@@ -16,7 +15,7 @@ using UpbeatUI.ViewModel.ListSynchronize;
 namespace ServiceProvidedUpbeatUISample.ViewModel;
 
 // This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
-public class SharedListDataViewModel : ObservableObject, IDisposable
+public sealed partial class SharedListDataViewModel : ObservableObject, IDisposable
 {
     private readonly IUpbeatService _upbeatService;
     private readonly SharedList _sharedList;
@@ -24,10 +23,8 @@ public class SharedListDataViewModel : ObservableObject, IDisposable
     private readonly ObservableCollection<string> _strings = new();
 
     public SharedListDataViewModel(
-    // This will be a unique IUpbeatService created and injected by the IUpbeatStack specifically for this ViewModel.
-        IUpbeatService upbeatService,
-    // This is a scoped service shared between this ViewModel and other ViewModel or scoped/transient service dependencies.
-        SharedList sharedList)
+        IUpbeatService upbeatService, // This will be a unique IUpbeatService created and injected by the IUpbeatStack specifically for this ViewModel.
+        SharedList sharedList) // This is a scoped service shared between this ViewModel and other ViewModel or scoped/transient service dependencies.
     {
         _upbeatService = upbeatService ?? throw new ArgumentNullException(nameof(upbeatService));
         _sharedList = sharedList ?? throw new ArgumentNullException(nameof(sharedList));
@@ -36,19 +33,15 @@ public class SharedListDataViewModel : ObservableObject, IDisposable
         _strings.Synchronize(_sharedList.Strings);
 
         _sharedList.StringAdded += SharedListStringAdded;
-
-        // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. It can be used to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
-        AddStringCommand = new AsyncRelayCommand<Func<Point>>(ExecuteAddStringAsync, pg => _strings.Count < 10);
     }
 
     public INotifyCollectionChanged Strings { get; }
-    public ICommand AddStringCommand { get; }
 
-    public void Dispose() =>
-        _sharedList.StringAdded -= SharedListStringAdded;
-
-    private async Task ExecuteAddStringAsync(Func<Point> pointGetter)
+    // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. As an attribute, it can be used to automatically wrap methods within ICommand properties. It supports both async and non-async methods/lambdas.
+    [RelayCommand(CanExecute = nameof(CanAddString))]
+    private async Task AddStringAsync(Func<Point> pointGetter)
     {
+        ArgumentNullException.ThrowIfNull(pointGetter);
         string newString = null;
         await _upbeatService.OpenViewModelAsync(
             new TextEntryPopupViewModel.Parameters
@@ -56,10 +49,17 @@ public class SharedListDataViewModel : ObservableObject, IDisposable
                 Message = "Enter a string to add to the list:",
                 ReturnCallback = s => newString = s,
                 Position = pointGetter(),
-            });
+            }).ConfigureAwait(true);
         if (!string.IsNullOrWhiteSpace(newString))
+        {
             _sharedList.AddString(newString);
+        }
     }
+
+    private bool CanAddString(Func<Point> _) => _strings.Count < 10;
+
+    public void Dispose() =>
+        _sharedList.StringAdded -= SharedListStringAdded;
 
     private void SharedListStringAdded(object sender, EventArgs e) =>
         Application.Current.Dispatcher.Invoke(() => _strings.Synchronize(_sharedList.Strings)); // Ensure that the collection is changed on the UI thread

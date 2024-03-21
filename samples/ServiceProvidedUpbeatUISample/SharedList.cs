@@ -4,13 +4,14 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ServiceProvidedUpbeatUISample;
 
 // This is a simple list wrapper to demonstrate a scoped service shared between multiple ViewModels.
 public class SharedList
 {
-    private readonly List<string> _strings = new();
+    private readonly Collection<string> _strings = new();
 
     public SharedList() =>
         Strings = _strings.AsReadOnly();
@@ -22,7 +23,10 @@ public class SharedList
     public void AddString(string newString)
     {
         if (string.IsNullOrWhiteSpace(newString))
+        {
             return;
+        }
+
         _strings.Add(newString);
         StringAdded?.Invoke(this, EventArgs.Empty);
     }

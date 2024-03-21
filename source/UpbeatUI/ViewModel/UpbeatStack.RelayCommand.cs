@@ -10,27 +10,28 @@ namespace UpbeatUI.ViewModel
 {
     public partial class UpbeatStack
     {
-        private class RelayCommand : ICommand
+        private sealed class RelayCommand : ICommand
         {
             private readonly Action _execute;
             private readonly Func<bool> _canExecute;
-            private bool _isAsyncExecuting = false;
+            private bool _isAsyncExecuting;
 
             public RelayCommand(Func<Task> executeAsync, Func<bool> canExecute = null, Action<Exception> exceptionCallback = null, bool singleExecution = true)
             {
-                if (executeAsync == null)
-                    throw new ArgumentNullException(nameof(executeAsync));
+                _ = executeAsync ?? throw new ArgumentNullException(nameof(executeAsync));
                 _execute = async () =>
                 {
                     try
                     {
                         _isAsyncExecuting = singleExecution;
-                        await executeAsync();
+                        await executeAsync().ConfigureAwait(true);
                     }
                     catch (Exception e)
                     {
                         if (exceptionCallback == null)
+                        {
                             throw;
+                        }
                         exceptionCallback(e);
                     }
                     finally
@@ -47,8 +48,8 @@ namespace UpbeatUI.ViewModel
 
             public event EventHandler CanExecuteChanged
             {
-                add { CommandManager.RequerySuggested += value; }
-                remove { CommandManager.RequerySuggested -= value; }
+                add => CommandManager.RequerySuggested += value;
+                remove => CommandManager.RequerySuggested -= value;
             }
 
             public bool CanExecute(object parameter) =>
@@ -63,7 +64,9 @@ namespace UpbeatUI.ViewModel
             public void Execute()
             {
                 if (CanExecute())
+                {
                     _execute.Invoke();
+                }
             }
         }
     }
