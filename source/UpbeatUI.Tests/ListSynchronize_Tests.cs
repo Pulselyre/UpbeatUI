@@ -38,15 +38,26 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
             ExecuteAndTestSync(observableCollection, newValues);
         }
 
+        [Test]
+        public void Synchronizes_Full_Array_With_No_Values_And_Cleaner()
+        {
+            var observableCollection = new ObservableCollection<int>() { 11, 12, 13 };
+            var newValues = new List<int>();
+            var cleaned = 0;
+            ExecuteAndTestSync(observableCollection, newValues, i => cleaned++);
+            Assert.AreEqual(3, cleaned);
+        }
+
         private static void ExecuteAndTestSync(
             ObservableCollection<int> observableCollection,
-            IList<int> newValues
+            IList<int> newValues,
+            Action<int> cleaner = null
         )
         {
             var originalSize = observableCollection.Count;
             var changedCount = 0;
             observableCollection.CollectionChanged += (o, e) => changedCount++;
-            observableCollection.Synchronize(newValues);
+            observableCollection.Synchronize(newValues, cleaner);
             Assert.AreEqual(newValues.Count, observableCollection.Count);
             Assert.AreEqual(Math.Max(originalSize, newValues.Count), changedCount);
             for (var i = 0; i < newValues.Count; i++)
@@ -92,18 +103,34 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
             ExecuteAndTestSync(observableCollection, newValues);
         }
 
+        [Test]
+        public void Synchronizes_Full_Array_With_No_Values_And_Cleaner()
+        {
+            var observableCollection = new ObservableCollection<TestObjectWithDefaultConstructor>()
+                {
+                    new() { Value = "11" },
+                    new() { Value = "12" },
+                    new() { Value = "13" }
+                };
+            var newValues = new List<int>();
+            var cleaned = 0;
+            ExecuteAndTestSync(observableCollection, newValues, to => cleaned++);
+            Assert.AreEqual(3, cleaned);
+        }
+
         private static void ExecuteAndTestSync(
             ObservableCollection<TestObjectWithDefaultConstructor> observableCollection,
-            IList<int> newValues
+            IList<int> newValues,
+            Action<TestObjectWithDefaultConstructor> cleaner = null
         )
         {
             var originalSize = observableCollection.Count;
             var changedCount = 0;
             observableCollection.CollectionChanged += (o, e) => changedCount++;
             observableCollection.Synchronize(
+                newValues,
                 (i, to) => to.Value = i.ToString(CultureInfo.InvariantCulture),
-                newValues
-                );
+                cleaner);
             Assert.AreEqual(newValues.Count, observableCollection.Count);
             Assert.AreEqual(Math.Abs(originalSize - newValues.Count), changedCount);
             for (var i = 0; i < newValues.Count; i++)
@@ -149,19 +176,35 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
             ExecuteAndTestSync(observableCollection, newValues);
         }
 
+        [Test]
+        public void Synchronizes_Full_Array_With_No_Values_With_Cleaner()
+        {
+            var observableCollection = new ObservableCollection<TestObjectWithoutDefaultConstructor>()
+                {
+                    new("11"),
+                    new("12"),
+                    new("13")
+                };
+            var newValues = new List<int>();
+            var cleaned = 0;
+            ExecuteAndTestSync(observableCollection, newValues, to => cleaned++);
+            Assert.AreEqual(3, cleaned);
+        }
+
         private static void ExecuteAndTestSync(
             ObservableCollection<TestObjectWithoutDefaultConstructor> observableCollection,
-            IList<int> newValues
+            IList<int> newValues,
+            Action<TestObjectWithoutDefaultConstructor> cleaner = null
         )
         {
             var originalSize = observableCollection.Count;
             var changedCount = 0;
             observableCollection.CollectionChanged += (o, e) => changedCount++;
             observableCollection.Synchronize(
+                newValues,
                 () => new TestObjectWithoutDefaultConstructor(null),
                 (i, to) => to.Value = i.ToString(CultureInfo.InvariantCulture),
-                newValues
-                );
+                cleaner);
             Assert.AreEqual(newValues.Count, observableCollection.Count);
             Assert.AreEqual(Math.Abs(originalSize - newValues.Count), changedCount);
             for (var i = 0; i < newValues.Count; i++)
