@@ -13,12 +13,22 @@ namespace UpbeatUI.View
 {
     internal static class ExtensionMethods
     {
-        internal static UIElement GetRootChild(this ContentPresenter contentPresenter) =>
-            contentPresenter is null
-                ? null
-                : VisualTreeHelper.GetChildrenCount(contentPresenter) > 0
-                    ? VisualTreeHelper.GetChild(contentPresenter, 0) as UIElement
-                    : null;
+        internal static UIElement GetRootChild(this ContentPresenter contentPresenter)
+        {
+            if (contentPresenter is null)
+            {
+                return null;
+            }
+            // When ContentPresenters do not have children, the content may not have been loaded yet.
+            // Calling ".Measure" forces the template to be instantiated into content.
+            if (VisualTreeHelper.GetChildrenCount(contentPresenter) == 0)
+            {
+                contentPresenter.Measure(new Size(0, 0));
+            }
+            return VisualTreeHelper.GetChildrenCount(contentPresenter) > 0
+                ? VisualTreeHelper.GetChild(contentPresenter, 0) as UIElement
+                : null;
+        }
 
         internal static void PercentMeasure(
             this UIElement element,
