@@ -31,9 +31,11 @@ namespace UpbeatUI.Extensions.DependencyInjection
             : base(updateOnRender) =>
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
+        /// <inheritdoc/>
         public void MapViewModel<TParameters, TViewModel>(bool allowUnresolvedDependencies) =>
             MapServiceProvidedViewModel<TParameters, TViewModel>(allowUnresolvedDependencies);
 
+        /// <inheritdoc/>
         public void MapViewModel<TParameters, TViewModel>(Func<IUpbeatService, TParameters, IServiceProvider, TViewModel> viewModelCreator) =>
             MapViewModel<TParameters, TViewModel>((upbeatService, parameters) =>
                 viewModelCreator(
@@ -41,6 +43,7 @@ namespace UpbeatUI.Extensions.DependencyInjection
                     parameters,
                     _viewModelParametersServiceScopes[parameters].ServiceProvider));
 
+        /// <inheritdoc/>
         public override void OpenViewModel<TParameters>(TParameters parameters, Action closedCallback)
         {
             var parametersType = parameters.GetType();
@@ -60,12 +63,14 @@ namespace UpbeatUI.Extensions.DependencyInjection
                 });
         }
 
+        /// <inheritdoc/>
         public void SetDefaultViewModelLocators(bool allowUnresolvedDependencies = false) =>
             SetViewModelLocators(
                 (string parametersTypeString) => parametersTypeString
                     .Replace("+Parameters", "", StringComparison.Ordinal),
                 allowUnresolvedDependencies);
 
+        /// <inheritdoc/>
         public void SetViewModelLocators(
             Func<string, string> parameterToViewModelLocator,
             bool allowUnresolvedDependencies = false) =>
@@ -73,6 +78,7 @@ namespace UpbeatUI.Extensions.DependencyInjection
                 (Type parametersType) => Type.GetType(parameterToViewModelLocator(parametersType.AssemblyQualifiedName)),
                 allowUnresolvedDependencies);
 
+        /// <inheritdoc/>
         public void SetViewModelLocators(
             Func<Type, Type> parameterToViewModelLocator,
             bool allowUnresolvedDependencies = false)

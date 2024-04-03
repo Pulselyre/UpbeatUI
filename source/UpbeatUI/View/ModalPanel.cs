@@ -17,7 +17,7 @@ namespace UpbeatUI.View
     public class ModalPanel : Panel
     {
         /// <summary>
-        /// Identifies the <see cref="ModalBackground"> <see cref="DependencyProperty">.
+        /// Identifies the <see cref="ModalBackground"/> <see cref="DependencyProperty"/>.
         /// </summary>
         public static readonly DependencyProperty ModalBackgroundProperty =
             DependencyProperty.Register(
@@ -29,7 +29,7 @@ namespace UpbeatUI.View
                     FrameworkPropertyMetadataOptions.AffectsArrange));
 
         /// <summary>
-        /// Identifies the <see cref="ClosePopupCommand"> <see cref="DependencyProperty">.
+        /// Identifies the <see cref="ClosePopupCommand"/> <see cref="DependencyProperty"/>.
         /// </summary>
         public static readonly DependencyProperty ClosePopupCommandProperty =
             DependencyProperty.Register(
@@ -38,7 +38,7 @@ namespace UpbeatUI.View
                 typeof(ModalPanel));
 
         /// <summary>
-        /// Identifies the IsOnTop Attached <see cref="DependencyProperty">.
+        /// Identifies the IsOnTop Attached <see cref="DependencyProperty"/>.
         /// </summary>
         public static readonly DependencyProperty IsOnTopProperty =
             DependencyProperty.RegisterAttached(
@@ -48,7 +48,7 @@ namespace UpbeatUI.View
                 new FrameworkPropertyMetadata(null));
 
         /// <summary>
-        /// Identifies the <see cref="RequestPopupCloseEvent"> <see cref="RoutedEvent">.
+        /// Identifies the <see cref="RequestPopupCloseEvent"/> <see cref="RoutedEvent"/>.
         /// </summary>
         public static readonly RoutedEvent RequestPopupCloseEvent =
             EventManager.RegisterRoutedEvent(
@@ -61,7 +61,7 @@ namespace UpbeatUI.View
         private bool _blockingVisualChange;
 
         /// <summary>
-        /// Gets or sets a <see cref="Brush"> that will be shown underneath the top (active) Element>.
+        /// Gets or sets a <see cref="Brush"/> that will be shown underneath the top (active) Element>.
         /// </summary>
         public Brush ModalBackground
         {
@@ -79,7 +79,7 @@ namespace UpbeatUI.View
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="ICommand"> to execute when the user requests that the top Element be removed.
+        /// Gets or sets the <see cref="ICommand"/> to execute when the user requests that the top Element be removed.
         /// </summary>
         public ICommand ClosePopupCommand
         {
@@ -91,16 +91,18 @@ namespace UpbeatUI.View
         /// Gets whether <paramref name="dependencyObject"/> is the top element in a <see cref="ModalPanel"/>.
         /// </summary>
         /// <param name="dependencyObject">The element to get the IsOnTop sttaus of.</param>
-        /// <returns><see cref="true"/> if <paramref name="dependencyObject"/> is the top element, <see cref="false"/> if not the top element, and <see cref="null"/> if not part of a <see cref="ModalPanel"/> at all.</returns>
+        /// <returns> true if <paramref name="dependencyObject "/> is the top element, false if not the top element, and null if not part of a <see cref="ModalPanel"/> at all.</returns>
         public static bool? GetIsOnTop(DependencyObject dependencyObject) =>
             dependencyObject?.GetValue(IsOnTopProperty) as bool?;
 
         private static void SetIsOnTop(DependencyObject frameworkElement, bool? value) =>
             frameworkElement?.SetValue(IsOnTopProperty, value);
 
+        /// <inheritdoc/>
         protected override int VisualChildrenCount =>
             base.VisualChildrenCount + (_border == null ? 0 : 1);
 
+        /// <inheritdoc/>
         protected override Visual GetVisualChild(int index)
         {
             var childrenCount = VisualChildrenCount;
@@ -111,6 +113,7 @@ namespace UpbeatUI.View
             return ret;
         }
 
+        /// <inheritdoc/>
         protected override Size MeasureOverride(Size availableSize)
         {
             var desiredSize = new Size(0, 0);
@@ -126,6 +129,7 @@ namespace UpbeatUI.View
                 double.IsInfinity(availableSize.Height) ? desiredSize.Height : availableSize.Height);
         }
 
+        /// <inheritdoc/>
         protected override Size ArrangeOverride(Size finalSize)
         {
             for (var i = 0; i < Children.Count; i++)
@@ -153,6 +157,7 @@ namespace UpbeatUI.View
             return finalSize;
         }
 
+        /// <inheritdoc/>
         protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
         {
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);

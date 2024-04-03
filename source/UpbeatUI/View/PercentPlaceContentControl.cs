@@ -8,6 +8,9 @@ using System.Windows.Media;
 
 namespace UpbeatUI.View
 {
+    /// <summary>
+    /// Represents a control where the content will be arranged within a percentage of available space based on values in <see cref="PercentPlace"/> attached properties.
+    /// </summary>
     public class PercentPlaceContentControl : ContentControl
     {
         /// <summary>
@@ -115,6 +118,7 @@ namespace UpbeatUI.View
         private ContentPresenter ContentPresenter =>
             _contentPresenter ??= VisualTreeHelper.GetChild(this, 0) as ContentPresenter;
 
+        /// <inheritdoc/>
         protected override Size MeasureOverride(Size constraint)
         {
             ContentPresenter.PercentMeasure(constraint, WidthPercent, HeightPercent);
@@ -124,6 +128,7 @@ namespace UpbeatUI.View
             );
         }
 
+        /// <inheritdoc/>
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             ContentPresenter.PercentArrange(

@@ -8,9 +8,13 @@ using System.Windows.Data;
 
 namespace UpbeatUI.View.Converters
 {
+    /// <summary>
+    /// A converter that accepts multiple values to convert a percentage of available dimensions to a size.
+    /// </summary>
     [Obsolete("'" + nameof(PercentOfToSizeConverter) + "' method is deprecated and will be removed in the next major release; consider using the '" + nameof(PercentPlaceContentControl) + "' class to position elements instead.")]
     public class PercentOfToSizeConverter : IMultiValueConverter
     {
+        /// <inheritdoc/>
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             _ = values ?? throw new ArgumentNullException(nameof(values));
@@ -48,6 +52,7 @@ namespace UpbeatUI.View.Converters
             };
         }
 
+        /// <inheritdoc/>
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>
             throw new NotImplementedException();
     }

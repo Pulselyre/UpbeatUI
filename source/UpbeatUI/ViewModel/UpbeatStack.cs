@@ -18,6 +18,12 @@ namespace UpbeatUI.ViewModel
     /// </summary>
     public partial class UpbeatStack : IUpbeatStack, IDisposable
     {
+        /// <summary>
+        /// A method signature to create a new ViewModel.
+        /// </summary>
+        /// <param name="upbeatService">The <see cref="IUpbeatService"/> instance for the ViewModel.</param>
+        /// <param name="parameters">The parameters object for the ViewModel.</param>
+        /// <returns></returns>
         protected delegate object ViewModelInstantiator(IUpbeatService upbeatService, object parameters);
 
         private readonly ObservableCollection<object> _openViewModels = new ObservableCollection<object>();
@@ -28,7 +34,7 @@ namespace UpbeatUI.ViewModel
         /// <summary>
         /// Initializes an empty <see cref="UpbeatStack"/>.
         /// </summary>
-        /// <param name="updateOnRender">True to have the <see cref="UpbeatStack"/> execute any UppdateCallback <see cref="Action"/>s registered by ViewModels on each WPF frame render; false to only execute UpdateCallback <see cref="Action"/>s manually.</param>
+        /// <param name="updateOnRender">True to have the <see cref="UpbeatStack"/> execute any update callback <see cref="Action"/>s registered by ViewModels on each WPF frame render; false to only execute update callbacks manually (with <see cref="UpdateViewModelProperties()"/>).</param>
         public UpbeatStack(bool updateOnRender = true)
         {
             _updateOnRender = updateOnRender;
@@ -42,13 +48,24 @@ namespace UpbeatUI.ViewModel
             }
         }
 
+        /// <inheritdoc/>
         public event EventHandler ViewModelsEmptied;
 
+        /// <inheritdoc/>
         public int Count => _openViewModels.Count;
+        /// <inheritdoc/>
         public ICommand RemoveTopViewModelCommand { get; }
+        /// <inheritdoc/>
         public INotifyCollectionChanged ViewModels { get; }
+        /// <summary>
+        /// A <see cref="Dictionary{K,V}"/> mapping ViewModel <see cref="Type"/>s to <see cref="ViewModelInstantiator"/>s.
+        /// </summary>
         protected Dictionary<Type, ViewModelInstantiator> ViewModelInstantiators { get; } = new Dictionary<Type, ViewModelInstantiator>();
 
+        /// <summary>
+        /// Internal method to dispose unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">Use true if calling from a <see cref="Dispose()"/> method, false if from a destructor.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -69,14 +86,19 @@ namespace UpbeatUI.ViewModel
             _disposed = true;
         }
 
+        /// <summary>
+        /// Destructor for orderly disposal.
+        /// </summary>
         ~UpbeatStack() => Dispose(false);
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <inheritdoc/>
         public void MapViewModel<TParameters, TViewModel>(
             Func<IUpbeatService, TParameters, TViewModel> viewModelCreator)
         {
@@ -90,9 +112,11 @@ namespace UpbeatUI.ViewModel
                 (service, parameters) => viewModelCreator(service, (TParameters)parameters));
         }
 
+        /// <inheritdoc/>
         public void OpenViewModel<TParameters>(TParameters parameters) =>
             OpenViewModel(parameters, null);
 
+        /// <inheritdoc/>
         public virtual void OpenViewModel<TParameters>(TParameters parameters, Action closedCallback)
         {
             var parametersType = parameters.GetType();
@@ -106,6 +130,7 @@ namespace UpbeatUI.ViewModel
             _openViewModels.Add(viewModel);
         }
 
+        /// <inheritdoc/>
         public Task OpenViewModelAsync<TParameters>(TParameters parameters)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
@@ -113,6 +138,7 @@ namespace UpbeatUI.ViewModel
             return taskCompletionSource.Task;
         }
 
+        /// <inheritdoc/>
         public async Task<bool> TryCloseAllViewModelsAsync()
         {
             foreach (var viewModel in _openViewModels.Reverse())
@@ -126,6 +152,7 @@ namespace UpbeatUI.ViewModel
             return true;
         }
 
+        /// <inheritdoc/>
         public void UpdateViewModelProperties()
         {
             if (!_updateOnRender)

@@ -8,9 +8,13 @@ using System.Windows.Data;
 
 namespace UpbeatUI.View.Converters
 {
+    /// <summary>
+    /// A converter that accepts multiple values to convert a percentage of available dimensions to a position.
+    /// </summary>
     [Obsolete("'" + nameof(PercentPositionPlacementConverter) + "' method is deprecated and will be removed in the next major release; consider using the '" + nameof(PercentPlaceContentControl) + "' class to position elements instead.")]
     public class PercentPositionPlacementConverter : IMultiValueConverter
     {
+        /// <inheritdoc/>
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             _ = values ?? throw new ArgumentNullException(nameof(values));
@@ -33,6 +37,7 @@ namespace UpbeatUI.View.Converters
                 : (object)((invert ? 1.0 - percentPosition : percentPosition) * containerSize - (controlSize / 2.0));
         }
 
+        /// <inheritdoc/>
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>
             throw new NotImplementedException();
     }

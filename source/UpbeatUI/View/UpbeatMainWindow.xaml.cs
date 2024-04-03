@@ -9,16 +9,19 @@ using System.Windows.Media.Effects;
 namespace UpbeatUI.View
 {
     /// <summary>
-    /// Defines a window with a pre-embedded <see cref="ModalPanel"> to stack Views. The <see cref="DataContext"> should be set to an <see cref="UpbeatStack"> instance.
+    /// Defines a window with a pre-embedded <see cref="ModalPanel"/> to stack Views. The <see cref="FrameworkElement.DataContext"/> property should be set to an <see cref="ViewModel.IUpbeatStack"/> instance.
     /// </summary>
     public partial class UpbeatMainWindow : Window
     {
         /// <summary>
-        /// Identifies the <see cref="ModalBlurEffect"/> <see cref="DependencyProperty">.
+        /// Identifies the <see cref="ModalBackground"/> <see cref="DependencyProperty"/>.
         /// </summary>
         public readonly static DependencyProperty ModalBackgroundProperty =
             ModalPanel.ModalBackgroundProperty.AddOwner(typeof(UpbeatMainWindow));
 
+        /// <summary>
+        /// Identifies the <see cref="ModalBlurEffect"/> <see cref="DependencyProperty"/>.
+        /// </summary>
         public readonly static DependencyProperty ModalBlurEffectProprety =
             DependencyProperty.Register(
                 "ModalBlurEffect",
@@ -27,13 +30,13 @@ namespace UpbeatUI.View
                 new FrameworkPropertyMetadata(null));
 
         /// <summary>
-        /// Initializes a new <see cref="UpbeatMainWindow">.
+        /// Initializes a new <see cref="UpbeatMainWindow"/>.
         /// </summary>
         public UpbeatMainWindow() =>
             InitializeComponent();
 
         /// <summary>
-        /// Gets or sets a <see cref="Brush"> that the <see cref="ModalPanel"> will show underneath the top (active) Element.
+        /// Gets or sets a <see cref="Brush"/> that the <see cref="ModalPanel"/> will show underneath the top (active) Element.
         /// </summary>
         public Brush ModalBackground
         {

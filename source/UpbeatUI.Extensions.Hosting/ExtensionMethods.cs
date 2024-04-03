@@ -10,14 +10,17 @@ using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.Extensions.Hosting
 {
+    /// <summary>
+    /// Extension methods to assist with configuring UpbeatUI with an <see cref="IHostBuilder"/>.
+    /// </summary>
     public static class ExtensionMethods
     {
         /// <summary>
-        /// Configures an <see cref="IHostBuilder"/> to create and start a <see cref="IHostedUpbeatService"/> to manage the <see cref="UpbeatStack"/> and main <see cref="Window"/>.
+        /// Configures an <see cref="IHostBuilder"/> to create and start a <see cref="IHostedService"/> to manage the <see cref="UpbeatStack"/> and main <see cref="Window"/>.
         /// </summary>
         /// <param name="hostBuilder">The <see cref="IHostBuilder"/> instance to configure UpbeatUI on.</param>
         /// <param name="baseViewModelParametersCreator">The delegate that will create parameters for the base/bottom ViewModel</param>
-        /// <param name="configure">The delegate for configuring the <see cref="IHostedUpbeatBuilder"/> that will be used when starting the <see cref="IHostedUpbeatService"/>.</param>
+        /// <param name="configure">The delegate for configuring the <see cref="IHostedUpbeatBuilder"/> that will be used when starting the <see cref="IHostedService"/>.</param>
         /// <returns>The <see cref="IHostBuilder"/> for chaining.</returns>
         public static IHostBuilder ConfigureUpbeatHost(
             this IHostBuilder hostBuilder, Func<object> baseViewModelParametersCreator,

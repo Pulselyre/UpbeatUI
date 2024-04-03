@@ -11,8 +11,12 @@ using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.View.Converters
 {
+    /// <summary>
+    /// A converter that creates a <see cref="Func{Point}"/> that returns the location within an <see cref="IUpbeatStack"/> of the target element.
+    /// </summary>
     public class PercentPositionWithinUpbeatStackConverter : IValueConverter
     {
+        /// <inheritdoc/>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var containerClass = parameter is null ? typeof(IUpbeatStack) : (Type)parameter;
@@ -38,6 +42,7 @@ namespace UpbeatUI.View.Converters
             });
         }
 
+        /// <inheritdoc/>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
             throw new NotImplementedException();
     }
