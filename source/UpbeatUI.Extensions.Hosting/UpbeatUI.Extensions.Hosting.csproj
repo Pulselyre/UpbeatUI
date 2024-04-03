@@ -22,7 +22,7 @@
         <Copyright>© Michael P. Duda 2020-2024</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <!-- Update the following properties when publishing a new Nuget version -->
-        <Version>4.0.0-rc3</Version>
+        <Version>4.0.0-rc4</Version>
         <!-- <PackageValidationBaselineVersion>3.1.5</PackageValidationBaselineVersion> -->
     </PropertyGroup>
 
