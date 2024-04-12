@@ -4,7 +4,6 @@
  */
 using System;
 using System.Windows;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using UpbeatUI.ViewModel;
@@ -12,7 +11,7 @@ using UpbeatUI.ViewModel;
 namespace ServiceProvidedUpbeatUISample.ViewModel;
 
 // This extends ObservableObject from the CommunityToolkit.Mvvm NuGet package, which provides pre-written SetProperty and OnPropertyChanged methods.
-public class SharedListViewModel : ObservableObject, IDisposable
+public sealed partial class SharedListViewModel : ObservableObject, IDisposable
 {
     private readonly IUpbeatService _upbeatService;
     private readonly SharedTimer _sharedTimer;
@@ -24,22 +23,22 @@ public class SharedListViewModel : ObservableObject, IDisposable
         SharedTimer sharedTimer, // This is a shared singleton service.
         SharedListDataViewModel sharedListDataViewModel) // This is a child ViewModel, which can help with separating concerns and keep ViewModels from being too complicated. Child ViewModels share an IUpbeatService and any scoped services with their parents.
     {
-        _upbeatService = upbeatService ?? throw new NullReferenceException(nameof(upbeatService));
-        _sharedTimer = sharedTimer ?? throw new NullReferenceException(nameof(sharedTimer));
+        _upbeatService = upbeatService ?? throw new ArgumentNullException(nameof(upbeatService));
+        _sharedTimer = sharedTimer ?? throw new ArgumentNullException(nameof(sharedTimer));
         _sharedList = sharedList ?? throw new ArgumentNullException(nameof(sharedList));
         SharedListDataViewModel = sharedListDataViewModel ?? throw new ArgumentNullException(nameof(sharedListDataViewModel));
 
         _sharedTimer.Ticked += SharedTimerTicked;
         _sharedList.StringAdded += SharedListStringAdded;
-
-        // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. It can be used to call methods or lambda expressions when the command is executed. It supports both async and non-async methods/lambdas.
-        CloseCommand = new RelayCommand(_upbeatService.Close);
     }
 
-    public ICommand CloseCommand { get; }
     public string StringsCount => $"{_sharedList.Strings.Count} Strings";
     public string SecondsElapsed => $"{_sharedTimer.ElapsedSeconds} Seconds";
     public SharedListDataViewModel SharedListDataViewModel { get; }
+
+    // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. As an attribute, it can be used to automatically wrap methods within ICommand properties. It supports both async and non-async methods/lambdas.
+    [RelayCommand]
+    private void Close() => _upbeatService.Close();
 
     public void Dispose() =>
         _sharedTimer.Ticked -= SharedTimerTicked;

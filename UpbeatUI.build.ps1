@@ -13,8 +13,11 @@ Param(
   [String] $verbosity = 'quiet',
   [Parameter(Mandatory = $false, Position = 2)]
   [Alias('gcs')]
-  [Boolean] $generateCompatibilitySuppression = $false
+  [Boolean] $generateCompatibilitySuppression = $false,
+  [Parameter(Mandatory = $false)]
+  [String] $filename = $null
 )
+$ErrorActionPreference = 'Stop'
 
 task RestoreAll RestoreBase, RestoreDependencyInjection, RestoreHosting, `
   RestoreManualSample, RestoreServiceProvidedSample, RestoreHostedSample, `
@@ -79,10 +82,20 @@ task RestoreHostedSample {
 }
 task rhs RestoreHostedSample
 
+task BuildActive {
+  Write-Output $filename
+}
+
 task BuildAll BuildBase, BuildDependencyInjection, BuildHosting, `
   BuildManualSample, BuildServiceProvidedSample, BuildHostedSample, `
   BuildTests
 task ba BuildAll
+
+task BuildActive {
+  Write-Output "Building project based on active file: $filename"
+}, BuildBaseIfActive, BuildDependencyInjectionIfActive, BuildHostingIfActive, `
+  BuildManualSampleIfActive, BuildServiceProvidedSampleIfActive, BuildHostedSampleIfActive, `
+  BuildTestsIfActive
 
 task BuildPackages BuildBase, BuildDependencyInjection, BuildHosting
 task bp BuildPackages
@@ -95,6 +108,7 @@ task BuildBase {
   equals $LASTEXITCODE 0
 }
 task bb BuildBase
+task BuildBaseIfActive -if ($filename -eq $null -or $filename.Contains('\source\UpbeatUI\')) BuildBase
 
 task BuildDependencyInjection {
   dotnet build `
@@ -104,6 +118,7 @@ task BuildDependencyInjection {
   equals $LASTEXITCODE 0
 }
 task bdi BuildDependencyInjection
+task BuildDependencyInjectionIfActive -if ($filename -eq $null -or $filename.Contains('\source\UpbeatUI.Extensions.DependencyInjection\')) BuildDependencyInjection
 
 task BuildHosting {
   dotnet build `
@@ -113,6 +128,7 @@ task BuildHosting {
   equals $LASTEXITCODE 0
 }
 task bh BuildHosting
+task BuildHostingIfActive -if ($filename -eq $null -or $filename.Contains('\source\UpbeatUI.Extensions.Hosting\')) BuildHosting
 
 task BuildTests {
   dotnet build `
@@ -122,6 +138,7 @@ task BuildTests {
   equals $LASTEXITCODE 0
 }
 task bt BuildTests
+task BuildTestsIfActive -if ($filename -eq $null -or $filename.Contains('\source\UpbeatUI.Tests\')) BuildTests
 
 task BuildSamples BuildManualSample, BuildServiceProvidedSample, BuildHostedSample
 task bs BuildSamples
@@ -134,6 +151,11 @@ task BuildManualSample {
   equals $LASTEXITCODE 0
 }
 task bms BuildManualSample
+task BuildManualSampleIfActive -if ($filename -eq $null -or $filename.Contains('\samples\ManualUpbeatUISample\')) BuildManualSample
+
+task OutputFilename {
+  Write-Output $filename
+}
 
 task BuildServiceProvidedSample {
   dotnet build `
@@ -143,6 +165,7 @@ task BuildServiceProvidedSample {
   equals $LASTEXITCODE 0
 }
 task bsps BuildServiceProvidedSample
+task BuildServiceProvidedSampleIfActive -if ($filename -eq $null -or $filename.Contains("\samples\ServiceProvidedUpbeatUISample\")) BuildServiceProvidedSample
 
 task BuildHostedSample {
   dotnet build `
@@ -152,6 +175,7 @@ task BuildHostedSample {
   equals $LASTEXITCODE 0
 }
 task bhs BuildHostedSample
+task BuildHostedSampleIfActive -if ($filename -eq $null -or $filename.Contains('\samples\HostedUpbeatUISample\')) BuildHostedSample
 
 task PackAll PackBase, PackDependencyInjection, PackHosting
 task pa PackAll
@@ -200,8 +224,7 @@ task SetPublishApiKey {
 }
 
 task PublishBase SetPublishApiKey, PackBase, {
-  $version = [Version] $([Xml] (Get-Content .\source\UpbeatUI\UpbeatUI.csproj)).Project.PropertyGroup.Version
-  $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
+  $versionString = ([Xml] (Get-Content .\source\UpbeatUI\UpbeatUI.csproj)).Project.PropertyGroup.Version
   if ($Host.UI.PromptForChoice("About to publish UpbeatUI package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
     dotnet nuget push "source\UpbeatUI\bin\Release\UpbeatUI.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
     equals $LASTEXITCODE 0
@@ -213,8 +236,7 @@ task PublishBase SetPublishApiKey, PackBase, {
 task pubb PublishBase
 
 task PublishDependencyInjection SetPublishApiKey, PackDependencyInjection, {
-  $version = [Version] $([Xml] (Get-Content .\source\UpbeatUI.Extensions.DependencyInjection\UpbeatUI.Extensions.DependencyInjection.csproj)).Project.PropertyGroup.Version
-  $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
+  $versionString = $([Xml] (Get-Content .\source\UpbeatUI.Extensions.DependencyInjection\UpbeatUI.Extensions.DependencyInjection.csproj)).Project.PropertyGroup.Version
   if ($Host.UI.PromptForChoice("About to publish UpbeatUI.Extensions.DependencyInjection package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
     dotnet nuget push "source\UpbeatUI.Extensions.DependencyInjection\bin\Release\UpbeatUI.Extensions.DependencyInjection.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
     equals $LASTEXITCODE 0
@@ -226,8 +248,7 @@ task PublishDependencyInjection SetPublishApiKey, PackDependencyInjection, {
 task pubdi PublishDependencyInjection
 
 task PublishHosting SetPublishApiKey, PackHosting, {
-  $version = [Version] $([Xml] (Get-Content .\source\UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj)).Project.PropertyGroup.Version
-  $versionString = "$($version.Major).$($version.Minor).$($version.Build)"
+  $versionString = $([Xml] (Get-Content .\source\UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj)).Project.PropertyGroup.Version
   if ($Host.UI.PromptForChoice("About to publish UpbeatUI.Extensions.Hosting package version $versionString", 'Continue?', ('&Yes', '&No'), 1) -eq 0) {
     dotnet nuget push "source\UpbeatUI.Extensions.Hosting\bin\Release\UpbeatUI.Extensions.Hosting.$($versionString).nupkg" --api-key $clearapikey --source "https://api.nuget.org/v3/index.json"
     equals $LASTEXITCODE 0

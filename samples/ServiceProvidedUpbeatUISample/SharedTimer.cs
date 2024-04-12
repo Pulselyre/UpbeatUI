@@ -8,7 +8,7 @@ using System.Timers;
 namespace ServiceProvidedUpbeatUISample;
 
 // This is a simple timer to demonstrate a singleton service shared between multiple ViewModels.
-public class SharedTimer : IDisposable
+public sealed class SharedTimer : IDisposable
 {
     private readonly Timer _timer;
 
@@ -33,5 +33,6 @@ public class SharedTimer : IDisposable
     {
         _timer.Elapsed -= TimerElapsed;
         _timer.Stop();
+        _timer.Dispose();
     }
 }

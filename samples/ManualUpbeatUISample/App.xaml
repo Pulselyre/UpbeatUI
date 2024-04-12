@@ -1,0 +1,27 @@
+﻿<!-- This file is part of the UpbeatUI project, which is released under MIT License.
+     See LICENSE.md or visit:
+     https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
+     -->
+<Application
+    x:Class="ManualUpbeatUISample.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:ManualUpbeatUISample"
+    Startup="HandleApplicationStartup">
+    <Application.Resources>
+        <!-- Note that because the Views are defined as DataTemplates in their own .xaml files, they need to be merged
+             with the Application's ResourceDictionary in order for them to be available for rendering instances of
+             their associated ViewModel classes (defined using the DataTemplate.DataType property). -->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="View\BottomTemplate.xaml " />
+                <ResourceDictionary Source="View\ConfirmPopupTemplate.xaml " />
+                <ResourceDictionary Source="View\MenuTemplate.xaml " />
+                <ResourceDictionary Source="View\PopupTemplate.xaml " />
+                <ResourceDictionary Source="View\RandomDataTemplate.xaml " />
+                <ResourceDictionary Source="View\SharedListTemplate.xaml " />
+                <ResourceDictionary Source="View\TextEntryPopupTemplate.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
