@@ -58,6 +58,7 @@ namespace UpbeatUI.View
                 typeof(ModalPanel));
 
         private Border _border;
+        private bool _isBorderDown;
         private bool _blockingVisualChange;
 
         /// <summary>
@@ -173,7 +174,9 @@ namespace UpbeatUI.View
                             Focusable = false,
                             IsHitTestVisible = true,
                         };
+                        _border.MouseDown += HandleBorderMouseDown;
                         _border.MouseUp += HandleBorderMouseUp;
+                        _border.TouchDown += HandleBorderTouchDown;
                         _border.TouchUp += HandleBorderTouchUp;
                     }
                     else
@@ -192,7 +195,9 @@ namespace UpbeatUI.View
                     }
                     else if (_border != null)
                     {
+                        _border.MouseDown -= HandleBorderMouseDown;
                         _border.MouseUp -= HandleBorderMouseUp;
+                        _border.TouchDown -= HandleBorderTouchDown;
                         _border.TouchUp -= HandleBorderTouchUp;
                         _border = null;
                     }
@@ -201,16 +206,24 @@ namespace UpbeatUI.View
             }
         }
 
+        private void HandleBorderMouseDown(object sender, MouseButtonEventArgs e) => _isBorderDown = true;
+
+        private void HandleBorderTouchDown(object sender, TouchEventArgs e) => _isBorderDown = true;
+
         private void HandleBorderMouseUp(object sender, RoutedEventArgs e)
         {
-            if (ClosePopupCommand?.CanExecute(null) ?? false)
+            if (_isBorderDown)
             {
-                ClosePopupCommand.Execute(null);
+                if (ClosePopupCommand?.CanExecute(null) ?? false)
+                {
+                    ClosePopupCommand.Execute(null);
+                }
+                else
+                {
+                    RaiseEvent(new RoutedEventArgs(RequestPopupCloseEvent));
+                }
             }
-            else
-            {
-                RaiseEvent(new RoutedEventArgs(RequestPopupCloseEvent));
-            }
+            _isBorderDown = false;
         }
 
         private void HandleBorderTouchUp(object sender, TouchEventArgs e)
