@@ -32,6 +32,9 @@ public sealed partial class SharedListDataViewModel : ObservableObject, IDisposa
         Strings = new ReadOnlyObservableCollection<string>(_strings);
         _strings.Synchronize(_sharedList.Strings);
 
+        // Registering a CloseCallback allows the ViewModel to prevent itself from closing. For example: if there is unsaved work. This can also completely prevent the application from shutting down. CloseCallbacks can be either async or non-async methods/lambdas.
+        _upbeatService.RegisterCloseCallback(AskBeforeClosingAsync);
+
         _sharedList.StringAdded += SharedListStringAdded;
     }
 
@@ -60,6 +63,21 @@ public sealed partial class SharedListDataViewModel : ObservableObject, IDisposa
 
     public void Dispose() =>
         _sharedList.StringAdded -= SharedListStringAdded;
+
+    // This CloseCallback method opens a new ViewModel and View to confirm that the user wants to close this ViewModel.
+    private async Task<bool> AskBeforeClosingAsync()
+    {
+        var okToClose = false;
+        // OpenViewModelAsync can be awaited, and will return once the child ViewModel is closed. This is useful to show a popup requesting input from the user.
+        await _upbeatService.OpenViewModelAsync(
+            new ConfirmPopupViewModel.Parameters
+            {
+                Message = "Close the shared list?\nAll added strings will be lost.",
+                // The ConfirmPopupViewModel will execute this callback (set the okToClose bool to true) if the user confirms that closing. If the popup closes without the user confirming, okToClose remains false, and the application will remain running.
+                ConfirmCallback = () => okToClose = true,
+            }).ConfigureAwait(true);
+        return okToClose;
+    }
 
     private void SharedListStringAdded(object sender, EventArgs e) =>
         Application.Current.Dispatcher.Invoke(() => _strings.Synchronize(_sharedList.Strings)); // Ensure that the collection is changed on the UI thread
