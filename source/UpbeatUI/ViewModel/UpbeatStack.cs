@@ -169,26 +169,27 @@ namespace UpbeatUI.ViewModel
             ViewModelInstantiator viewModelCreator) =>
             ViewModelInstantiators[parametersType] = viewModelCreator;
 
-        private void RemoveViewModel(object viewModel)
-        {
-            (viewModel as IDisposable)?.Dispose();
-            _ = _openViewModels.Remove(viewModel);
-            var closedCallback = _openViewModelServices[viewModel].ClosedCallback;
-            _ = _openViewModelServices.Remove(viewModel);
-            closedCallback?.Invoke();
-            if (_openViewModels.Count == 0)
-            {
-                ViewModelsEmptied?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
         private async Task<bool> TryRemoveViewModelAsync(object viewModel)
         {
+            var viewModelService = _openViewModelServices[viewModel];
+            if (viewModelService.Closing)
+            {
+                return false;
+            }
+            viewModelService.Closing = true;
             if (await _openViewModelServices[viewModel].OkToCloseAsync().ConfigureAwait(true))
             {
-                RemoveViewModel(viewModel);
+                (viewModel as IDisposable)?.Dispose();
+                _ = _openViewModels.Remove(viewModel);
+                _ = _openViewModelServices.Remove(viewModel);
+                viewModelService.ClosedCallback?.Invoke();
+                if (_openViewModels.Count == 0)
+                {
+                    ViewModelsEmptied?.Invoke(this, EventArgs.Empty);
+                }
                 return true;
             }
+            viewModelService.Closing = false;
             return false;
         }
 
