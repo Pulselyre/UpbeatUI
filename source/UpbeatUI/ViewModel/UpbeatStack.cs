@@ -29,6 +29,7 @@ namespace UpbeatUI.ViewModel
         private readonly ObservableCollection<object> _openViewModels = new ObservableCollection<object>();
         private readonly Dictionary<object, UpbeatService> _openViewModelServices = new Dictionary<object, UpbeatService>();
         private readonly bool _updateOnRender;
+        private readonly RemoveTopCommand _removeTopViewModelCommand;
         private bool _disposed;
 
         /// <summary>
@@ -39,9 +40,8 @@ namespace UpbeatUI.ViewModel
         {
             _updateOnRender = updateOnRender;
             ViewModels = new ReadOnlyObservableCollection<object>(_openViewModels);
-            RemoveTopViewModelCommand = new RelayCommand(
-                () => TryRemoveViewModelAsync(_openViewModels.Last()),
-                CanRemoveTopViewModel, singleExecution: false);
+            _removeTopViewModelCommand = new RemoveTopCommand(this);
+            RemoveTopViewModelCommand = _removeTopViewModelCommand;
             if (_updateOnRender)
             {
                 CompositionTarget.Rendering += UpdateViewModelProperties;
@@ -186,6 +186,7 @@ namespace UpbeatUI.ViewModel
                 if (_openViewModels.Count == 0)
                 {
                     ViewModelsEmptied?.Invoke(this, EventArgs.Empty);
+                    _removeTopViewModelCommand.NotifyCanExecuteChanged();
                 }
                 return true;
             }

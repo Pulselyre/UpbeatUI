@@ -64,6 +64,28 @@ namespace UpbeatUI.Tests.ViewModel.UpbeatStack_Tests
             Assert.AreEqual(1, _emptiedCount);
         }
 
+        [Test]
+        public void CanExecute_Returns_True_When_Not_Executiong()
+        {
+            _upbeatStack.OpenViewModel(new TestViewModel.Parameters(), () => _closedCount++);
+            Assert.IsTrue(_upbeatStack.RemoveTopViewModelCommand.CanExecute(null));
+        }
+
+        [Test]
+        public void CanExecute_Returns_False_When_No_ViewModels() =>
+            Assert.IsFalse(_upbeatStack.RemoveTopViewModelCommand.CanExecute(null));
+
+        [Test]
+        public void CanExecute_Returns_False_When_Executiong()
+        {
+            _upbeatStack.OpenViewModel(new TestViewModel.Parameters(), () => _closedCount++);
+            _upbeatStack.OpenViewModel(new TestViewModel.Parameters(), () => _closedCount++);
+            _upbeatStack.RemoveTopViewModelCommand.Execute(null);
+            Assert.IsFalse(_upbeatStack.RemoveTopViewModelCommand.CanExecute(null));
+            _tcs.SetResult();
+            Assert.IsTrue(_upbeatStack.RemoveTopViewModelCommand.CanExecute(null));
+        }
+
         private class TestViewModel
         {
             public TestViewModel(IUpbeatService upbeatService, Func<Task<bool>> closeCallback = null)
