@@ -13,7 +13,6 @@ namespace UpbeatUI.ViewModel
         private sealed class RemoveTopCommand : ICommand
         {
             private readonly UpbeatStack _upbeatStack;
-            private bool _removing;
 
             public RemoveTopCommand(UpbeatStack upbeatStack) =>
                 _upbeatStack = upbeatStack ?? throw new ArgumentNullException(nameof(upbeatStack));
@@ -21,24 +20,14 @@ namespace UpbeatUI.ViewModel
             public event EventHandler CanExecuteChanged;
 
             public bool CanExecute(object parameter) =>
-                !_removing && _upbeatStack.CanRemoveTopViewModel();
+                _upbeatStack.CanRemoveTopViewModel();
 
             public async void Execute(object parameter)
             {
                 if (CanExecute(parameter))
                 {
-                    try
-                    {
-                        _removing = true;
-                        NotifyCanExecuteChanged();
-                        _ = await _upbeatStack.TryRemoveViewModelAsync(_upbeatStack._openViewModels.Last()).ConfigureAwait(true);
-                    }
-                    finally
-                    {
-                        _removing = false;
-                        NotifyCanExecuteChanged();
-                    }
-                };
+                    _ = await _upbeatStack.TryRemoveViewModelAsync(_upbeatStack._openViewModels.Last()).ConfigureAwait(true);
+                }
             }
 
             public void NotifyCanExecuteChanged() =>
