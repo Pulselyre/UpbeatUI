@@ -29,6 +29,7 @@ namespace UpbeatUI.ViewModel
             public bool IsActiveViewModel => _isActiveViewModel();
             public bool UpdatesOnRender { get; }
             internal Action ClosedCallback { get; }
+            internal bool Closing { get; set; }
 
             public void Close()
             {

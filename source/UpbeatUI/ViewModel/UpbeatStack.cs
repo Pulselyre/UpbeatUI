@@ -29,7 +29,9 @@ namespace UpbeatUI.ViewModel
         private readonly ObservableCollection<object> _openViewModels = new ObservableCollection<object>();
         private readonly Dictionary<object, UpbeatService> _openViewModelServices = new Dictionary<object, UpbeatService>();
         private readonly bool _updateOnRender;
+        private readonly RemoveTopCommand _removeTopViewModelCommand;
         private bool _disposed;
+        private Task<bool> _closingAnyViewModelsTask;
 
         /// <summary>
         /// Initializes an empty <see cref="UpbeatStack"/>.
@@ -39,9 +41,8 @@ namespace UpbeatUI.ViewModel
         {
             _updateOnRender = updateOnRender;
             ViewModels = new ReadOnlyObservableCollection<object>(_openViewModels);
-            RemoveTopViewModelCommand = new RelayCommand(
-                () => TryRemoveViewModelAsync(_openViewModels.Last()),
-                CanRemoveTopViewModel, singleExecution: false);
+            _removeTopViewModelCommand = new RemoveTopCommand(this);
+            RemoveTopViewModelCommand = _removeTopViewModelCommand;
             if (_updateOnRender)
             {
                 CompositionTarget.Rendering += UpdateViewModelProperties;
@@ -141,6 +142,13 @@ namespace UpbeatUI.ViewModel
         /// <inheritdoc/>
         public async Task<bool> TryCloseAllViewModelsAsync()
         {
+            if (_closingAnyViewModelsTask != null)
+            {
+                if (!await _closingAnyViewModelsTask.ConfigureAwait(true))
+                {
+                    return false;
+                }
+            }
             foreach (var viewModel in _openViewModels.Reverse())
             {
                 if (!await TryRemoveViewModelAsync(viewModel).ConfigureAwait(true))
@@ -162,34 +170,49 @@ namespace UpbeatUI.ViewModel
         }
 
         private bool CanRemoveTopViewModel()
-            => _openViewModels.Count > 0;
+            => _openViewModels.Count > 0 && !_openViewModelServices[_openViewModels.Last()].Closing;
 
         private void MapViewModel(
             Type parametersType,
             ViewModelInstantiator viewModelCreator) =>
             ViewModelInstantiators[parametersType] = viewModelCreator;
 
-        private void RemoveViewModel(object viewModel)
-        {
-            (viewModel as IDisposable)?.Dispose();
-            _ = _openViewModels.Remove(viewModel);
-            var closedCallback = _openViewModelServices[viewModel].ClosedCallback;
-            _ = _openViewModelServices.Remove(viewModel);
-            closedCallback?.Invoke();
-            if (_openViewModels.Count == 0)
-            {
-                ViewModelsEmptied?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
         private async Task<bool> TryRemoveViewModelAsync(object viewModel)
         {
-            if (await _openViewModelServices[viewModel].OkToCloseAsync().ConfigureAwait(true))
+            var viewModelService = _openViewModelServices[viewModel];
+            if (viewModelService.Closing)
             {
-                RemoveViewModel(viewModel);
-                return true;
+                return false;
             }
-            return false;
+            viewModelService.Closing = true;
+            _removeTopViewModelCommand.NotifyCanExecuteChanged();
+            TaskCompletionSource<bool> tcs = null;
+            if (_closingAnyViewModelsTask == null)
+            {
+                tcs = new TaskCompletionSource<bool>();
+                _closingAnyViewModelsTask = tcs.Task;
+            }
+            var okToClose = await viewModelService.OkToCloseAsync().ConfigureAwait(true);
+            if (okToClose)
+            {
+                (viewModel as IDisposable)?.Dispose();
+                _ = _openViewModels.Remove(viewModel);
+                _ = _openViewModelServices.Remove(viewModel);
+                viewModelService.ClosedCallback?.Invoke();
+                if (_openViewModels.Count == 0)
+                {
+                    ViewModelsEmptied?.Invoke(this, EventArgs.Empty);
+                    _removeTopViewModelCommand.NotifyCanExecuteChanged();
+                }
+            }
+            viewModelService.Closing = false;
+            _removeTopViewModelCommand.NotifyCanExecuteChanged();
+            if (tcs != null)
+            {
+                tcs.SetResult(okToClose);
+                _closingAnyViewModelsTask = null;
+            }
+            return okToClose;
         }
 
         private void UpdateViewModelProperties(object sender, EventArgs e)

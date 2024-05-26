@@ -10,8 +10,9 @@ using System.Linq;
 using NUnit.Framework;
 using UpbeatUI.ViewModel.ListSynchronize;
 
-namespace UpbeatUI.Tests.ListSynchronize_Tests
+namespace UpbeatUI.Tests.ViewModel.ListSynchronize.ExtensionMethods_Tests
 {
+    [TestFixture]
     public class Values_Only
     {
         [Test]
@@ -67,6 +68,7 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
         }
     }
 
+    [TestFixture]
     public class With_Synchronizer
     {
         [Test]
@@ -140,6 +142,7 @@ namespace UpbeatUI.Tests.ListSynchronize_Tests
         }
     }
 
+    [TestFixture]
     public class With_Synchronizer_And_Blank_Creator
     {
         [Test]
