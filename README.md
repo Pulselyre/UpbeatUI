@@ -22,6 +22,8 @@ UpbeatUI implementations are available as NuGet packages:
 - [![Nuget](https://img.shields.io/nuget/v/UpbeatUI.Extensions.DependencyInjection)](https://www.nuget.org/packages/UpbeatUI.Extensions.DependencyInjection/) - `UpbeatUI.Extensions.DependencyInjection`: An implementation integrated with [`Microsoft.Extensions.DependencyInjection`](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection) (`IServiceProvider`) that provides dependency injection capabilities and automatic Parameters-ViewModel-View mapping via naming convention.
 - [![Nuget](https://img.shields.io/nuget/v/UpbeatUI.Extensions.Hosting)](https://www.nuget.org/packages/UpbeatUI.Extensions.Hosting/) - `UpbeatUI.Extensions.Hosting`: An implementation integrated with [`Microsoft.Extensions.Hosting`](https://www.nuget.org/packages/Microsoft.Extensions.Hosting) (`IHostBuilder`) for easy setup and automatic teardown.
 
+> Check the [Releases](https://github.com/Pulselyre/UpbeatUI/releases) page for pre-release/release-candidate versions with the latest bug fixes, features, and improvements.
+
 ## Examples
 
 Three samples are included: one showing [manual setup](samples/ManualUpbeatUISample) and teardown without dependency injection, one showing manual setup and teardown with [dependency injection](samples/ServiceProvidedUpbeatUISample) using an `IServiceProvider`, and one showing [automatic setup and teardown](samples/HostedUpbeatUISample) using an `IHostBuilder`. All samples demonstrate the following capabilities:
@@ -40,7 +42,6 @@ Please see the separate [How To Use](HOW-TO-USE.md) markdown file for a guide to
 
 ## To-Do List
 
-- Publish new major release with deprecated classes and methods fully removed.
 - Write more tests.
 - Execute tests via GitHub Actions.
 - [Create an icon/logo for NuGet packages](https://github.com/NuGet/Home/wiki/Packaging-Icon-within-the-nupkg).
@@ -48,6 +49,7 @@ Please see the separate [How To Use](HOW-TO-USE.md) markdown file for a guide to
 - Add [MAUI](https://github.com/dotnet/maui), [UWP](https://learn.microsoft.com/en-us/windows/uwp/), and/or [WinUI 3](https://learn.microsoft.com/en-us/windows/apps/winui/winui3/) support.
 - Cleanup/improve [`.editorconfig` file](.editorconfig) and format all source files.
 <!--
+- Publish new major release with deprecated classes and methods fully removed.
 - Remove the [`UpbeatControl`](source/UpbeatUI/View/UpbeatControl.cs) entirely, and rely on [`<DataTemplate DataType="{x:Type ...}">`](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/data-templating-overview#the-datatype-property) instead to match _ViewModel_ instances on the [`UpbeatStack`](source/UpbeatUI/ViewModel/UpbeatStack.cs) with _Views_. Also, re-implement the percentage size and position behavior as a [WPF Decorator](https://learn.microsoft.com/en-us/dotnet/api/system.windows.controls.decorator).
 - Cleanup/improve [`.gitignore` file](.gitignore) (too many unnecessary items listed).
 - Deprecate the public [`ActionDeferrer`](source/UpbeatUI/ViewModel/ActionDeferrer.cs) (and move all functionality to [`UpbeatStack.UpbeatServiceDeferrer`](source/UpbeatUI/ViewModel/UpbeatStack.UpbeatServiceDeferrer.cs)).
