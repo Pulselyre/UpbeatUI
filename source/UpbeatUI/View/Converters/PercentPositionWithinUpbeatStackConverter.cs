@@ -21,25 +21,25 @@ namespace UpbeatUI.View.Converters
         {
             var containerClass = parameter is null ? typeof(IUpbeatStack) : (Type)parameter;
             var control = value as FrameworkElement;
-            return new Func<Point>(() =>
+            var container = control as DependencyObject;
+            var parent = VisualTreeHelper.GetParent(control);
+            while (!(parent is null))
             {
-                var container = control as DependencyObject;
-                var parent = VisualTreeHelper.GetParent(control);
-                while (!(parent is null))
+                if (parent is FrameworkElement parentElement &&
+                    containerClass.IsAssignableFrom(parentElement.DataContext.GetType()))
                 {
-                    if (parent is FrameworkElement parentElement &&
-                        containerClass.IsAssignableFrom(parentElement.DataContext.GetType()))
+                    return new Func<Point>(() =>
                     {
                         var rawPoint = control.TranslatePoint(new Point(0, 0), parentElement);
                         return new Point(
                             (rawPoint.X + control.ActualWidth / 2.0) / parentElement.ActualWidth,
                             (rawPoint.Y + control.ActualHeight / 2.0) / parentElement.ActualHeight);
-                    }
-                    container = parent;
-                    parent = VisualTreeHelper.GetParent(container);
+                    });
                 }
-                throw new InvalidOperationException($"Unable to locate an ancestor {nameof(IUpbeatStack)} to position within. Reached root element {container}.");
-            });
+                container = parent;
+                parent = VisualTreeHelper.GetParent(container);
+            }
+            throw new InvalidOperationException($"Unable to locate an ancestor {nameof(IUpbeatStack)} to position within. Reached root element {container}.");
         }
 
         /// <inheritdoc/>
