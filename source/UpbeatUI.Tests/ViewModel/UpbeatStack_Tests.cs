@@ -9,6 +9,7 @@ using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.Tests.ViewModel.UpbeatStack_Tests
 {
+    [TestFixture]
     public class BaseFixture
     {
         protected UpbeatStack UpbeatStack { get; set; }
@@ -17,7 +18,7 @@ namespace UpbeatUI.Tests.ViewModel.UpbeatStack_Tests
         protected int EmptiedCount { get; set; }
 
         [SetUp]
-        public void Setuip()
+        public void SetUp()
         {
             UpbeatStack = new UpbeatStack();
             CloseAttemptCount = 0;
@@ -82,11 +83,10 @@ namespace UpbeatUI.Tests.ViewModel.UpbeatStack_Tests
         }
     }
 
-    [TestFixture]
     public class RemoveTopViewModelCommand_Tests : BaseFixture
     {
         [Test]
-        public void AllowsOnlyOneExecution()
+        public void Allows_Only_One_Execution()
         {
             var tcs = new TaskCompletionSource();
             UpbeatStack.OpenViewModel(BuildParameters(tcs), () => ClosedCount++);
@@ -108,31 +108,34 @@ namespace UpbeatUI.Tests.ViewModel.UpbeatStack_Tests
             Assert.AreEqual(1, EmptiedCount);
         }
 
-        [Test]
-        public void CanExecute_Returns_True_When_Not_Executiong()
+        public class CanExecute_Tests : BaseFixture
         {
-            UpbeatStack.OpenViewModel(new TestViewModel.Parameters(), () => ClosedCount++);
-            Assert.IsTrue(UpbeatStack.RemoveTopViewModelCommand.CanExecute(null));
-        }
 
-        [Test]
-        public void CanExecute_Returns_False_When_No_ViewModels() =>
-            Assert.IsFalse(UpbeatStack.RemoveTopViewModelCommand.CanExecute(null));
+            [Test]
+            public void Returns_True_When_Not_Executiong()
+            {
+                UpbeatStack.OpenViewModel(new TestViewModel.Parameters(), () => ClosedCount++);
+                Assert.IsTrue(UpbeatStack.RemoveTopViewModelCommand.CanExecute(null));
+            }
 
-        [Test]
-        public void CanExecute_Returns_False_When_Executiong()
-        {
-            var tcs = new TaskCompletionSource();
-            UpbeatStack.OpenViewModel(BuildParameters(tcs), () => ClosedCount++);
-            UpbeatStack.OpenViewModel(BuildParameters(tcs), () => ClosedCount++);
-            UpbeatStack.RemoveTopViewModelCommand.Execute(null);
-            Assert.IsFalse(UpbeatStack.RemoveTopViewModelCommand.CanExecute(null));
-            tcs.SetResult();
-            Assert.IsTrue(UpbeatStack.RemoveTopViewModelCommand.CanExecute(null));
+            [Test]
+            public void Returns_False_When_No_ViewModels() =>
+                Assert.IsFalse(UpbeatStack.RemoveTopViewModelCommand.CanExecute(null));
+
+            [Test]
+            public void Returns_False_When_Executiong()
+            {
+                var tcs = new TaskCompletionSource();
+                UpbeatStack.OpenViewModel(BuildParameters(tcs), () => ClosedCount++);
+                UpbeatStack.OpenViewModel(BuildParameters(tcs), () => ClosedCount++);
+                UpbeatStack.RemoveTopViewModelCommand.Execute(null);
+                Assert.IsFalse(UpbeatStack.RemoveTopViewModelCommand.CanExecute(null));
+                tcs.SetResult();
+                Assert.IsTrue(UpbeatStack.RemoveTopViewModelCommand.CanExecute(null));
+            }
         }
     }
 
-    [TestFixture]
     public class TryCloseAllViewModelsAsync_Tests : BaseFixture
     {
         [Test]
@@ -168,7 +171,7 @@ namespace UpbeatUI.Tests.ViewModel.UpbeatStack_Tests
         }
 
         [Test]
-        public async Task Waits_For_Already_Closing_ViewModel()
+        public async Task Waits_When_Already_Closing_ViewModel()
         {
             var tcs1 = new TaskCompletionSource();
             var tcs2 = new TaskCompletionSource();
