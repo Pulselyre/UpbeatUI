@@ -14,6 +14,20 @@
     d:DesignHeight="500"
     d:DesignWidth="500">
     <Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Setter
+                    Property="Margin"
+                    Value="0" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Fullscreen, ElementName=_upbeatMainWindow}" Value="True">
+                        <Setter
+                            Property="Margin"
+                            Value="{Binding FullscreenContentMargin, ElementName=_upbeatMainWindow}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
         <ItemsControl
             ItemsSource="{Binding ViewModels}"
             Focusable="False">
