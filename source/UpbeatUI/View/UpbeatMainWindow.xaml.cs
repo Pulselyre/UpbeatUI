@@ -14,6 +14,16 @@ namespace UpbeatUI.View
     public partial class UpbeatMainWindow : Window
     {
         /// <summary>
+        /// Identifies the <see cref="Fullscreen"/> <see cref="DependencyProperty"/>.
+        /// </summary>
+        public readonly static DependencyProperty FullscreenProperty =
+            DependencyProperty.Register(
+                "Fullscreen",
+                typeof(bool),
+                typeof(UpbeatMainWindow),
+                new FrameworkPropertyMetadata(false, HandleFullscreenPropertyChanged));
+
+        /// <summary>
         /// Identifies the <see cref="ModalBackground"/> <see cref="DependencyProperty"/>.
         /// </summary>
         public readonly static DependencyProperty ModalBackgroundProperty =
@@ -36,6 +46,15 @@ namespace UpbeatUI.View
             InitializeComponent();
 
         /// <summary>
+        /// Gets or sets whether the <see cref="UpbeatMainWindow"/> is in fullscreen mode or not.
+        /// </summary>
+        public bool Fullscreen
+        {
+            get => (bool)GetValue(FullscreenProperty);
+            set => SetValue(FullscreenProperty, value);
+        }
+
+        /// <summary>
         /// Gets or sets a <see cref="Brush"/> that the <see cref="ModalPanel"/> will show underneath the top (active) Element.
         /// </summary>
         public Brush ModalBackground
@@ -51,6 +70,25 @@ namespace UpbeatUI.View
         {
             get => (BlurEffect)GetValue(ModalBlurEffectProprety);
             set => SetValue(ModalBlurEffectProprety, value);
+        }
+
+        private static void HandleFullscreenPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is UpbeatMainWindow upbeatMainWindow)
+            {
+                if (upbeatMainWindow.Fullscreen)
+                {
+                    upbeatMainWindow.ResizeMode = ResizeMode.NoResize;
+                    upbeatMainWindow.WindowStyle = WindowStyle.None;
+                    upbeatMainWindow.WindowState = WindowState.Maximized;
+                }
+                else
+                {
+                    upbeatMainWindow.WindowState = WindowState.Normal;
+                    upbeatMainWindow.WindowStyle = WindowStyle.SingleBorderWindow;
+                    upbeatMainWindow.ResizeMode = ResizeMode.CanResize;
+                }
+            }
         }
     }
 }
