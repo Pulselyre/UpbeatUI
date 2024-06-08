@@ -14,31 +14,6 @@
     d:DesignHeight="500"
     d:DesignWidth="500">
     <Grid>
-        <Grid.Style>
-            <Style TargetType="Grid">
-                <Setter
-                    Property="Margin"
-                    Value="0" />
-                <Style.Triggers>
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition
-                                Binding="{Binding ElementName=_upbeatMainWindow, Path=ResizeMode}"
-                                Value="NoResize" />
-                            <Condition
-                                Binding="{Binding ElementName=_upbeatMainWindow, Path=WindowState}"
-                                Value="Maximized" />
-                            <Condition
-                                Binding="{Binding ElementName=_upbeatMainWindow, Path=WindowStyle}"
-                                Value="None" />
-                        </MultiDataTrigger.Conditions>
-                        <Setter
-                            Property="Margin"
-                            Value="8" />
-                    </MultiDataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Grid.Style>
         <ItemsControl
             ItemsSource="{Binding ViewModels}"
             Focusable="False">
