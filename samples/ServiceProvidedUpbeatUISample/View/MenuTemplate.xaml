@@ -44,6 +44,9 @@
                     <Button
                         Command="{Binding OpenSharedListCommand}"
                         Margin="5">Shared List</Button>
+                    <ToggleButton
+                        IsChecked="{Binding Fullscreen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type uv:UpbeatMainWindow}}}"
+                        Margin="5">Fullscreen</ToggleButton>
                     <TextBlock
                         TextAlignment="Center"
                         Margin="5"

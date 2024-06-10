@@ -20,22 +20,11 @@
                     Property="Margin"
                     Value="0" />
                 <Style.Triggers>
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition
-                                Binding="{Binding ElementName=_upbeatMainWindow, Path=ResizeMode}"
-                                Value="NoResize" />
-                            <Condition
-                                Binding="{Binding ElementName=_upbeatMainWindow, Path=WindowState}"
-                                Value="Maximized" />
-                            <Condition
-                                Binding="{Binding ElementName=_upbeatMainWindow, Path=WindowStyle}"
-                                Value="None" />
-                        </MultiDataTrigger.Conditions>
+                    <DataTrigger Binding="{Binding Fullscreen, ElementName=_upbeatMainWindow}" Value="True">
                         <Setter
                             Property="Margin"
-                            Value="8" />
-                    </MultiDataTrigger>
+                            Value="{Binding FullscreenContentMargin, ElementName=_upbeatMainWindow}" />
+                    </DataTrigger>
                 </Style.Triggers>
             </Style>
         </Grid.Style>
