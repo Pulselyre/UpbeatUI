@@ -21,7 +21,7 @@ public sealed partial class MenuViewModel : ObservableObject, IDisposable
 
     public MenuViewModel(
         IUpbeatService upbeatService, // This will be a unique IUpbeatService created and injected by the IUpbeatStack specifically for this ViewModel.
-        Action closeApplicationCallback, // This ViewModel requires an async delegate to be provided, so it can start closing the application.
+        Action closeApplicationCallback, // This ViewModel requires an Action delegate to be provided, so it can start closing the application.
         SharedTimer sharedTimer) // This is a shared singleton service.
     {
         _upbeatService = upbeatService ?? throw new ArgumentNullException(nameof(upbeatService));

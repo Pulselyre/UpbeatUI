@@ -57,7 +57,7 @@ public sealed partial class BottomViewModel : ObservableObject, IDisposable
             new ConfirmPopupViewModel.Parameters
             {
                 Message = "The application is trying to exit.\nClick Confirm to exit or off this popup to cancel.",
-                // The ConfirmPopupViewModel will execute this callback (set the okToClose bool to true) if the user confirms that closing. If the popup closes without the user confirming, okToClose remains false, and the application will remain running.
+                // The ConfirmPopupViewModel will execute this callback (set the okToClose bool to true) if the user confirms that closing is ok. If the popup closes without the user confirming, okToClose remains false, and the application will remain running.
                 ConfirmCallback = () => okToClose = true,
             }).ConfigureAwait(true);
         return okToClose;

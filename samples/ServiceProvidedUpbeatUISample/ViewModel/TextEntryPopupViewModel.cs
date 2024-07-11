@@ -33,7 +33,7 @@ internal sealed partial class TextEntryPopupViewModel : PopupViewModel
     }
 
     // This nested Parameters class (full class name: "ConfirmPopupViewModel.Parameters") is what other ViewModels will create instances of to tell the IUpbeatStack what type of child ViewModel to add to the stack.
-    public sealed new class Parameters : PopupViewModel.Parameters
+    public new sealed class Parameters : PopupViewModel.Parameters
     {
         public Action<string> ReturnCallback { get; init; }
     }

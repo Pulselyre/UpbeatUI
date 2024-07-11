@@ -15,14 +15,14 @@
     <DataTemplate DataType="{x:Type svm:MenuViewModel}">
         <!-- The "HeightPercent" and "WidthPercent" properties, which must be set on the root element within the
              DataTemplate, control how much available space the content should take. It accepts percentages and decimal
-             values (so 1.0 = 100%). It can also accept min/max ranges. This view will take exactly 60% of available
-             horizontal space, always, and whatever its content needs vertically up to 95%. -->
+             values (so 1.0 = 100%). It can also accept min/max ranges. This view will take always take 100% of
+             available vertical space and whatever its content requires horizontally (since "WidthPercent" is left
+             unset). -->
         <!-- The "XPositionPercent" and "YPositionPercent" properties, which must be set on the root element within the
              DataTemplate, control where within the available space the content should be aligned. 0.0 or 0% are the top
              or far left, 1.0 or 100% are the bottom or far right, and 0.5 or 50% is the center (default). In this case,
-             the values are bound to properites on the ViewModel. Note that the reference point for positioning is the
-             exact center of the content. To prevent the content from being partially off-screen, set "KeepInBounds" to
-             True. -->
+             the position is set to the far left. Note that the reference point for positioning is the exact center of
+             the content. To prevent the content from being partially off-screen, set "KeepInBounds" to True. -->
         <Border
             uv:PercentPlace.HeightPercent="100%"
             uv:PercentPlace.KeepInBounds="True"

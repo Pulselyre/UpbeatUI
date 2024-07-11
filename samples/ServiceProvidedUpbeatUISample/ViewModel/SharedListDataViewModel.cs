@@ -73,7 +73,7 @@ public sealed partial class SharedListDataViewModel : ObservableObject, IDisposa
             new ConfirmPopupViewModel.Parameters
             {
                 Message = "Close the shared list?\nAll added strings will be lost.",
-                // The ConfirmPopupViewModel will execute this callback (set the okToClose bool to true) if the user confirms that closing. If the popup closes without the user confirming, okToClose remains false, and the application will remain running.
+                // The ConfirmPopupViewModel will execute this callback (set the okToClose bool to true) if the user confirms that closing is ok. If the popup closes without the user confirming, okToClose remains false, and the application will remain running.
                 ConfirmCallback = () => okToClose = true,
             }).ConfigureAwait(true);
         return okToClose;
