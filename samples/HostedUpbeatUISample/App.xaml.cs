@@ -26,8 +26,8 @@ public partial class App : Application
             .ConfigureUpbeatHost( // Use this extension method to add UpbeatUI to the IHostBuilder
                 () => new BottomViewModel.Parameters(), // Provide a delegate to create the bottom ViewModel. This is required so that the IUpbeatStack has something to show.
                 builder => builder
-                    .SetDefaultViewModelLocators() // The IUpbeatStack depends on mappings of Parameter types to ViewModel and Control types to determine which ViewModel to create and which View to show. (This line is optional, since the IUpbeatStack will use the default mappings without any configuration, but there are additional extension methods to change or customize the mappings.)
-                    .ConfigureWindow(() => new UpbeatMainWindow() // The included UpdateMainWindow class already provides the necessary controls to display Views for IViewModels. The HostedUpbeatService will set the Window's DataContext automatically.
+                    .SetDefaultViewModelLocators() // The IUpbeatStack depends on mappings of Parameters types to ViewModel and Control types to determine which ViewModel to create and which View to show. (This line is optional, since the IUpbeatStack will use the default mappings without any configuration, but there are additional extension methods to change or customize the mappings.)
+                    .ConfigureWindow(() => new UpbeatMainWindow() // The included UpdateMainWindow class already provides the necessary controls to display Views for ViewModels. The HostedUpbeatService will set the Window's DataContext automatically.
                     {
                         Title = "UpbeatUI Sample Application",
                         MinHeight = 275,

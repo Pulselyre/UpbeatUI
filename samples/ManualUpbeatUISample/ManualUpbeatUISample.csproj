@@ -18,7 +18,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\source\UpbeatUI\UpbeatUI.csproj" />
+        <PackageReference
+            Include="UpbeatUI"
+            Version="5.2.0" />
+        <!-- Switch from the PackageReference to the ProjectReference to test local UpbeatUI changes in the samples. -->
+        <!-- <ProjectReference Include="..\..\source\UpbeatUI\UpbeatUI.csproj" /> -->
     </ItemGroup>
 
 </Project>

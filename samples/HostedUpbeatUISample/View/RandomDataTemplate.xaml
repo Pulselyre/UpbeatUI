@@ -22,8 +22,8 @@
         </DataTemplate.Resources>
         <!-- The "HeightPercent" and "WidthPercent" properties, which must be set on the root element within the
              DataTemplate, control how much available space the content should take. It accepts percentages and decimal
-             values (so 1.0 = 100%). It can also accept min/max ranges. This view will take exactly 60% of available
-             horizontal space, always, and whatever its content needs vertically up to 95%. -->
+             values (so 1.0 = 100%). It can also accept min/max ranges. This view will take between 60% and 80% of
+             available space, both horizontally and vertically, depending on what the content requires. -->
         <Border
             uv:PercentPlace.HeightPercent="60% 80%"
             uv:PercentPlace.WidthPercent="60% 80%"
