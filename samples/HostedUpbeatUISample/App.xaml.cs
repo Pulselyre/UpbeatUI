@@ -37,7 +37,8 @@ public partial class App : Application
                         WindowStartupLocation = WindowStartupLocation.CenterScreen,
                         ModalBackground = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
                         ModalBlurEffect = new BlurEffect() { Radius = 10.0, KernelType = KernelType.Gaussian }, // The blur effect to apply to Views that are not on top. This is optional, as blur effects can significantly impact performance.
-                    }))
+                    })
+                    .SetFatalErrorHandler(e => MessageBox.Show($"Exception: {e.GetType().FullName} {e.Message}")))
             .Build()
             .RunAsync().ConfigureAwait(true);
 }
