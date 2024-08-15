@@ -16,6 +16,7 @@ namespace UpbeatUI.Extensions.Hosting
         internal Func<object> BaseViewModelParametersCreator { get; private set; }
         internal Collection<Action<ServiceProvidedUpbeatStack>> MappingRegisterers { get; } = new Collection<Action<ServiceProvidedUpbeatStack>>();
         internal Func<Window> WindowCreator { get; private set; } = () => new UpbeatMainWindow();
+        internal Action<Exception> FatalErrorHandler { get; private set; }
 
         public IHostedUpbeatBuilder ConfigureWindow(Func<Window> windowCreator)
         {
@@ -56,6 +57,12 @@ namespace UpbeatUI.Extensions.Hosting
         {
             MappingRegisterers.Add(
                 upbeatStack => upbeatStack.SetDefaultViewModelLocators(allowUnresolvedDependencies));
+            return this;
+        }
+
+        public IHostedUpbeatBuilder SetFatalErrorHandler(Action<Exception> fatalErrorHandler)
+        {
+            FatalErrorHandler = fatalErrorHandler;
             return this;
         }
 
