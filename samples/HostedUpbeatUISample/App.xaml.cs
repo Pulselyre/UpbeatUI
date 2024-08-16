@@ -38,7 +38,21 @@ public partial class App : Application
                         ModalBackground = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
                         ModalBlurEffect = new BlurEffect() { Radius = 10.0, KernelType = KernelType.Gaussian }, // The blur effect to apply to Views that are not on top. This is optional, as blur effects can significantly impact performance.
                     })
-                    .SetFatalErrorHandler(e => MessageBox.Show($"Exception: {e.GetType().FullName} {e.Message}")))
+                    .SetFatalErrorHandler(e =>
+                    {
+                        if (MessageBox.Show(
+                            $"Error message: {e.Message}. See stack trace?",
+                            "Fatal Error",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Error) == MessageBoxResult.Yes)
+                        {
+                            _ = MessageBox.Show(
+                                e.StackTrace,
+                                "Fatal Error",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.None);
+                        }
+                    }))
             .Build()
             .RunAsync().ConfigureAwait(true);
 }

@@ -25,16 +25,16 @@ public partial class App : Application
 
     private async void HandleApplicationStartup(object sender, StartupEventArgs e)
     {
-        {
-            // Use a ServiceProvider (built from a ServiceCollection) to set up dependencies that the ServiceProvidedUpbeatStack will inject into ViewModels. Scoped services are supported, and each ViewModel within the stack is a separate scope.
-            using var serviceProvider = new ServiceCollection()
-                .AddTransient(sp => RandomNumberGenerator.Create())
-                .AddSingleton<SharedTimer>()
-                .AddScoped<SharedList>()
-                .BuildServiceProvider();
+        // Use a ServiceProvider (built from a ServiceCollection) to set up dependencies that the ServiceProvidedUpbeatStack will inject into ViewModels. Scoped services are supported, and each ViewModel within the stack is a separate scope.
+        using var serviceProvider = new ServiceCollection()
+            .AddTransient(sp => RandomNumberGenerator.Create())
+            .AddSingleton<SharedTimer>()
+            .AddScoped<SharedList>()
+            .BuildServiceProvider();
 
-            // The ServiceProvidedUpbeatStack is the central data structure for an UpbeatUI app. One must be created for the life of the application and should be disposed at the end. Unlike the basic UpbeatStack, the ServiceProvidedUpbeatStack requires an IServiceProvider to resolve dependencies for ViewModels.
-            using var upbeatStack = new ServiceProvidedUpbeatStack(serviceProvider);
+        // The ServiceProvidedUpbeatStack is the central data structure for an UpbeatUI app. One must be created for the life of the application and should be disposed at the end. Unlike the basic UpbeatStack, the ServiceProvidedUpbeatStack requires an IServiceProvider to resolve dependencies for ViewModels.
+        using (var upbeatStack = new ServiceProvidedUpbeatStack(serviceProvider))
+        {
 
             // Instead of manually mapping Parameters types to ViewModels and controls, the ServiceProvidedUpbeatStack can automatically map types based on naming convention. Use this method to enable the default naming convention, but other methods enable you to use your own naming conventions.
             upbeatStack.SetDefaultViewModelLocators();
@@ -112,7 +112,18 @@ public partial class App : Application
         }
         if (_exception is not null)
         {
-            _ = MessageBox.Show($"Exception: {_exception.GetType().FullName} {_exception.Message}");
+            if (MessageBox.Show(
+                $"Error message: {_exception.Message}. See stack trace?",
+                "Fatal Error",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Error) == MessageBoxResult.Yes)
+            {
+                _ = MessageBox.Show(
+                    _exception.StackTrace,
+                    "Fatal Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.None);
+            }
         }
     }
 

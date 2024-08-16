@@ -24,11 +24,11 @@ public partial class App : Application
 
     private async void HandleApplicationStartup(object sender, StartupEventArgs e)
     {
-        {
-            using var sharedTimer = new SharedTimer();
+        using var sharedTimer = new SharedTimer();
 
-            // The UpbeatStack is the central data structure for an UpbeatUI app. One must be created for the life of the application and should be disposed at the end.
-            using var upbeatStack = new UpbeatStack();
+        // The UpbeatStack is the central data structure for an UpbeatUI app. One must be created for the life of the application and should be disposed at the end.
+        using (var upbeatStack = new UpbeatStack())
+        {
 
             // The UpbeatStack depends on mappings of Parameters types to ViewModels and controls to determine which ViewModel to create and which View to show. Without an IServiceProvider, you must manually map each Parameters, ViewModel, and View type, along with a constructur the IUpbeatStack can call to create a ViewModel.
             upbeatStack.MapViewModel<BottomViewModel.Parameters, BottomViewModel>(
@@ -121,7 +121,18 @@ public partial class App : Application
         }
         if (_exception is not null)
         {
-            _ = MessageBox.Show($"Exception: {_exception.GetType().FullName} {_exception.Message}");
+            if (MessageBox.Show(
+                $"Error message: {_exception.Message}. See stack trace?",
+                "Fatal Error",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Error) == MessageBoxResult.Yes)
+            {
+                _ = MessageBox.Show(
+                    _exception.StackTrace,
+                    "Fatal Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.None);
+            }
         }
     }
 }
