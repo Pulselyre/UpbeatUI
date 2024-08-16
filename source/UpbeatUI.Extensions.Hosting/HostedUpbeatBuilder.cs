@@ -16,7 +16,7 @@ namespace UpbeatUI.Extensions.Hosting
         internal Func<object> BaseViewModelParametersCreator { get; private set; }
         internal Collection<Action<ServiceProvidedUpbeatStack>> MappingRegisterers { get; } = new Collection<Action<ServiceProvidedUpbeatStack>>();
         internal Func<Window> WindowCreator { get; private set; } = () => new UpbeatMainWindow();
-        internal Action<Exception> FatalErrorHandler { get; private set; }
+        internal Action<IServiceProvider, Exception> FatalErrorHandler { get; private set; }
 
         public IHostedUpbeatBuilder ConfigureWindow(Func<Window> windowCreator)
         {
@@ -60,9 +60,15 @@ namespace UpbeatUI.Extensions.Hosting
             return this;
         }
 
-        public IHostedUpbeatBuilder SetFatalErrorHandler(Action<Exception> fatalErrorHandler)
+        public IHostedUpbeatBuilder SetFatalErrorHandler(Action<IServiceProvider, Exception> fatalErrorHandler)
         {
             FatalErrorHandler = fatalErrorHandler;
+            return this;
+        }
+
+        public IHostedUpbeatBuilder SetFatalErrorHandler(Action<Exception> fatalErrorHandler)
+        {
+            FatalErrorHandler = (_, e) => fatalErrorHandler(e);
             return this;
         }
 

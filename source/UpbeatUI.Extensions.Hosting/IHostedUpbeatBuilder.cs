@@ -68,10 +68,18 @@ namespace UpbeatUI.Extensions.Hosting
         IHostedUpbeatBuilder SetDefaultViewModelLocators(bool allowUnresolvedDependencies = false);
 
         /// <summary>
-        /// Sets a delegate that will be executed prior to application shutdown if there is an unhandled <see cref="Exception"/>. This can be used to notify the user, log the error, etc...
-        /// <para>Note: This delegate will execute after all ViewModels have been removed and disposed, and also after the <see cref="IUpbeatStack"/> has been disposed. Any other services instantiated by the <see cref="IServiceProvider"/> will likely also have been disposed as well, though this cannot be guaranteed.</para>
+        /// Sets a delegate that will be executed prior to application shutdown if there is an unhandled <see cref="Exception"/>. This can be used to notify the user, log the error, etc... The application's <see cref="IServiceProvider"/> is also available to access registered services, though the health of any singleton services cannot be guaranteed and will depend on their use within the application and the nature of the offending <see cref="Exception"/>.
+        /// <para>Note: This delegate will execute after all ViewModels have been removed and disposed, and also after the <see cref="IUpbeatStack"/> has been disposed.</para>
         /// </summary>
-        /// <param name="fatalErrorHandler">A delegate with the offending <see cref="Exception"/> as its parameter.</param>
+        /// <param name="fatalErrorHandler">A delegate with the application's <see cref="IServiceProvider"/> and the offending <see cref="Exception"/> as its parameters.</param>
+        /// <returns></returns>
+        public IHostedUpbeatBuilder SetFatalErrorHandler(Action<IServiceProvider, Exception> fatalErrorHandler);
+
+        /// <summary>
+        /// Sets a delegate that will be executed prior to application shutdown if there is an unhandled <see cref="Exception"/>. This can be used to notify the user, log the error, etc...
+        /// <para>Note: This delegate will execute after all ViewModels have been removed and disposed, and also after the <see cref="IUpbeatStack"/> has been disposed.</para>
+        /// </summary>
+        /// <param name="fatalErrorHandler">A delegate with the the offending <see cref="Exception"/> as its parameter.</param>
         /// <returns></returns>
         public IHostedUpbeatBuilder SetFatalErrorHandler(Action<Exception> fatalErrorHandler);
 
