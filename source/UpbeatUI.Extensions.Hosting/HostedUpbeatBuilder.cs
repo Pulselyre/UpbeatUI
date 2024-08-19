@@ -68,7 +68,14 @@ namespace UpbeatUI.Extensions.Hosting
 
         public IHostedUpbeatBuilder SetFatalErrorHandler(Action<Exception> fatalErrorHandler)
         {
-            FatalErrorHandler = (_, e) => fatalErrorHandler(e);
+            if (fatalErrorHandler == null)
+            {
+                fatalErrorHandler = null;
+            }
+            else
+            {
+                return SetFatalErrorHandler((_, e) => fatalErrorHandler(e));
+            }
             return this;
         }
 
