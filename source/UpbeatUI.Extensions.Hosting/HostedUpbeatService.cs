@@ -81,7 +81,14 @@ namespace UpbeatUI.Extensions.Hosting
                     }
                     catch (Exception e)
                     {
-                        _exception ??= e;
+                        if (_upbeatHostBuilder.FatalErrorHandler != null)
+                        {
+                            _exception ??= e;
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                     finally
                     {
@@ -92,7 +99,7 @@ namespace UpbeatUI.Extensions.Hosting
                         _upbeatApplicationService.CloseRequested -= HandleUpbeatApplicationServiceCloseRequested;
                     }
                 }
-                if (_exception != null && _upbeatHostBuilder.FatalErrorHandler != null)
+                if (_exception != null)
                 {
                     _upbeatHostBuilder.FatalErrorHandler(_serviceProvider, _exception);
                 }
