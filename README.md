@@ -12,7 +12,9 @@ UpbeatUI is an open-source lightweight MVVM framework for quickly developing mob
 
 UpbeatUI supports `.NET Core 3.0`, `.NET Core 3.1`, `.NET 5`, `.NET 6`, `.NET 7`, and `.NET 8`.
 
-Please note that UpbeatUI is fairly new and may have unidentified bugs or performance inefficiencies. Please see the [Contributing](#contributing) section for information on how to help make UpbeatUI better. See the [To-Do List](#to-do-list) for planned future work.
+UpbeatUI is not widely used and thus may have unidentified bugs or performance inefficiencies. Please see the [Contributing](#contributing) section for information on how to help make UpbeatUI better. See the [To-Do List](#to-do-list) for planned future work.
+
+> UpbeatUI was originally split from the codebase for [Pulselyre](https://www.pulselyre.com/), a live MIDI sequencing application designed for touch input.
 
 ## Installation
 
