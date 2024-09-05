@@ -17,13 +17,13 @@
             Version="8.2.*" />
         <PackageReference
             Include="Microsoft.Extensions.Hosting"
-            Version="3.1.9" />
+            Version="7.0.1" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference
             Include="UpbeatUI.Extensions.Hosting"
-            Version="4.2.0" />
+            Version="5.0.0-rc2" />
         <!-- Switch from the PackageReference to the ProjectReference to test local UpbeatUI changes in the samples. -->
         <!-- <ProjectReference Include="..\..\source\UpbeatUI.Extensions.Hosting\UpbeatUI.Extensions.Hosting.csproj" /> -->
     </ItemGroup>
