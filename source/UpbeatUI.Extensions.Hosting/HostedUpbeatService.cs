@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Extensions.Hosting;
 using UpbeatUI.Extensions.DependencyInjection;
+using UpbeatUI.View;
 
 namespace UpbeatUI.Extensions.Hosting
 {
@@ -61,12 +62,16 @@ namespace UpbeatUI.Extensions.Hosting
                         registerer.Invoke(upbeatStack);
                     }
                     _mainWindow = _upbeatHostBuilder.WindowCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.WindowCreator)} provided.");
-                    _mainWindow.DataContext = upbeatStack;
                     _mainWindow.Closing += HandleMainWindowClosing;
                     upbeatStack.ViewModelsEmptied += HandleUpbeatStackViewModelsEmptied;
                     Application.Current.DispatcherUnhandledException += HandleApplicationException;
                     try
                     {
+                        _mainWindow.DataContext = upbeatStack;
+                        if (_mainWindow is UpbeatMainWindow upbeatMainWindow)
+                        {
+                            upbeatMainWindow.OverlayDataContext = _upbeatHostBuilder.OverlayViewModelCreator?.Invoke(_serviceProvider);
+                        }
                         upbeatStack.OpenViewModel(_upbeatHostBuilder.BaseViewModelParametersCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.BaseViewModelParametersCreator)} provided."));
                         _mainWindow.Show();
                         while (true)
@@ -92,6 +97,10 @@ namespace UpbeatUI.Extensions.Hosting
                     }
                     finally
                     {
+                        if (_mainWindow is UpbeatMainWindow upbeatMainWindow)
+                        {
+                            (upbeatMainWindow.OverlayDataContext as IDisposable)?.Dispose();
+                        }
                         Application.Current.DispatcherUnhandledException -= HandleApplicationException;
                         upbeatStack.ViewModelsEmptied -= HandleUpbeatStackViewModelsEmptied;
                         _mainWindow.Closing -= HandleMainWindowClosing;

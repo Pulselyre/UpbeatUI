@@ -5,6 +5,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using UpbeatUI.Extensions.DependencyInjection;
 using UpbeatUI.View;
 using UpbeatUI.ViewModel;
@@ -17,6 +18,7 @@ namespace UpbeatUI.Extensions.Hosting
         internal Collection<Action<ServiceProvidedUpbeatStack>> MappingRegisterers { get; } = new Collection<Action<ServiceProvidedUpbeatStack>>();
         internal Func<Window> WindowCreator { get; private set; } = () => new UpbeatMainWindow();
         internal Action<IServiceProvider, Exception> FatalErrorHandler { get; private set; }
+        internal Func<IServiceProvider, object> OverlayViewModelCreator { get; private set; }
 
         public IHostedUpbeatBuilder ConfigureWindow(Func<Window> windowCreator)
         {
@@ -66,18 +68,8 @@ namespace UpbeatUI.Extensions.Hosting
             return this;
         }
 
-        public IHostedUpbeatBuilder SetFatalErrorHandler(Action<Exception> fatalErrorHandler)
-        {
-            if (fatalErrorHandler == null)
-            {
-                fatalErrorHandler = null;
-            }
-            else
-            {
-                return SetFatalErrorHandler((_, e) => fatalErrorHandler(e));
-            }
-            return this;
-        }
+        public IHostedUpbeatBuilder SetFatalErrorHandler(Action<Exception> fatalErrorHandler) =>
+            SetFatalErrorHandler(fatalErrorHandler == null ? null : new Action<IServiceProvider, Exception>((_, e) => fatalErrorHandler(e)));
 
         public IHostedUpbeatBuilder SetViewModelLocators(
             Func<string, string> parameterToViewModelLocator,
@@ -100,5 +92,18 @@ namespace UpbeatUI.Extensions.Hosting
                     allowUnresolvedDependencies));
             return this;
         }
+
+        public IHostedUpbeatBuilder SetOverlayViewModel(Func<IServiceProvider, object> overlayViewModelCreator)
+        {
+            OverlayViewModelCreator = overlayViewModelCreator;
+            return this;
+        }
+
+        public IHostedUpbeatBuilder SetOverlayViewModel(Func<object> overlayViewModelCreator) =>
+            SetOverlayViewModel(
+                overlayViewModelCreator == null ? null : new Func<IServiceProvider, object>(_ => overlayViewModelCreator));
+
+        public IHostedUpbeatBuilder SetOverlayViewModel<TOverlayViewModel>() =>
+            SetOverlayViewModel(sp => ActivatorUtilities.CreateInstance<TOverlayViewModel>(sp));
     }
 }

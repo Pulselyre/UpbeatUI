@@ -4,6 +4,7 @@
  */
 using System;
 using System.Windows;
+using UpbeatUI.View;
 using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.Extensions.Hosting
@@ -109,5 +110,25 @@ namespace UpbeatUI.Extensions.Hosting
         IHostedUpbeatBuilder SetViewModelLocators(
             Func<Type, Type> parameterToViewModelLocator,
             bool allowUnresolvedDependencies = false);
+
+        /// <summary>
+        /// Sets an optional delegate to provide a ViewModel that the <see cref="UpbeatMainWindow"/> will use to display an overlay View. Overlay Views are rendered on top of all other application content, but are not hit test visible.
+        /// </summary>
+        /// <param name="overlayViewModelCreator">The delegate that will create the overlay ViewModel</param>
+        /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
+        IHostedUpbeatBuilder SetOverlayViewModel(Func<IServiceProvider, object> overlayViewModelCreator);
+
+        /// <summary>
+        /// Sets an optional delegate to provide a ViewModel that the <see cref="UpbeatMainWindow"/> will use to display an overlay View. Overlay Views are rendered on top of all other application content, but are not hit test visible.
+        /// </summary>
+        /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
+        IHostedUpbeatBuilder SetOverlayViewModel(Func<object> overlayViewModelCreator);
+
+        /// <summary>
+        /// Sets an optional delegate to provide a ViewModel that the <see cref="UpbeatMainWindow"/> will use to display an overlay View. Overlay Views are rendered on top of all other application content, but are not hit test visible.
+        /// </summary>
+        /// <typeparam name="TOverlayViewModel">The type of the overlay ViewModel. This type will be instantiated automatically using the application's <see cref="IServiceProvider"/></typeparam>
+        /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
+        IHostedUpbeatBuilder SetOverlayViewModel<TOverlayViewModel>();
     }
 }

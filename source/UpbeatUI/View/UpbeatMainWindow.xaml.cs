@@ -16,7 +16,7 @@ namespace UpbeatUI.View
         /// <summary>
         /// Identifies the <see cref="Fullscreen"/> <see cref="DependencyProperty"/>.
         /// </summary>
-        public readonly static DependencyProperty FullscreenProperty =
+        public static readonly DependencyProperty FullscreenProperty =
             DependencyProperty.Register(
                 "Fullscreen",
                 typeof(bool),
@@ -26,7 +26,7 @@ namespace UpbeatUI.View
         /// <summary>
         /// Identifies the <see cref="FullscreenContentMargin"/> <see cref="DependencyProperty"/>.
         /// </summary>
-        public readonly static DependencyProperty FullscreenContentMarginProperty =
+        public static readonly DependencyProperty FullscreenContentMarginProperty =
             DependencyProperty.Register(
                 "FullscreenContentMargin",
                 typeof(Thickness),
@@ -36,16 +36,26 @@ namespace UpbeatUI.View
         /// <summary>
         /// Identifies the <see cref="ModalBackground"/> <see cref="DependencyProperty"/>.
         /// </summary>
-        public readonly static DependencyProperty ModalBackgroundProperty =
+        public static readonly DependencyProperty ModalBackgroundProperty =
             ModalPanel.ModalBackgroundProperty.AddOwner(typeof(UpbeatMainWindow));
 
         /// <summary>
         /// Identifies the <see cref="ModalBlurEffect"/> <see cref="DependencyProperty"/>.
         /// </summary>
-        public readonly static DependencyProperty ModalBlurEffectProprety =
+        public static readonly DependencyProperty ModalBlurEffectProprety =
             DependencyProperty.Register(
                 "ModalBlurEffect",
                 typeof(BlurEffect),
+                typeof(UpbeatMainWindow),
+                new FrameworkPropertyMetadata(null));
+
+        /// <summary>
+        /// Identifies the <see cref="OverlayDataContext"/> <see cref="DependencyProperty"/>.
+        /// </summary>
+        public static readonly DependencyProperty OverlayDataContextProperty =
+            DependencyProperty.Register(
+                "OverlayDataContext",
+                typeof(object),
                 typeof(UpbeatMainWindow),
                 new FrameworkPropertyMetadata(null));
 
@@ -91,6 +101,15 @@ namespace UpbeatUI.View
         {
             get => (BlurEffect)GetValue(ModalBlurEffectProprety);
             set => SetValue(ModalBlurEffectProprety, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a the data context for the <see cref="UpbeatMainWindow"/>'s optional overlay element.
+        /// </summary>
+        public object OverlayDataContext
+        {
+            get => GetValue(OverlayDataContextProperty);
+            set => SetValue(OverlayDataContextProperty, value);
         }
 
         private static void HandleFullscreenPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
