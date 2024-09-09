@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using Microsoft.Extensions.Hosting;
 using UpbeatUI.Extensions.DependencyInjection;
 using UpbeatUI.View;
+using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.Extensions.Hosting
 {
@@ -61,17 +62,13 @@ namespace UpbeatUI.Extensions.Hosting
                     {
                         registerer.Invoke(upbeatStack);
                     }
-                    _mainWindow = _upbeatHostBuilder.WindowCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.WindowCreator)} provided.");
+                    var overlayViewModel = _upbeatHostBuilder.OverlayViewModelCreator?.Invoke(_serviceProvider);
+                    _mainWindow = (_upbeatHostBuilder.WindowCreator ?? new Func<IServiceProvider, IUpbeatStack, object, Window>((sp, us, ovm) => new UpbeatMainWindow())).Invoke(_serviceProvider, upbeatStack, overlayViewModel);
                     _mainWindow.Closing += HandleMainWindowClosing;
                     upbeatStack.ViewModelsEmptied += HandleUpbeatStackViewModelsEmptied;
                     Application.Current.DispatcherUnhandledException += HandleApplicationException;
                     try
                     {
-                        _mainWindow.DataContext = upbeatStack;
-                        if (_mainWindow is IOverlayWindow overlayWindow)
-                        {
-                            overlayWindow.OverlayDataContext = _upbeatHostBuilder.OverlayViewModelCreator?.Invoke(_serviceProvider);
-                        }
                         upbeatStack.OpenViewModel(_upbeatHostBuilder.BaseViewModelParametersCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.BaseViewModelParametersCreator)} provided."));
                         _mainWindow.Show();
                         while (true)
@@ -97,15 +94,13 @@ namespace UpbeatUI.Extensions.Hosting
                     }
                     finally
                     {
-                        if (_mainWindow is IOverlayWindow overlayWindow)
-                        {
-                            (overlayWindow.OverlayDataContext as IDisposable)?.Dispose();
-                        }
                         Application.Current.DispatcherUnhandledException -= HandleApplicationException;
                         upbeatStack.ViewModelsEmptied -= HandleUpbeatStackViewModelsEmptied;
                         _mainWindow.Closing -= HandleMainWindowClosing;
                         _mainWindow.Close();
                         _upbeatApplicationService.CloseRequested -= HandleUpbeatApplicationServiceCloseRequested;
+                        (_mainWindow as IDisposable)?.Dispose();
+                        (overlayViewModel as IDisposable)?.Dispose();
                     }
                 }
                 if (_exception != null)

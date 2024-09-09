@@ -16,15 +16,37 @@ namespace UpbeatUI.Extensions.Hosting
     {
         internal Func<object> BaseViewModelParametersCreator { get; private set; }
         internal Collection<Action<ServiceProvidedUpbeatStack>> MappingRegisterers { get; } = new Collection<Action<ServiceProvidedUpbeatStack>>();
-        internal Func<Window> WindowCreator { get; private set; } = () => new UpbeatMainWindow();
+        internal Func<IServiceProvider, IUpbeatStack, object, Window> WindowCreator { get; private set; }
         internal Action<IServiceProvider, Exception> FatalErrorHandler { get; private set; }
         internal Func<IServiceProvider, object> OverlayViewModelCreator { get; private set; }
 
-        public IHostedUpbeatBuilder ConfigureWindow(Func<Window> windowCreator)
+        public IHostedUpbeatBuilder ConfigureWindow(Func<IServiceProvider, IUpbeatStack, object, Window> windowCreator)
         {
             WindowCreator = windowCreator;
             return this;
         }
+
+        public IHostedUpbeatBuilder ConfigureWindow(Func<IServiceProvider, Window> windowCreator) =>
+            ConfigureWindow(
+                windowCreator == null ? null : new Func<IServiceProvider, IUpbeatStack, object, Window>(
+                    (sp, us, ovm) =>
+                    {
+                        var window = windowCreator(sp);
+                        window.DataContext = us;
+                        if (window is IOverlayWindow overlayWindow)
+                        {
+                            overlayWindow.OverlayDataContext = ovm;
+                        }
+                        return window;
+                    }));
+
+        public IHostedUpbeatBuilder ConfigureWindow(Func<Window> windowCreator) =>
+            ConfigureWindow(
+                windowCreator == null ? null : new Func<IServiceProvider, Window>((_) => windowCreator()));
+
+        public IHostedUpbeatBuilder ConfigureWindow<TWindow>()
+            where TWindow : Window, new() =>
+            ConfigureWindow(() => new TWindow());
 
         public IHostedUpbeatBuilder ConfigureBaseViewModelParameters(Func<object> baseViewModelParametersCreator)
         {
