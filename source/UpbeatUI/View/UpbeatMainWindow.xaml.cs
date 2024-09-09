@@ -11,7 +11,7 @@ namespace UpbeatUI.View
     /// <summary>
     /// Defines a window with a pre-embedded <see cref="ModalPanel"/> to stack Views. The <see cref="FrameworkElement.DataContext"/> property should be set to an <see cref="ViewModel.IUpbeatStack"/> instance.
     /// </summary>
-    public partial class UpbeatMainWindow : Window
+    public partial class UpbeatMainWindow : Window, IOverlayWindow
     {
         /// <summary>
         /// Identifies the <see cref="Fullscreen"/> <see cref="DependencyProperty"/>.
@@ -53,11 +53,7 @@ namespace UpbeatUI.View
         /// Identifies the <see cref="OverlayDataContext"/> <see cref="DependencyProperty"/>.
         /// </summary>
         public static readonly DependencyProperty OverlayDataContextProperty =
-            DependencyProperty.Register(
-                "OverlayDataContext",
-                typeof(object),
-                typeof(UpbeatMainWindow),
-                new FrameworkPropertyMetadata(null));
+            IOverlayWindow.OverlayDataContextProperty.AddOwner(typeof(UpbeatMainWindow));
 
         /// <summary>
         /// Initializes a new <see cref="UpbeatMainWindow"/>.

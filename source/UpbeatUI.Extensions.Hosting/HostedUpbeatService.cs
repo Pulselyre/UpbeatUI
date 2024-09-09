@@ -68,9 +68,9 @@ namespace UpbeatUI.Extensions.Hosting
                     try
                     {
                         _mainWindow.DataContext = upbeatStack;
-                        if (_mainWindow is UpbeatMainWindow upbeatMainWindow)
+                        if (_mainWindow is IOverlayWindow overlayWindow)
                         {
-                            upbeatMainWindow.OverlayDataContext = _upbeatHostBuilder.OverlayViewModelCreator?.Invoke(_serviceProvider);
+                            overlayWindow.OverlayDataContext = _upbeatHostBuilder.OverlayViewModelCreator?.Invoke(_serviceProvider);
                         }
                         upbeatStack.OpenViewModel(_upbeatHostBuilder.BaseViewModelParametersCreator?.Invoke() ?? throw new InvalidOperationException($"No {nameof(_upbeatHostBuilder.BaseViewModelParametersCreator)} provided."));
                         _mainWindow.Show();
@@ -97,9 +97,9 @@ namespace UpbeatUI.Extensions.Hosting
                     }
                     finally
                     {
-                        if (_mainWindow is UpbeatMainWindow upbeatMainWindow)
+                        if (_mainWindow is IOverlayWindow overlayWindow)
                         {
-                            (upbeatMainWindow.OverlayDataContext as IDisposable)?.Dispose();
+                            (overlayWindow.OverlayDataContext as IDisposable)?.Dispose();
                         }
                         Application.Current.DispatcherUnhandledException -= HandleApplicationException;
                         upbeatStack.ViewModelsEmptied -= HandleUpbeatStackViewModelsEmptied;
