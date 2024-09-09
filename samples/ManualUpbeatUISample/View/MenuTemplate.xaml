@@ -47,6 +47,9 @@
                     <ToggleButton
                         IsChecked="{Binding Fullscreen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type uv:UpbeatMainWindow}}}"
                         Margin="5">Fullscreen</ToggleButton>
+                    <ToggleButton
+                        IsChecked="{Binding ShowOverlay}"
+                        Margin="5">Show Overlay</ToggleButton>
                     <TextBlock
                         TextAlignment="Center"
                         Margin="5"

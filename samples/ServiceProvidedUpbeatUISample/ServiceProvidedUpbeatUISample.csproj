@@ -23,7 +23,7 @@
     <ItemGroup>
         <PackageReference
             Include="UpbeatUI.Extensions.DependencyInjection"
-            Version="2.2.0" />
+            Version="2.3.0-rc1" />
         <!-- Switch from the PackageReference to the ProjectReference to test local UpbeatUI changes in the samples. -->
         <!-- <ProjectReference Include="..\..\source\UpbeatUI.Extensions.DependencyInjection\UpbeatUI.Extensions.DependencyInjection.csproj" /> -->
     </ItemGroup>

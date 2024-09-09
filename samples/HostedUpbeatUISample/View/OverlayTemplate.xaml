@@ -1,0 +1,46 @@
+<!-- This file is part of the UpbeatUI project, which is released under MIT License.
+     See LICENSE.md or visit:
+     https://github.com/pulselyre/upbeatui/blob/main/LICENSE.md
+     -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:uv="clr-namespace:UpbeatUI.View;assembly=UpbeatUI"
+    xmlns:svm="clr-namespace:HostedUpbeatUISample.ViewModel">
+    <!-- Note that "DataType" for this DataTemplate refers to a specific ViewModel class. When an instance of that
+         ViewModel class is added to the stack, this DataTemplate will be used to display content. The VieWModel
+         instance will be the "DataContext". -->
+    <DataTemplate DataType="{x:Type svm:OverlayViewModel}">
+        <Grid
+            Background="LightGray"
+            Opacity="0.5">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter
+                        Property="Visibility"
+                        Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger
+                            Binding="{Binding Visible}"
+                            Value="True">
+                            <Setter
+                                Property="Visibility"
+                                Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Viewbox>
+                <TextBlock Text="{Binding Message}" />
+            </Viewbox>
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

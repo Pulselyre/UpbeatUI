@@ -25,6 +25,7 @@ public partial class App : Application
     private async void HandleApplicationStartup(object sender, StartupEventArgs e)
     {
         using var sharedTimer = new SharedTimer();
+        var overlayService = new OverlayService();
 
         // The UpbeatStack is the central data structure for an UpbeatUI app. One must be created for the life of the application and should be disposed at the end.
         using (var upbeatStack = new UpbeatStack())
@@ -38,7 +39,7 @@ public partial class App : Application
 
             // The MenuViewModel's constructor requires an Action that it can use to start closing the application. We will provide the shared _closeRequestedTask's TrySetResult() method to indicate the user has requested to close the application.
             upbeatStack.MapViewModel<MenuViewModel.Parameters, MenuViewModel>(
-                (upbeatService, parameters) => new MenuViewModel(upbeatService, () => _closeRequestedTask.TrySetResult(), sharedTimer));
+                (upbeatService, parameters) => new MenuViewModel(upbeatService, () => _closeRequestedTask.TrySetResult(), sharedTimer, overlayService));
             upbeatStack.MapViewModel<PopupViewModel.Parameters, PopupViewModel>(
                 (upbeatService, parameters) => new PopupViewModel(parameters, sharedTimer));
             upbeatStack.MapViewModel<RandomDataViewModel.Parameters, RandomDataViewModel>(
@@ -54,6 +55,7 @@ public partial class App : Application
             upbeatStack.MapViewModel<TextEntryPopupViewModel.Parameters, TextEntryPopupViewModel>(
                 (upbeatService, parameters) => new TextEntryPopupViewModel(upbeatService, parameters, sharedTimer));
 
+            using var overlayViewModel = new OverlayViewModel(overlayService);
             // The included UpdateMainWindow class already provides the necessary controls to display Views for ViewModels when an IUpbeatStack is set as the DataContext.
             var mainWindow = new UpbeatMainWindow()
             {
@@ -67,6 +69,7 @@ public partial class App : Application
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 ModalBackground = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
                 ModalBlurEffect = new BlurEffect() { Radius = 10.0, KernelType = KernelType.Gaussian }, // The blur effect to apply to Views that are not on top. This is optional, as blur effects can significantly impact performance.
+                OverlayDataContext = overlayViewModel,
             };
 
             // Override the default Window Closing event to request a close instead of immediately closing itself.

@@ -20,7 +20,7 @@
     <ItemGroup>
         <PackageReference
             Include="UpbeatUI"
-            Version="5.2.0" />
+            Version="5.3.0-rc1" />
         <!-- Switch from the PackageReference to the ProjectReference to test local UpbeatUI changes in the samples. -->
         <!-- <ProjectReference Include="..\..\source\UpbeatUI\UpbeatUI.csproj" /> -->
     </ItemGroup>
