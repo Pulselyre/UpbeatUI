@@ -6,7 +6,7 @@ using System;
 
 namespace ServiceProvidedUpbeatUISample;
 
-// This is a simple list wrapper to demonstrate a scoped service shared between multiple ViewModels.
+// This is a shared service that ViewModels can use to control visibility of the application overlay.
 public class OverlayService
 {
     private bool _overlayVisible;
