@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using UpbeatUI.Extensions.DependencyInjection;
 using UpbeatUI.View;
@@ -62,8 +63,10 @@ namespace UpbeatUI.Extensions.Hosting
                     {
                         registerer.Invoke(upbeatStack);
                     }
-                    var overlayViewModel = _upbeatHostBuilder.OverlayViewModelCreator?.Invoke(_serviceProvider);
-                    _mainWindow = (_upbeatHostBuilder.WindowCreator ?? new Func<IServiceProvider, IUpbeatStack, object, Window>((sp, us, ovm) => new UpbeatMainWindow())).Invoke(_serviceProvider, upbeatStack, overlayViewModel);
+                    using var overlayScope = _serviceProvider.CreateScope();
+                    var overlayViewModel = _upbeatHostBuilder.OverlayViewModelCreator?.Invoke(overlayScope.ServiceProvider);
+                    _mainWindow = (_upbeatHostBuilder.WindowCreator ?? new Func<IServiceProvider, IUpbeatStack, object, Window>((sp, us, ovm) => new UpbeatMainWindow()))
+                        .Invoke(_serviceProvider, upbeatStack, overlayViewModel);
                     _mainWindow.Closing += HandleMainWindowClosing;
                     upbeatStack.ViewModelsEmptied += HandleUpbeatStackViewModelsEmptied;
                     Application.Current.DispatcherUnhandledException += HandleApplicationException;
