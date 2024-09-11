@@ -126,6 +126,7 @@ namespace UpbeatUI.Extensions.Hosting
                 overlayViewModelCreator == null ? null : new Func<IServiceProvider, object>(_ => overlayViewModelCreator));
 
         public IHostedUpbeatBuilder SetOverlayViewModel<TOverlayViewModel>() =>
-            SetOverlayViewModel(sp => ActivatorUtilities.CreateInstance<TOverlayViewModel>(sp));
+            SetOverlayViewModel(
+                sp => sp.GetService(typeof(TOverlayViewModel)) ?? ActivatorUtilities.CreateInstance<TOverlayViewModel>(sp));
     }
 }

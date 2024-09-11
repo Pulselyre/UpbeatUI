@@ -4,6 +4,7 @@
  */
 using System;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using UpbeatUI.View;
 using UpbeatUI.ViewModel;
 
@@ -136,20 +137,21 @@ namespace UpbeatUI.Extensions.Hosting
         /// <summary>
         /// Sets an optional delegate to provide a ViewModel that the <see cref="UpbeatMainWindow"/> will use to display an overlay View. Overlay Views are rendered on top of all other application content, but are not hit test visible.
         /// </summary>
-        /// <param name="overlayViewModelCreator">The delegate that will create the overlay ViewModel</param>
+        /// <param name="overlayViewModelCreator">The delegate that will create the overlay ViewModel using the application's <see cref="IServiceProvider"/>.</param>
         /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
         IHostedUpbeatBuilder SetOverlayViewModel(Func<IServiceProvider, object> overlayViewModelCreator);
 
         /// <summary>
         /// Sets an optional delegate to provide a ViewModel that the <see cref="UpbeatMainWindow"/> will use to display an overlay View. Overlay Views are rendered on top of all other application content, but are not hit test visible.
         /// </summary>
+        /// <param name="overlayViewModelCreator">The delegate that will create the overlay ViewModel.</param>
         /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
         IHostedUpbeatBuilder SetOverlayViewModel(Func<object> overlayViewModelCreator);
 
         /// <summary>
         /// Sets an optional delegate to provide a ViewModel that the <see cref="UpbeatMainWindow"/> will use to display an overlay View. Overlay Views are rendered on top of all other application content, but are not hit test visible.
         /// </summary>
-        /// <typeparam name="TOverlayViewModel">The type of the overlay ViewModel. This type will be instantiated automatically using the application's <see cref="IServiceProvider"/></typeparam>
+        /// <typeparam name="TOverlayViewModel">The type of the overlay ViewModel. If the type is a service that was added to the application's <see cref="IServiceCollection"/>, then that service (or an instance of it if added as transient or scoped) will be retrieved from the application's <see cref="IServiceProvider"/>. Otherwise, an instance of the type will be constructed using the <see cref="IServiceProvider"/>.</typeparam>
         /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
         IHostedUpbeatBuilder SetOverlayViewModel<TOverlayViewModel>();
     }
