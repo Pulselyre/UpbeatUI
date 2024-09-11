@@ -48,7 +48,8 @@ public partial class App : Application
                         serviceProvider.GetRequiredService<SharedTimer>(),
                         serviceProvider.GetRequiredService<OverlayService>()));
 
-            using var overlayViewModel = ActivatorUtilities.CreateInstance<OverlayViewModel>(serviceProvider);
+            using var overlayScope = serviceProvider.CreateScope();
+            using var overlayViewModel = ActivatorUtilities.CreateInstance<OverlayViewModel>(overlayScope.ServiceProvider);
             // The included UpdateMainWindow class already provides the necessary controls to display Views for ViewModels when an IUpbeatStack is set as the DataContext.
             var mainWindow = new UpbeatMainWindow()
             {
