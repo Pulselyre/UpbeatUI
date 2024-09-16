@@ -4,6 +4,8 @@
  */
 using System;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
+using UpbeatUI.View;
 using UpbeatUI.ViewModel;
 
 namespace UpbeatUI.Extensions.Hosting
@@ -14,11 +16,33 @@ namespace UpbeatUI.Extensions.Hosting
     public interface IHostedUpbeatBuilder
     {
         /// <summary>
-        /// Sets a delegate for building the main <see cref="Window"/> that will house the UpbeatUI aplication. The <see cref="Window"/>'s DataContext will be set by the service.
+        /// Sets a delegate for building the main <see cref="Window"/> that will house the UpbeatUI aplication. The <see cref="Window"/>'s <see cref="FrameworkElement.DataContext"/> (and optionally <see cref="UpbeatMainWindow.OverlayDataContext"/>) must be set in the <paramref name="windowCreator"/> delegate.
+        /// </summary>
+        /// <param name="windowCreator">The delegate for creating the main <see cref="Window"/> using the application's <see cref="IServiceProvider"/>. The delegate's <see cref="IUpbeatStack"/> parameter must be assigned to the <see cref="Window"/>'s or a child element's <see cref="FrameworkElement.DataContext"/> property. The delegate's  <see cref="object"/> parameter represents a possible overlay ViewModel and should be assigned appropriately if the <see cref="Window"/> will display an overlay View.</param>
+        /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
+        IHostedUpbeatBuilder ConfigureWindow(Func<IServiceProvider, IUpbeatStack, object, Window> windowCreator);
+
+        /// <summary>
+        /// Sets a delegate for building the main <see cref="Window"/> that will house the UpbeatUI aplication. The <see cref="Window"/>'s <see cref="FrameworkElement.DataContext"/> will be set by the service.
+        /// </summary>
+        /// <param name="windowCreator">The delegate for creating the main <see cref="Window"/> using the application's <see cref="IServiceProvider"/>.</param>
+        /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
+        IHostedUpbeatBuilder ConfigureWindow(Func<IServiceProvider, Window> windowCreator);
+
+        /// <summary>
+        /// Sets a delegate for building the main <see cref="Window"/> that will house the UpbeatUI aplication. The <see cref="Window"/>'s <see cref="FrameworkElement.DataContext"/> will be set by the service.
         /// </summary>
         /// <param name="windowCreator">The delegate for creating the main <see cref="Window"/>.</param>
         /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
         IHostedUpbeatBuilder ConfigureWindow(Func<Window> windowCreator);
+
+        /// <summary>
+        /// Sets the type for the main <see cref="Window"/> that will house the UpbeatUI aplication. The <see cref="Window"/>'s <see cref="FrameworkElement.DataContext"/> will be set by the service.
+        /// </summary>
+        /// <typeparam name="TWindow">The type of the Window; must be a subclass of <see cref="Window"/> and must implement a parameter-less constructor.</typeparam>
+        /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
+        IHostedUpbeatBuilder ConfigureWindow<TWindow>()
+            where TWindow : Window, new();
 
         /// <summary>
         /// Sets a delegate for building the bottom/base ViewModel.
@@ -109,5 +133,26 @@ namespace UpbeatUI.Extensions.Hosting
         IHostedUpbeatBuilder SetViewModelLocators(
             Func<Type, Type> parameterToViewModelLocator,
             bool allowUnresolvedDependencies = false);
+
+        /// <summary>
+        /// Sets an optional delegate to provide a ViewModel that the <see cref="UpbeatMainWindow"/> will use to display an overlay View. Overlay Views are rendered on top of all other application content, but are not hit test visible.
+        /// </summary>
+        /// <param name="overlayViewModelCreator">The delegate that will create the overlay ViewModel using the application's <see cref="IServiceProvider"/>.</param>
+        /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
+        IHostedUpbeatBuilder SetOverlayViewModel(Func<IServiceProvider, object> overlayViewModelCreator);
+
+        /// <summary>
+        /// Sets an optional delegate to provide a ViewModel that the <see cref="UpbeatMainWindow"/> will use to display an overlay View. Overlay Views are rendered on top of all other application content, but are not hit test visible.
+        /// </summary>
+        /// <param name="overlayViewModelCreator">The delegate that will create the overlay ViewModel.</param>
+        /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
+        IHostedUpbeatBuilder SetOverlayViewModel(Func<object> overlayViewModelCreator);
+
+        /// <summary>
+        /// Sets an optional delegate to provide a ViewModel that the <see cref="UpbeatMainWindow"/> will use to display an overlay View. Overlay Views are rendered on top of all other application content, but are not hit test visible.
+        /// </summary>
+        /// <typeparam name="TOverlayViewModel">The type of the overlay ViewModel. If the type is a service that was added to the application's <see cref="IServiceCollection"/>, then that service (or an instance of it if added as transient or scoped) will be retrieved from the application's <see cref="IServiceProvider"/>. Otherwise, an instance of the type will be constructed using the <see cref="IServiceProvider"/>.</typeparam>
+        /// <returns>The <see cref="IHostedUpbeatBuilder"/> for chaining.</returns>
+        IHostedUpbeatBuilder SetOverlayViewModel<TOverlayViewModel>();
     }
 }

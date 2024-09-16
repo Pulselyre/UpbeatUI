@@ -18,17 +18,19 @@ public sealed partial class MenuViewModel : ObservableObject, IDisposable
     private readonly IUpbeatService _upbeatService;
     private readonly IUpbeatApplicationService _hostedUpbeatService;
     private readonly SharedTimer _sharedTimer;
+    private readonly OverlayService _overlayService;
     private readonly Stopwatch _stopwatch = new();
 
     public MenuViewModel(
         IUpbeatService upbeatService, // This will be a unique IUpbeatService created and injected by the IUpbeatStack specifically for this ViewModel.
         IUpbeatApplicationService hostedUpbeatService, // IUpbeatApplicationService provides a method allowing ViewModels to start application shutdown.
-        SharedTimer sharedTimer) // This is a shared singleton service.
+        SharedTimer sharedTimer, // This is a shared singleton service.
+        OverlayService overlayService) // This is a shared singleton service.
     {
         _upbeatService = upbeatService ?? throw new ArgumentNullException(nameof(upbeatService));
         _hostedUpbeatService = hostedUpbeatService ?? throw new ArgumentNullException(nameof(hostedUpbeatService));
         _sharedTimer = sharedTimer ?? throw new ArgumentNullException(nameof(sharedTimer));
-
+        _overlayService = overlayService ?? throw new ArgumentNullException(nameof(overlayService));
         _stopwatch.Start();
         _upbeatService.RegisterUpdateCallback(() => OnPropertyChanged(nameof(Visibility))); // Registered "UpdateCallbacks" will be called each time the UI thread renders a new frame.
 
@@ -37,6 +39,15 @@ public sealed partial class MenuViewModel : ObservableObject, IDisposable
 
     public string SecondsElapsed => $"{_sharedTimer.ElapsedSeconds} Seconds";
     public double Visibility => Math.Abs(1000.0 - _stopwatch.ElapsedMilliseconds % 2000) / 1000.0; // Will be calculated on each "OnPropertyChanged(nameof(Visibility))" and used in the View to control visibility of an ellipse. Cycles between full and no visibility every two seconds.
+    public bool ShowOverlay
+    {
+        get => _overlayService.OverlayVisible;
+        set => SetProperty(
+            _overlayService.OverlayVisible,
+            value,
+            _overlayService,
+            (os, v) => os.OverlayVisible = v);
+    }
 
     // RelayCommand is an ICommand implementation from the CommunityToolkit.Mvvm NuGet package. As an attribute, it can be used to automatically wrap methods within ICommand properties. It supports both async and non-async methods/lambdas.
     [RelayCommand]

@@ -29,6 +29,7 @@ public partial class App : Application
         using var serviceProvider = new ServiceCollection()
             .AddTransient(sp => RandomNumberGenerator.Create())
             .AddSingleton<SharedTimer>()
+            .AddSingleton<OverlayService>()
             .AddScoped<SharedList>()
             .BuildServiceProvider();
 
@@ -44,8 +45,11 @@ public partial class App : Application
                 (upbeatService, parameters, serviceProvider) => new MenuViewModel(
                         upbeatService,
                         () => _closeRequestedTask.TrySetResult(),
-                        serviceProvider.GetRequiredService<SharedTimer>()));
+                        serviceProvider.GetRequiredService<SharedTimer>(),
+                        serviceProvider.GetRequiredService<OverlayService>()));
 
+            using var overlayScope = serviceProvider.CreateScope();
+            using var overlayViewModel = ActivatorUtilities.CreateInstance<OverlayViewModel>(overlayScope.ServiceProvider);
             // The included UpdateMainWindow class already provides the necessary controls to display Views for ViewModels when an IUpbeatStack is set as the DataContext.
             var mainWindow = new UpbeatMainWindow()
             {
@@ -59,6 +63,7 @@ public partial class App : Application
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 ModalBackground = new SolidColorBrush(Brushes.LightGray.Color) { Opacity = 0.5 }, // The brush to display underneath the top View.
                 ModalBlurEffect = new BlurEffect() { Radius = 10.0, KernelType = KernelType.Gaussian }, // The blur effect to apply to Views that are not on top. This is optional, as blur effects can significantly impact performance.
+                OverlayDataContext = overlayViewModel,
             };
 
             // Override the default Window Closing event to request a close instead of immediately closing itself.

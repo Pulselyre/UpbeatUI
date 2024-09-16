@@ -22,6 +22,7 @@ public partial class App : Application
             .ConfigureServices((hostContext, serviceCollection) => serviceCollection // Services can be configured, just as in other Hosted projects like ASP.NET Core applications. The IUpbeatStack will inject them into ViewModels when appropriate. Scoped services are supported, and each ViewModel within the stack is a separate scope.
                 .AddTransient(sp => RandomNumberGenerator.Create())
                 .AddSingleton<SharedTimer>()
+                .AddSingleton<OverlayService>()
                 .AddScoped<SharedList>())
             .ConfigureUpbeatHost( // Use this extension method to add UpbeatUI to the IHostBuilder
                 () => new BottomViewModel.Parameters(), // Provide a delegate to create the bottom ViewModel. This is required so that the IUpbeatStack has something to show.
@@ -52,7 +53,8 @@ public partial class App : Application
                                 MessageBoxButton.OK,
                                 MessageBoxImage.None);
                         }
-                    }))
+                    })
+                    .SetOverlayViewModel<OverlayViewModel>())
             .Build()
             .RunAsync().ConfigureAwait(true);
 }

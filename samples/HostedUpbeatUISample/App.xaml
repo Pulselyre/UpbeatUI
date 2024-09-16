@@ -21,6 +21,7 @@
                 <ResourceDictionary Source="View\RandomDataTemplate.xaml " />
                 <ResourceDictionary Source="View\SharedListTemplate.xaml " />
                 <ResourceDictionary Source="View\TextEntryPopupTemplate.xaml" />
+                <ResourceDictionary Source="View\OverlayTemplate.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
