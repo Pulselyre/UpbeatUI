@@ -4,6 +4,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -110,22 +111,40 @@ namespace UpbeatUI.Extensions.DependencyInjection
                             return parameters;
                         }
                         var viewModelScope = _viewModelParametersServiceScopes[parameters];
-                        var locatedService = viewModelScope.ServiceProvider.GetService(p.ParameterType);
-                        if (locatedService != null)
+                        var parameterFindingExceptions = new Collection<Exception>()
                         {
-                            return locatedService;
+                             new InvalidOperationException($"Unable to create or resolve instance of type {p.ParameterType.FullName}.")
+                        };
+                        try
+                        {
+                            return viewModelScope.ServiceProvider.GetRequiredService(p.ParameterType);
                         }
-                        if (viewModelScope.ChildViewModels.TryGetValue(p.ParameterType, out var childViewModel))
+                        catch (InvalidOperationException e)
                         {
+                            parameterFindingExceptions.Add(e);
+                        }
+                        try
+                        {
+                            return viewModelScope.ChildViewModels[p.ParameterType];
+                        }
+                        catch (KeyNotFoundException e)
+                        {
+                            parameterFindingExceptions.Add(
+                                new InvalidOperationException(
+                                    $"No child ViewModel of type '{p.ParameterType.FullName}' has been created yet.",
+                                    e));
+                        }
+                        try
+                        {
+                            var childViewModel = ResolveDependency(p.ParameterType, allowUnresolvedDependencies, upbeatService, parameters);
+                            viewModelScope.ChildViewModels[p.ParameterType] = childViewModel;
                             return childViewModel;
                         }
-                        childViewModel = ResolveDependency(p.ParameterType, allowUnresolvedDependencies, upbeatService, parameters);
-                        if (childViewModel == null && !allowUnresolvedDependencies)
+                        catch (InvalidOperationException e)
                         {
-                            throw new InvalidOperationException($"No service for type '{p.ParameterType.FullName}' has been registered.");
+                            parameterFindingExceptions.Add(e);
                         }
-                        viewModelScope.ChildViewModels[p.ParameterType] = childViewModel;
-                        return childViewModel;
+                        return allowUnresolvedDependencies ? (object)null : throw new AggregateException(parameterFindingExceptions);
                     })
                     .ToArray()),
                 targetType,
@@ -137,7 +156,7 @@ namespace UpbeatUI.Extensions.DependencyInjection
             var constructors = viewModelType.GetConstructors().ToList();
             if (constructors.Count > 1)
             {
-                throw new InvalidOperationException($"Type {viewModelType.FullName} has more than one constructor.");
+                throw new InvalidOperationException($"Type {viewModelType.FullName} has more than one constructor. Multiple constructors is not currently supported.");
             }
 
             var constructor = constructors[0];
@@ -156,19 +175,21 @@ namespace UpbeatUI.Extensions.DependencyInjection
             _ = parameters ?? throw new ArgumentNullException(nameof(parameters));
             if (!_childViewModelInstantiators.TryGetValue(dependencyType, out var instantiator))
             {
-                var constructors = dependencyType.GetConstructors().ToList();
-                if (constructors.Count > 1)
+                if (dependencyType.IsInterface)
                 {
-                    return null;
+                    throw new InvalidOperationException($"Unable to create child ViewModel of type {dependencyType.FullName}; it is an interface.");
                 }
-
+                if (dependencyType.IsAbstract)
+                {
+                    throw new InvalidOperationException($"Unable to create child ViewModel of type {dependencyType.FullName}; it is an abstract class.");
+                }
+                var constructors = dependencyType.GetConstructors().ToList();
+                if (constructors.Count != 1)
+                {
+                    throw new InvalidOperationException($"Unable to create child ViewModel of type {dependencyType.FullName}; it has more than one constructor. Multiple constructors is not currently supported.");
+                }
                 var constructor = constructors[0];
                 var parameterTypes = constructor.GetParameters().Select(p => p.ParameterType);
-                if (!parameterTypes.Intersect(new[] { typeof(IUpbeatService), parameters.GetType() }).Any())
-                {
-                    return null;
-                }
-
                 instantiator = CreateInstantiator(constructor, dependencyType, allowUnresolvedDependencies);
                 _childViewModelInstantiators[dependencyType] = instantiator;
             }
