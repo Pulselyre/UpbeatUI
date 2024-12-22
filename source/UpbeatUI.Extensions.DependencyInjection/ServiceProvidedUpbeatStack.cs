@@ -162,7 +162,17 @@ namespace UpbeatUI.Extensions.DependencyInjection
             var constructor = constructors[0];
             var instantiator = CreateInstantiator(constructor, viewModelType, allowUnresolvedDependencies);
             MapViewModel<TParameters, TViewModel>(
-                (upbeatService, parameters) => (TViewModel)instantiator(upbeatService, parameters));
+                (upbeatService, parameters) =>
+                {
+                    try
+                    {
+                        return (TViewModel)instantiator(upbeatService, parameters);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new InvalidOperationException($"Unable to create ViewModel of type {viewModelType.FullName}", e);
+                    }
+                });
         }
 
         private object ResolveDependency(
@@ -193,7 +203,14 @@ namespace UpbeatUI.Extensions.DependencyInjection
                 instantiator = CreateInstantiator(constructor, dependencyType, allowUnresolvedDependencies);
                 _childViewModelInstantiators[dependencyType] = instantiator;
             }
-            return instantiator(upbeatService, parameters);
+            try
+            {
+                return instantiator(upbeatService, parameters);
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Unable to locate or create dependency of type {dependencyType.FullName}", e);
+            }
         }
 
         private sealed class ViewModelScope : IDisposable
