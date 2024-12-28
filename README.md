@@ -20,11 +20,11 @@ UpbeatUI is not widely used and thus may have unidentified bugs or performance i
 
 UpbeatUI implementations are available as NuGet packages:
 
-- [![Nuget](https://img.shields.io/nuget/v/UpbeatUI)](https://www.nuget.org/packages/UpbeatUI/) - `UpbeatUI`: Basic implementation requiring manual setup and teardown.
-- [![Nuget](https://img.shields.io/nuget/v/UpbeatUI.Extensions.DependencyInjection)](https://www.nuget.org/packages/UpbeatUI.Extensions.DependencyInjection/) - `UpbeatUI.Extensions.DependencyInjection`: An implementation integrated with [`Microsoft.Extensions.DependencyInjection`](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection) (`IServiceProvider`) that provides dependency injection capabilities and automatic Parameters-ViewModel-View mapping via naming convention.
-- [![Nuget](https://img.shields.io/nuget/v/UpbeatUI.Extensions.Hosting)](https://www.nuget.org/packages/UpbeatUI.Extensions.Hosting/) - `UpbeatUI.Extensions.Hosting`: An implementation integrated with [`Microsoft.Extensions.Hosting`](https://www.nuget.org/packages/Microsoft.Extensions.Hosting) (`IHostBuilder`) for easy setup and automatic teardown.
-
-> Check the [Releases](https://github.com/Pulselyre/UpbeatUI/releases) page for pre-release/release-candidate versions with the latest bug fixes, features, and improvements.
+| Nuget | |
+| ---- | ---- |
+| [![Nuget](https://img.shields.io/nuget/v/UpbeatUI?label=Stable)](https://www.nuget.org/packages/UpbeatUI/)<br/>[![Nuget](https://img.shields.io/nuget/vpre/UpbeatUI?label=Preview)](https://www.nuget.org/packages/UpbeatUI/) | `UpbeatUI`: Basic implementation requiring manual setup and teardown. |
+| [![Nuget](https://img.shields.io/nuget/v/UpbeatUI.Extensions.DependencyInjection?label=Stable)](https://www.nuget.org/packages/UpbeatUI.Extensions.DependencyInjection/)<br/>[![Nuget](https://img.shields.io/nuget/vpre/UpbeatUI.Extensions.DependencyInjection?label=Preview)](https://www.nuget.org/packages/UpbeatUI.Extensions.DependencyInjection/) | `UpbeatUI.Extensions.DependencyInjection`: An implementation integrated with [`Microsoft.Extensions.DependencyInjection`](https://www.nuget.org/packages/Microsoft.Extensions.DependencyInjection) ([`IServiceProvider`](https://learn.microsoft.com/en-us/dotnet/api/system.iserviceprovider)) that provides dependency injection capabilities and automatic Parameters-ViewModel-View mapping via naming convention. |
+| [![Nuget](https://img.shields.io/nuget/v/UpbeatUI.Extensions.Hosting?label=Stable)](https://www.nuget.org/packages/UpbeatUI.Extensions.Hosting/)<br/>[![Nuget](https://img.shields.io/nuget/vpre/UpbeatUI.Extensions.Hosting?label=Preview)](https://www.nuget.org/packages/UpbeatUI.Extensions.Hosting/) | `UpbeatUI.Extensions.Hosting`: An implementation integrated with [`Microsoft.Extensions.Hosting`](https://www.nuget.org/packages/Microsoft.Extensions.Hosting) ([`IHostBuilder`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.hosting.ihostbuilder)) for easy setup and automatic teardown. |
 
 ## Examples
 
@@ -48,7 +48,7 @@ Please see the separate [How To Use](HOW-TO-USE.md) markdown file for a guide to
 - Execute tests via GitHub Actions.
 - [Create an icon/logo for NuGet packages](https://github.com/NuGet/Home/wiki/Packaging-Icon-within-the-nupkg).
 - Write and [add README files](https://devblogs.microsoft.com/nuget/add-a-readme-to-your-nuget-package/) for NuGet packages.
-- Add [MAUI](https://github.com/dotnet/maui), [UWP](https://learn.microsoft.com/en-us/windows/uwp/), and/or [WinUI 3](https://learn.microsoft.com/en-us/windows/apps/winui/winui3/) support.
+- Determine an approach for integrating with other UI systems, and add support for [MAUI](https://github.com/dotnet/maui), [UWP](https://learn.microsoft.com/en-us/windows/uwp/), [WinUI 3](https://learn.microsoft.com/en-us/windows/apps/winui/winui3/), [Avalonia](https://github.com/AvaloniaUI/Avalonia), and [Uno Platform](https://github.com/unoplatform/uno).
 <!--
 - Publish new major release with deprecated classes and methods fully removed.
 - Remove the [`UpbeatControl`](source/UpbeatUI/View/UpbeatControl.cs) entirely, and rely on [`<DataTemplate DataType="{x:Type ...}">`](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/data/data-templating-overview#the-datatype-property) instead to match _ViewModel_ instances on the [`UpbeatStack`](source/UpbeatUI/ViewModel/UpbeatStack.cs) with _Views_. Also, re-implement the percentage size and position behavior as a [WPF Decorator](https://learn.microsoft.com/en-us/dotnet/api/system.windows.controls.decorator).
